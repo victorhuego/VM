@@ -16,7 +16,7 @@ export async function uploadImageToDrive(
   filename: string,
   mimeType: string = 'image/jpeg'
 ): Promise<UploadResult> {
-  const drive = getGoogleDrive()
+  const drive = await getGoogleDrive()
   const folderId = getDriveFolderId()
 
   // Clean filename: if already formatted with moment convention (#img_XX or receipt_XX), preserve it cleanly without random timestamp prefix
@@ -73,7 +73,7 @@ export async function uploadImageToDrive(
  */
 export async function deleteFileFromDrive(fileId: string): Promise<boolean> {
   try {
-    const drive = getGoogleDrive()
+    const drive = await getGoogleDrive()
     await drive.files.delete({ fileId })
     return true
   } catch (err) {
@@ -87,7 +87,7 @@ export async function deleteFileFromDrive(fileId: string): Promise<boolean> {
  */
 export async function testDriveAccess(): Promise<{ ok: boolean; folderName?: string; error?: string }> {
   try {
-    const drive = getGoogleDrive()
+    const drive = await getGoogleDrive()
     const folderId = getDriveFolderId()
 
     const res = await drive.files.get({

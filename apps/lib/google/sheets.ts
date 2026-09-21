@@ -81,6 +81,14 @@ export const BALANCES_HEADERS = [
   'updatedAt',
 ]
 
+export const AUTH_TOKENS_HEADERS = [
+  'service',
+  'refreshToken',
+  'accessToken',
+  'expiryDate',
+  'updatedAt',
+]
+
 /**
  * Returns map of sheetTitle -> sheetId (numeric ID)
  */
@@ -115,6 +123,7 @@ export async function initSpreadsheet() {
     { title: 'Debts', headers: DEBTS_HEADERS },
     { title: 'Moments', headers: MOMENTS_HEADERS },
     { title: 'InitialBalances', headers: BALANCES_HEADERS },
+    { title: 'AuthTokens', headers: AUTH_TOKENS_HEADERS },
   ]
 
   const requests: any[] = []
@@ -742,3 +751,116 @@ export async function updateBalancesData(data: Partial<InitialBalancesData>): Pr
   clearSheetCache()
   return merged
 }
+
+export interface StoredOAuthToken {
+  service: string
+  refreshToken: string
+  accessToken?: string
+  expiryDate?: number
+  updatedAt: string
+}
+
+export async function getOAuthTokenFromSheet(service: string = 'google_drive'): Promise<StoredOAuthToken | null> {
+  const cacheKey = `auth_token_${service}`
+  const cached = getFromCache<StoredOAuthToken>(cacheKey)
+  if (cached) return cached
+
+  try {
+    const sheets = getGoogleSheets()
+    const spreadsheetId = getSpreadsheetId()
+
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'AuthTokens!A2:E',
+    })
+
+    const rows = res.data.values || []
+    for (const row of rows) {
+      if (row[0] === service && row[1]) {
+        const tokenData: StoredOAuthToken = {
+          service: String(row[0]),
+          refreshToken: String(row[1]),
+          accessToken: row[2] ? String(row[2]) : undefined,
+          expiryDate: row[3] ? Number(row[3]) : undefined,
+          updatedAt: String(row[4] || new Date().toISOString()),
+        }
+        setCache(cacheKey, tokenData)
+        return tokenData
+      }
+    }
+    return null
+  } catch (err) {
+    console.warn(`Could not read OAuth token for ${service} from AuthTokens sheet:`, err)
+    return null
+  }
+}
+
+export async function saveOAuthTokenToSheet(data: {
+  service?: string
+  refreshToken: string
+  accessToken?: string
+  expiryDate?: number
+}): Promise<StoredOAuthToken> {
+  const service = data.service || 'google_drive'
+  const sheets = getGoogleSheets()
+  const spreadsheetId = getSpreadsheetId()
+
+  // Make sure sheet exists
+  await initSpreadsheet()
+
+  // Check if row already exists
+  let rowIndex = -1
+  try {
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'AuthTokens!A2:E',
+    })
+    const rows = res.data.values || []
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i][0] === service) {
+        rowIndex = i + 2 // 1-based, skipping header row 1
+        break
+      }
+    }
+  } catch {
+    rowIndex = -1
+  }
+
+  const now = new Date().toISOString()
+  const tokenRecord: StoredOAuthToken = {
+    service,
+    refreshToken: data.refreshToken,
+    accessToken: data.accessToken,
+    expiryDate: data.expiryDate,
+    updatedAt: now,
+  }
+
+  const rowValues = [
+    service,
+    data.refreshToken,
+    data.accessToken || '',
+    data.expiryDate ? String(data.expiryDate) : '',
+    now,
+  ]
+
+  if (rowIndex > 0) {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: `AuthTokens!A${rowIndex}:E${rowIndex}`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [rowValues] },
+    })
+  } else {
+    await sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range: 'AuthTokens!A2:E2',
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [rowValues] },
+    })
+  }
+
+  clearSheetCache()
+  setCache(`auth_token_${service}`, tokenRecord)
+  return tokenRecord
+}
+

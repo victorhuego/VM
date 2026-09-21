@@ -123,17 +123,49 @@ export function getGoogleAuthClient() {
 
 let cachedDriveOAuth: InstanceType<typeof google.auth.OAuth2> | null = null
 
-export function getGoogleDriveAuth() {
+export function createOAuth2Client(redirectUri?: string) {
   const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
   const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET
-  const refreshToken = process.env.GOOGLE_OAUTH_REFRESH_TOKEN
+  return new google.auth.OAuth2(clientId, clientSecret, redirectUri)
+}
 
-  if (clientId && clientSecret && refreshToken) {
-    if (!cachedDriveOAuth) {
-      cachedDriveOAuth = new google.auth.OAuth2(clientId, clientSecret)
-      cachedDriveOAuth.setCredentials({ refresh_token: refreshToken })
+export async function getGoogleDriveAuth() {
+  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
+  const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET
+
+  if (clientId && clientSecret) {
+    // 1. Try reading token from Google Sheets AuthTokens tab
+    const { getOAuthTokenFromSheet, saveOAuthTokenToSheet } = await import('./sheets')
+    const sheetToken = await getOAuthTokenFromSheet('google_drive')
+    const refreshToken = sheetToken?.refreshToken || process.env.GOOGLE_OAUTH_REFRESH_TOKEN
+
+    if (refreshToken) {
+      if (!cachedDriveOAuth) {
+        cachedDriveOAuth = createOAuth2Client()
+        cachedDriveOAuth.setCredentials({
+          refresh_token: refreshToken,
+          access_token: sheetToken?.accessToken,
+          expiry_date: sheetToken?.expiryDate,
+        })
+
+        // Auto-save refreshed tokens back to Google Sheets whenever Google rotates them
+        cachedDriveOAuth.on('tokens', async (tokens) => {
+          try {
+            if (tokens.refresh_token || tokens.access_token) {
+              await saveOAuthTokenToSheet({
+                service: 'google_drive',
+                refreshToken: tokens.refresh_token || refreshToken,
+                accessToken: tokens.access_token || undefined,
+                expiryDate: tokens.expiry_date || undefined,
+              })
+            }
+          } catch (err) {
+            console.error('Lỗi khi tự động lưu token mới vào Google Sheets:', err)
+          }
+        })
+      }
+      return cachedDriveOAuth
     }
-    return cachedDriveOAuth
   }
 
   // Fallback to Service Account
@@ -145,8 +177,8 @@ export function getGoogleSheets() {
   return google.sheets({ version: 'v4', auth })
 }
 
-export function getGoogleDrive() {
-  const auth = getGoogleDriveAuth()
+export async function getGoogleDrive() {
+  const auth = await getGoogleDriveAuth()
   return google.drive({ version: 'v3', auth })
 }
 
