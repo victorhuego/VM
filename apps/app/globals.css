@@ -1,0 +1,330 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+}
+
+/* ================= 6 PASTEL OMBRE THEMES (FROM TUMBLER COLLECTION) ================= */
+:root, html[data-theme="matcha"] {
+  --theme-text-gradient: linear-gradient(135deg, #1D301F 0%, #3F6141 55%, #719B73 100%);
+  --theme-card-bg: linear-gradient(180deg, #F4F8F4 0%, #FFFFFF 100%);
+  --theme-surface: #F5F8F5;
+  --theme-border: #E3EAE3;
+  --theme-border-hover: #CBDBCB;
+  --theme-text-main: #1D301F;
+  --theme-text-accent: #3F6141;
+  --theme-text-muted: #7E9480;
+  --theme-btn-gradient: linear-gradient(90deg, #2D472F 0%, #3F6141 100%);
+  --theme-btn-hover: linear-gradient(90deg, #1D301F 0%, #2D472F 100%);
+  --theme-progress: linear-gradient(90deg, #547D56 0%, #94B895 100%);
+  --theme-active-tag: #719B73;
+  --theme-ring: #EBF2EB;
+  --theme-shadow: rgba(63, 97, 65, 0.15);
+
+  --background: #FFFFFF;
+  --foreground: #1D301F;
+  --card: #FFFFFF;
+  --card-foreground: #1D301F;
+  --popover: #FFFFFF;
+  --popover-foreground: #1D301F;
+  --primary: #2D472F;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F5F8F5;
+  --secondary-foreground: #1D301F;
+  --muted: #F5F8F5;
+  --muted-foreground: #7E9480;
+  --accent: #F5F8F5;
+  --accent-foreground: #3F6141;
+  --border: #E3EAE3;
+  --input: #E3EAE3;
+  --ring: #3F6141;
+  --radius: 0.5rem;
+}
+
+html[data-theme="sakura"] {
+  --theme-text-gradient: linear-gradient(135deg, #42161E 0%, #822C3D 55%, #D47B8C 100%);
+  --theme-card-bg: linear-gradient(180deg, #FCF5F6 0%, #FFFFFF 100%);
+  --theme-surface: #FAF2F3;
+  --theme-border: #F3DBE0;
+  --theme-border-hover: #E8C1C9;
+  --theme-text-main: #42161E;
+  --theme-text-accent: #822C3D;
+  --theme-text-muted: #9E747C;
+  --theme-btn-gradient: linear-gradient(90deg, #5E202C 0%, #822C3D 100%);
+  --theme-btn-hover: linear-gradient(90deg, #42161E 0%, #5E202C 100%);
+  --theme-progress: linear-gradient(90deg, #A84457 0%, #E28F9E 100%);
+  --theme-active-tag: #D47B8C;
+  --theme-ring: #F9EBEE;
+  --theme-shadow: rgba(130, 44, 61, 0.15);
+
+  --foreground: #42161E;
+  --primary: #5E202C;
+  --secondary: #FAF2F3;
+  --secondary-foreground: #42161E;
+  --border: #F3DBE0;
+  --input: #F3DBE0;
+  --ring: #822C3D;
+}
+
+html[data-theme="mint"] {
+  --theme-text-gradient: linear-gradient(135deg, #102F2F 0%, #225F5F 55%, #4AA8A8 100%);
+  --theme-card-bg: linear-gradient(180deg, #F2F8F8 0%, #FFFFFF 100%);
+  --theme-surface: #EDF6F6;
+  --theme-border: #D5EBEB;
+  --theme-border-hover: #B7DCDC;
+  --theme-text-main: #102F2F;
+  --theme-text-accent: #225F5F;
+  --theme-text-muted: #6E9494;
+  --theme-btn-gradient: linear-gradient(90deg, #184747 0%, #225F5F 100%);
+  --theme-btn-hover: linear-gradient(90deg, #102F2F 0%, #184747 100%);
+  --theme-progress: linear-gradient(90deg, #327E7E 0%, #68BDBD 100%);
+  --theme-active-tag: #4AA8A8;
+  --theme-ring: #E6F3F3;
+  --theme-shadow: rgba(34, 95, 95, 0.15);
+
+  --foreground: #102F2F;
+  --primary: #184747;
+  --secondary: #EDF6F6;
+  --secondary-foreground: #102F2F;
+  --border: #D5EBEB;
+  --input: #D5EBEB;
+  --ring: #225F5F;
+}
+
+html[data-theme="lavender"] {
+  --theme-text-gradient: linear-gradient(135deg, #241A38 0%, #4D3973 55%, #937EB8 100%);
+  --theme-card-bg: linear-gradient(180deg, #F6F4F9 0%, #FFFFFF 100%);
+  --theme-surface: #F3EFF7;
+  --theme-border: #E4DCF0;
+  --theme-border-hover: #CEC3E3;
+  --theme-text-main: #241A38;
+  --theme-text-accent: #4D3973;
+  --theme-text-muted: #85759E;
+  --theme-btn-gradient: linear-gradient(90deg, #382954 0%, #4D3973 100%);
+  --theme-btn-hover: linear-gradient(90deg, #241A38 0%, #382954 100%);
+  --theme-progress: linear-gradient(90deg, #684F9B 0%, #B19FD1 100%);
+  --theme-active-tag: #937EB8;
+  --theme-ring: #EEE9F5;
+  --theme-shadow: rgba(77, 57, 115, 0.15);
+
+  --foreground: #241A38;
+  --primary: #382954;
+  --secondary: #F3EFF7;
+  --secondary-foreground: #241A38;
+  --border: #E4DCF0;
+  --input: #E4DCF0;
+  --ring: #4D3973;
+}
+
+html[data-theme="mocha"] {
+  --theme-text-gradient: linear-gradient(135deg, #2E2117 0%, #59402E 55%, #9C785C 100%);
+  --theme-card-bg: linear-gradient(180deg, #FAF7F5 0%, #FFFFFF 100%);
+  --theme-surface: #F7F3EF;
+  --theme-border: #ECE4DC;
+  --theme-border-hover: #D8C7B8;
+  --theme-text-main: #2E2117;
+  --theme-text-accent: #59402E;
+  --theme-text-muted: #948070;
+  --theme-btn-gradient: linear-gradient(90deg, #422F22 0%, #59402E 100%);
+  --theme-btn-hover: linear-gradient(90deg, #2E2117 0%, #422F22 100%);
+  --theme-progress: linear-gradient(90deg, #7A5B44 0%, #BD9B80 100%);
+  --theme-active-tag: #9C785C;
+  --theme-ring: #F4ECE4;
+  --theme-shadow: rgba(89, 64, 46, 0.15);
+
+  --foreground: #2E2117;
+  --primary: #422F22;
+  --secondary: #F7F3EF;
+  --secondary-foreground: #2E2117;
+  --border: #ECE4DC;
+  --input: #ECE4DC;
+  --ring: #59402E;
+}
+
+html[data-theme="slate"] {
+  --theme-text-gradient: linear-gradient(135deg, #09090B 0%, #27272A 55%, #71717A 100%);
+  --theme-card-bg: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+  --theme-surface: #F4F4F5;
+  --theme-border: #E4E4E7;
+  --theme-border-hover: #D4D4D8;
+  --theme-text-main: #09090B;
+  --theme-text-accent: #27272A;
+  --theme-text-muted: #71717A;
+  --theme-btn-gradient: linear-gradient(90deg, #18181B 0%, #27272A 100%);
+  --theme-btn-hover: linear-gradient(90deg, #09090B 0%, #18181B 100%);
+  --theme-progress: linear-gradient(90deg, #3F3F46 0%, #A1A1AA 100%);
+  --theme-active-tag: #71717A;
+  --theme-ring: #F4F4F5;
+  --theme-shadow: rgba(24, 24, 27, 0.15);
+
+  --foreground: #09090B;
+  --primary: #18181B;
+  --secondary: #F4F4F5;
+  --secondary-foreground: #09090B;
+  --border: #E4E4E7;
+  --input: #E4E4E7;
+  --ring: #27272A;
+}
+
+/* ================= UTILITY CLASSES ================= */
+.text-theme-gradient {
+  background: var(--theme-text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.bg-theme-card {
+  background: var(--theme-card-bg);
+}
+.bg-theme-surface {
+  background-color: var(--theme-surface);
+}
+.border-theme {
+  border-color: var(--theme-border);
+}
+.border-theme-hover:hover {
+  border-color: var(--theme-border-hover);
+}
+.text-theme-main {
+  color: var(--theme-text-main);
+}
+.text-theme-accent {
+  color: var(--theme-text-accent);
+}
+.text-theme-muted {
+  color: var(--theme-text-muted);
+}
+.btn-theme-gradient {
+  background: var(--theme-btn-gradient);
+  color: #FFFFFF;
+}
+.btn-theme-gradient:hover {
+  background: var(--theme-btn-hover);
+}
+.bg-theme-progress {
+  background: var(--theme-progress);
+}
+.ring-theme {
+  --tw-ring-color: var(--theme-ring);
+}
+.font-mono-nums {
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Tactile 3D Tilt & Perspective */
+.perspective-container {
+  perspective: 1000px;
+}
+.tilt-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  transform-style: preserve-3d;
+}
+
+/* Circadian Orbit Track */
+.circadian-track {
+  background: linear-gradient(90deg, 
+    rgba(30, 41, 59, 0.08) 0%, 
+    rgba(217, 119, 6, 0.12) 22%, 
+    rgba(63, 97, 65, 0.12) 50%, 
+    rgba(249, 115, 22, 0.12) 75%, 
+    rgba(30, 41, 59, 0.08) 100%);
+}
+
+@keyframes beaconBreathe {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(63, 97, 65, 0.5); }
+  50% { transform: scale(1.15); box-shadow: 0 0 0 6px rgba(63, 97, 65, 0); }
+}
+.live-beacon {
+  animation: beaconBreathe 2.5s infinite ease-in-out;
+}
+
+@keyframes flashHighlight {
+  0%, 100% { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+  25%, 60% { box-shadow: 0 0 0 3px var(--theme-border-hover), 0 4px 14px var(--theme-shadow); }
+}
+.highlight-flash {
+  animation: flashHighlight 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .touch-target { min-height: 44px; min-width: 44px; }
+}
+
+/* Mobile Touch & iOS Optimization */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
+button, [role="button"], input, select, textarea, a, .touch-target {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+}
+
+/* Safe area padding for iOS devices */
+.pb-safe {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+/* Custom sleek scrollbar for transaction lists */
+.expense-scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.expense-scroll-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.expense-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.expense-scroll-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 9999px;
+}
+
+.expense-scroll-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

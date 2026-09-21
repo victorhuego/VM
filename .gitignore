@@ -1,0 +1,26 @@
+# Node / Next.js
+node_modules/
+.next/
+out/
+build/
+.DS_Store
+
+# Env & secrets
+.env*
+!.env.example
+credentials/
+*.json.key
+service-account*.json
+google-service-account*.json
+personal-finance-*.json
+*.json
+!package.json
+!tsconfig.json
+!components.json
+backend/.env*
+backend/credentials/
+backend/__pycache__/
+backend/*/__pycache__/
+backend/*/*/__pycache__/
+*.pyc
+.pytest_cache/
