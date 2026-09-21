@@ -75,3 +75,50 @@ export function formatClientDayOfWeek(d: Date = new Date(), lang: 'vi' | 'en'): 
   }
 }
 
+/**
+ * Normalizes any date string or Excel/Sheets serial number into standard YYYY-MM-DD format
+ */
+export function normalizeDateString(val: any): string {
+  if (!val) return ''
+  const str = String(val).trim()
+  if (!str) return ''
+
+  // Already YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+    return str
+  }
+
+  // Excel / Google Sheets serial date (e.g. 46286 -> 2026-09-21)
+  const num = Number(str)
+  if (!isNaN(num) && num > 30000 && num < 75000) {
+    // 25569 days between 1899-12-30 and 1970-01-01
+    const ms = Math.round((num - 25569) * 86400 * 1000)
+    const date = new Date(ms)
+    const y = date.getUTCFullYear()
+    const m = String(date.getUTCMonth() + 1).padStart(2, '0')
+    const d = String(date.getUTCDate()).padStart(2, '0')
+    return `${y}-${m}-${d}`
+  }
+
+  // ISO string with T (e.g. 2026-09-21T14:19:42.881Z)
+  if (str.includes('T')) {
+    const parsed = new Date(str)
+    if (!isNaN(parsed.getTime())) {
+      const y = parsed.getFullYear()
+      const m = String(parsed.getMonth() + 1).padStart(2, '0')
+      const d = String(parsed.getDate()).padStart(2, '0')
+      return `${y}-${m}-${d}`
+    }
+  }
+
+  // DD/MM/YYYY or DD-MM-YYYY
+  const dmy = str.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/)
+  if (dmy) {
+    const [, d, m, y] = dmy
+    return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`
+  }
+
+  return str
+}
+
+

@@ -1,4 +1,5 @@
 import { ExpenseItem, InitialBalances, DebtItem, ExpenseSourceType } from '@/lib/types'
+import { normalizeDateString } from './time'
 
 export interface WalletBalances {
   cash: number
@@ -97,7 +98,7 @@ export function computeMonthlySpent(expenses: ExpenseItem[], targetDate: Date = 
   return expenses
     .filter((item) => {
       if (item.type !== 'expense') return false
-      const [y, m] = item.date.split('-').map(Number)
+      const [y, m] = normalizeDateString(item.date).split('-').map(Number)
       return y === currentYear && m === currentMonth
     })
     .reduce((sum, item) => sum + item.amount, 0)
@@ -107,8 +108,9 @@ export function computeMonthlySpent(expenses: ExpenseItem[], targetDate: Date = 
  * Total expense spent on a specific date (YYYY-MM-DD)
  */
 export function computeDaySpent(expenses: ExpenseItem[], targetDateStr: string): number {
+  const targetNorm = normalizeDateString(targetDateStr)
   return expenses
-    .filter((item) => item.type === 'expense' && item.date === targetDateStr)
+    .filter((item) => item.type === 'expense' && normalizeDateString(item.date) === targetNorm)
     .reduce((sum, item) => sum + item.amount, 0)
 }
 

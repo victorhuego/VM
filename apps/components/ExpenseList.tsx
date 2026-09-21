@@ -7,6 +7,7 @@ import { dictionary, formatMoney } from '@/lib/i18n'
 import {
   getClientLocalDateString,
   getClientYesterdayDateString,
+  normalizeDateString,
 } from '@/lib/time'
 import {
   Utensils,
@@ -153,7 +154,8 @@ export function ExpenseList({
 
       if (period === 'all') return true
 
-      const [yStr, mStr] = item.date.split('-')
+      const normalizedDate = normalizeDateString(item.date)
+      const [yStr, mStr] = normalizedDate.split('-')
       const itemYear = Number(yStr)
       const itemMonth = Number(mStr)
 
@@ -164,7 +166,7 @@ export function ExpenseList({
         return itemYear === selectedYear
       }
       if (period === 'day') {
-        return item.date === selectedDay
+        return normalizedDate === selectedDay
       }
       return true
     })
@@ -190,7 +192,8 @@ export function ExpenseList({
       // Group by month
       const groups: Record<string, ExpenseItem[]> = {}
       for (const item of periodExpenses) {
-        const [y, m] = item.date.split('-')
+        const normalized = normalizeDateString(item.date)
+        const [y, m] = normalized.split('-')
         const key = `${m}/${y}`
         if (!groups[key]) groups[key] = []
         groups[key].push(item)
@@ -212,8 +215,9 @@ export function ExpenseList({
       // Group by date (descending)
       const groups: Record<string, ExpenseItem[]> = {}
       for (const item of periodExpenses) {
-        if (!groups[item.date]) groups[item.date] = []
-        groups[item.date].push(item)
+        const dateKey = normalizeDateString(item.date)
+        if (!groups[dateKey]) groups[dateKey] = []
+        groups[dateKey].push(item)
       }
       // Sort dates descending
       return Object.keys(groups)

@@ -4,6 +4,7 @@ import React, { useMemo } from 'react'
 import { Card } from '@/components/ui/card'
 import { FinancialState, LanguageType, ExpenseItem } from '@/lib/types'
 import { dictionary, formatMoney, formatCompactMoney } from '@/lib/i18n'
+import { normalizeDateString } from '@/lib/time'
 import { ShieldCheck, Target, Wallet, Building2, TrendingUp, AlertCircle, Coins } from 'lucide-react'
 
 interface MetricCardsProps {
@@ -42,7 +43,7 @@ export function MetricCards({
     }
     let spent = 0
     for (const item of expenses) {
-      const [y, m] = item.date.split('-').map(Number)
+      const [y, m] = normalizeDateString(item.date).split('-').map(Number)
       if (y === currentYear && m === currentMonth && item.type === 'expense') {
         spent += item.amount
       }

@@ -1,5 +1,6 @@
 import { getGoogleSheets, getSpreadsheetId } from './client'
 import { ExpenseItem, DebtItem, MomentItem, InitialBalances, FinancialState } from '@/lib/types'
+import { normalizeDateString } from '@/lib/time'
 
 // Cache structure
 interface CacheEntry<T> {
@@ -257,20 +258,23 @@ export async function getExpenses(): Promise<ExpenseItem[]> {
   const rows = res.data.values || []
   const items: ExpenseItem[] = rows
     .filter((r) => Boolean(r[0])) // must have id
-    .map((r) => ({
-      id: String(r[0] || ''),
-      date: String(r[1] || ''),
-      type: (r[2] as any) || 'expense',
-      category: String(r[3] || 'other'),
-      amount: Number(r[4] || 0),
-      source: (r[5] as any) || 'account',
-      transferDirection: r[6] ? (r[6] as any) : undefined,
-      note: String(r[7] || ''),
-      timeAgo: String(r[1] || '').split('-').slice(1).reverse().join('/') || '',
-      image: r[8] ? String(r[8]) : undefined,
-      debtId: r[9] ? String(r[9]) : undefined,
-      reconcileDiff: r[10] ? Number(r[10]) : undefined,
-    }))
+    .map((r) => {
+      const dateStr = normalizeDateString(r[1])
+      return {
+        id: String(r[0] || ''),
+        date: dateStr,
+        type: (r[2] as any) || 'expense',
+        category: String(r[3] || 'other'),
+        amount: Number(r[4] || 0),
+        source: (r[5] as any) || 'account',
+        transferDirection: r[6] ? (r[6] as any) : undefined,
+        note: String(r[7] || ''),
+        timeAgo: dateStr.split('-').slice(1).reverse().join('/') || '',
+        image: r[8] ? String(r[8]) : undefined,
+        debtId: r[9] ? String(r[9]) : undefined,
+        reconcileDiff: r[10] ? Number(r[10]) : undefined,
+      }
+    })
 
   setCache(cacheKey, items)
   return items
@@ -437,7 +441,7 @@ export async function getDebts(): Promise<DebtItem[]> {
       id: String(r[0] || ''),
       title: String(r[1] || ''),
       amount: Number(r[2] || 0),
-      date: String(r[3] || ''),
+      date: normalizeDateString(r[3]),
       creditor: r[4] ? String(r[4]) : undefined,
       note: r[5] ? String(r[5]) : undefined,
     }))
@@ -589,7 +593,7 @@ export async function getMoments(): Promise<MomentItem[]> {
     .filter((r) => Boolean(r[0]))
     .map((r) => ({
       id: String(r[0] || ''),
-      date: String(r[1] || ''),
+      date: normalizeDateString(r[1]),
       time: String(r[2] || ''),
       caption: String(r[3] || ''),
       mood: (r[4] as any) || 'serene',
