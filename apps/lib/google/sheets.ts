@@ -53,6 +53,7 @@ export const EXPENSES_HEADERS = [
   'debtId',
   'reconcileDiff',
   'createdAt',
+  'user',
 ]
 
 export const DEBTS_HEADERS = [
@@ -64,6 +65,7 @@ export const DEBTS_HEADERS = [
   'note',
   'status',
   'createdAt',
+  'user',
 ]
 
 export const MOMENTS_HEADERS = [
@@ -76,15 +78,25 @@ export const MOMENTS_HEADERS = [
   'driveFileId',
   'driveName',
   'createdAt',
+  'user',
 ]
 
 export const BALANCES_HEADERS = [
+  'username',
   'cash',
   'bankAccount',
   'savings',
   'monthlyBudget',
   'savingsGoal',
   'updatedAt',
+]
+
+export const USERS_HEADERS = [
+  'username',
+  'password',
+  'displayName',
+  'createdAt',
+  'avatar',
 ]
 
 export const AUTH_TOKENS_HEADERS = [
@@ -129,6 +141,7 @@ export async function initSpreadsheet() {
     { title: 'Debts', headers: DEBTS_HEADERS },
     { title: 'Moments', headers: MOMENTS_HEADERS },
     { title: 'InitialBalances', headers: BALANCES_HEADERS },
+    { title: 'Users', headers: USERS_HEADERS },
     { title: 'AuthTokens', headers: AUTH_TOKENS_HEADERS },
   ]
 
@@ -222,19 +235,36 @@ export async function initSpreadsheet() {
     }
   }
 
-  // 3. Seed InitialBalances if empty
+  // 3. Seed Users if empty
+  const usersCheck = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: 'Users!A2:D2',
+  })
+
+  if (!usersCheck.data.values || usersCheck.data.values.length === 0) {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: 'Users!A2:D2',
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [['jeandev', '123456', 'Jean Dev', new Date().toISOString()]],
+      },
+    })
+  }
+
+  // 4. Seed InitialBalances if empty
   const balCheck = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: 'InitialBalances!A2:F2',
+    range: 'InitialBalances!A2:G2',
   })
 
   if (!balCheck.data.values || balCheck.data.values.length === 0) {
     await sheets.spreadsheets.values.update({
       spreadsheetId,
-      range: 'InitialBalances!A2:F2',
+      range: 'InitialBalances!A2:G2',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
-        values: [[0, 0, 0, 0, 0, new Date().toISOString()]],
+        values: [['jeandev', 0, 0, 0, 0, 0, new Date().toISOString()]],
       },
     })
   }
@@ -247,8 +277,9 @@ export async function initSpreadsheet() {
 // EXPENSES CRUD
 // ---------------------------------------------------------------------------
 
-export async function getExpenses(): Promise<ExpenseItem[]> {
-  const cacheKey = 'expenses'
+export async function getExpenses(user?: string): Promise<ExpenseItem[]> {
+  const cleanUser = user ? user.trim().toLowerCase() : null
+  const cacheKey = cleanUser ? `expenses_${cleanUser}` : 'expenses_all'
   const cached = getFromCache<ExpenseItem[]>(cacheKey)
   if (cached) return cached
 
@@ -257,7 +288,7 @@ export async function getExpenses(): Promise<ExpenseItem[]> {
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Expenses!A2:L',
+    range: 'Expenses!A2:M',
   })
 
   const rows = res.data.values || []
@@ -278,17 +309,23 @@ export async function getExpenses(): Promise<ExpenseItem[]> {
         image: r[8] ? String(r[8]) : undefined,
         debtId: r[9] ? String(r[9]) : undefined,
         reconcileDiff: r[10] ? Number(r[10]) : undefined,
+        user: String(r[12] || 'jeandev'),
       }
     })
 
-  items.sort(compareExpensesDescending)
-  setCache(cacheKey, items)
-  return items
+  const filtered = cleanUser
+    ? items.filter((i) => (i.user || 'jeandev').toLowerCase() === cleanUser)
+    : items
+
+  filtered.sort(compareExpensesDescending)
+  setCache(cacheKey, filtered)
+  return filtered
 }
 
-export async function addExpense(item: ExpenseItem): Promise<ExpenseItem> {
+export async function addExpense(item: ExpenseItem, user: string = 'jeandev'): Promise<ExpenseItem> {
   const sheets = getGoogleSheets()
   const spreadsheetId = getSpreadsheetId()
+  const owner = item.user || user || 'jeandev'
 
   const row = [
     item.id,
@@ -303,11 +340,12 @@ export async function addExpense(item: ExpenseItem): Promise<ExpenseItem> {
     item.debtId || '',
     item.reconcileDiff !== undefined ? item.reconcileDiff : '',
     new Date().toISOString(),
+    owner,
   ]
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
-    range: 'Expenses!A:L',
+    range: 'Expenses!A:M',
     valueInputOption: 'USER_ENTERED',
     insertDataOption: 'INSERT_ROWS',
     requestBody: {
@@ -316,7 +354,7 @@ export async function addExpense(item: ExpenseItem): Promise<ExpenseItem> {
   })
 
   clearSheetCache()
-  return item
+  return { ...item, user: owner }
 }
 
 export async function updateExpense(id: string, updated: Partial<ExpenseItem>): Promise<ExpenseItem | null> {
@@ -326,7 +364,7 @@ export async function updateExpense(id: string, updated: Partial<ExpenseItem>): 
   // Find row index (1-indexed)
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Expenses!A:L',
+    range: 'Expenses!A:M',
   })
 
   const rows = res.data.values || []
@@ -347,6 +385,7 @@ export async function updateExpense(id: string, updated: Partial<ExpenseItem>): 
     image: existingRow[8] ? String(existingRow[8]) : undefined,
     debtId: existingRow[9] ? String(existingRow[9]) : undefined,
     reconcileDiff: existingRow[10] ? Number(existingRow[10]) : undefined,
+    user: existingRow[12] ? String(existingRow[12]) : 'jeandev',
   }
 
   const merged: ExpenseItem = {
@@ -368,9 +407,10 @@ export async function updateExpense(id: string, updated: Partial<ExpenseItem>): 
     merged.debtId || '',
     merged.reconcileDiff !== undefined ? merged.reconcileDiff : '',
     new Date().toISOString(),
+    merged.user || 'jeandev',
   ]
 
-  const targetRange = `Expenses!A${rowIndex + 1}:L${rowIndex + 1}`
+  const targetRange = `Expenses!A${rowIndex + 1}:M${rowIndex + 1}`
   await sheets.spreadsheets.values.update({
     spreadsheetId,
     range: targetRange,
@@ -427,8 +467,9 @@ export async function deleteExpense(id: string): Promise<boolean> {
 // DEBTS CRUD
 // ---------------------------------------------------------------------------
 
-export async function getDebts(): Promise<DebtItem[]> {
-  const cacheKey = 'debts'
+export async function getDebts(user?: string): Promise<DebtItem[]> {
+  const cleanUser = user ? user.trim().toLowerCase() : null
+  const cacheKey = cleanUser ? `debts_${cleanUser}` : 'debts_all'
   const cached = getFromCache<DebtItem[]>(cacheKey)
   if (cached) return cached
 
@@ -437,7 +478,7 @@ export async function getDebts(): Promise<DebtItem[]> {
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Debts!A2:H',
+    range: 'Debts!A2:I',
   })
 
   const rows = res.data.values || []
@@ -450,15 +491,21 @@ export async function getDebts(): Promise<DebtItem[]> {
       date: normalizeDateString(r[3]),
       creditor: r[4] ? String(r[4]) : undefined,
       note: r[5] ? String(r[5]) : undefined,
+      user: String(r[8] || 'jeandev'),
     }))
 
-  setCache(cacheKey, items)
-  return items
+  const filtered = cleanUser
+    ? items.filter((d) => (d.user || 'jeandev').toLowerCase() === cleanUser)
+    : items
+
+  setCache(cacheKey, filtered)
+  return filtered
 }
 
-export async function addDebt(item: DebtItem): Promise<DebtItem> {
+export async function addDebt(item: DebtItem, user: string = 'jeandev'): Promise<DebtItem> {
   const sheets = getGoogleSheets()
   const spreadsheetId = getSpreadsheetId()
+  const owner = item.user || user || 'jeandev'
 
   const row = [
     item.id,
@@ -469,11 +516,12 @@ export async function addDebt(item: DebtItem): Promise<DebtItem> {
     item.note || '',
     'active',
     new Date().toISOString(),
+    owner,
   ]
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
-    range: 'Debts!A:H',
+    range: 'Debts!A:I',
     valueInputOption: 'USER_ENTERED',
     insertDataOption: 'INSERT_ROWS',
     requestBody: {
@@ -482,7 +530,7 @@ export async function addDebt(item: DebtItem): Promise<DebtItem> {
   })
 
   clearSheetCache()
-  return item
+  return { ...item, user: owner }
 }
 
 export async function updateDebt(id: string, updated: Partial<DebtItem>): Promise<DebtItem | null> {
@@ -491,7 +539,7 @@ export async function updateDebt(id: string, updated: Partial<DebtItem>): Promis
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Debts!A:H',
+    range: 'Debts!A:I',
   })
 
   const rows = res.data.values || []
@@ -506,6 +554,7 @@ export async function updateDebt(id: string, updated: Partial<DebtItem>): Promis
     date: String(existingRow[3]),
     creditor: existingRow[4] ? String(existingRow[4]) : undefined,
     note: existingRow[5] ? String(existingRow[5]) : undefined,
+    user: existingRow[8] ? String(existingRow[8]) : 'jeandev',
   }
 
   const merged: DebtItem = {
@@ -523,9 +572,10 @@ export async function updateDebt(id: string, updated: Partial<DebtItem>): Promis
     merged.note || '',
     merged.amount <= 0 ? 'paid' : 'active',
     new Date().toISOString(),
+    merged.user || 'jeandev',
   ]
 
-  const targetRange = `Debts!A${rowIndex + 1}:H${rowIndex + 1}`
+  const targetRange = `Debts!A${rowIndex + 1}:I${rowIndex + 1}`
   await sheets.spreadsheets.values.update({
     spreadsheetId,
     range: targetRange,
@@ -591,7 +641,7 @@ export async function getMoments(): Promise<MomentItem[]> {
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Moments!A2:I',
+    range: 'Moments!A2:J',
   })
 
   const rows = res.data.values || []
@@ -605,6 +655,7 @@ export async function getMoments(): Promise<MomentItem[]> {
       mood: (r[4] as any) || 'serene',
       image: r[5] ? String(r[5]) : undefined,
       driveName: r[7] ? String(r[7]) : undefined,
+      user: String(r[9] || 'jeandev'),
     }))
 
   items.sort(compareMomentsDescending)
@@ -612,9 +663,10 @@ export async function getMoments(): Promise<MomentItem[]> {
   return items
 }
 
-export async function addMoment(item: MomentItem & { driveFileId?: string }): Promise<MomentItem> {
+export async function addMoment(item: MomentItem & { driveFileId?: string }, user: string = 'jeandev'): Promise<MomentItem> {
   const sheets = getGoogleSheets()
   const spreadsheetId = getSpreadsheetId()
+  const owner = item.user || user || 'jeandev'
 
   const cleanDate = normalizeDateString(item.date) || item.date
   const cleanTime = normalizeTimeString(item.time) || item.time
@@ -629,11 +681,12 @@ export async function addMoment(item: MomentItem & { driveFileId?: string }): Pr
     item.driveFileId || '',
     item.driveName || (item.image ? 'Google Drive' : ''),
     new Date().toISOString(),
+    owner,
   ]
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
-    range: 'Moments!A:I',
+    range: 'Moments!A:J',
     valueInputOption: 'USER_ENTERED',
     insertDataOption: 'INSERT_ROWS',
     requestBody: {
@@ -646,6 +699,7 @@ export async function addMoment(item: MomentItem & { driveFileId?: string }): Pr
     ...item,
     date: cleanDate,
     time: cleanTime,
+    user: owner,
   }
 }
 
@@ -698,8 +752,9 @@ export interface InitialBalancesData {
   updatedAt: string
 }
 
-export async function getBalancesData(): Promise<InitialBalancesData> {
-  const cacheKey = 'balances'
+export async function getBalancesData(username: string = 'jeandev'): Promise<InitialBalancesData> {
+  const cleanUser = username.trim().toLowerCase()
+  const cacheKey = `balances_${cleanUser}`
   const cached = getFromCache<InitialBalancesData>(cacheKey)
   if (cached) return cached
 
@@ -708,35 +763,49 @@ export async function getBalancesData(): Promise<InitialBalancesData> {
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: 'InitialBalances!A2:F2',
+    range: 'InitialBalances!A2:G',
   })
 
-  const row = res.data.values?.[0] || []
+  const rows = res.data.values || []
+  const userRow = rows.find((r) => String(r[0] || '').toLowerCase() === cleanUser)
+
   const parseNum = (v: any): number => {
     if (v === undefined || v === null || v === '') return 0
     const n = Number(String(v).replace(/,/g, '').trim())
     return isNaN(n) ? 0 : n
   }
 
+  const row = userRow || []
   const data: InitialBalancesData = {
     initialBalances: {
-      cash: parseNum(row[0]),
-      bankAccount: parseNum(row[1]),
-      savings: parseNum(row[2]),
+      cash: parseNum(row[1]),
+      bankAccount: parseNum(row[2]),
+      savings: parseNum(row[3]),
     },
-    monthlyBudget: parseNum(row[3]),
-    savingsGoal: parseNum(row[4]),
-    updatedAt: String(row[5] || new Date().toISOString()),
+    monthlyBudget: parseNum(row[4]),
+    savingsGoal: parseNum(row[5]),
+    updatedAt: String(row[6] || new Date().toISOString()),
   }
 
   setCache(cacheKey, data)
   return data
 }
 
-export async function updateBalancesData(data: Partial<InitialBalancesData>): Promise<InitialBalancesData> {
-  const current = await getBalancesData()
+export async function updateBalancesData(
+  username: string = 'jeandev',
+  data: Partial<InitialBalancesData>
+): Promise<InitialBalancesData> {
+  const cleanUser = username.trim().toLowerCase()
+  const current = await getBalancesData(cleanUser)
   const sheets = getGoogleSheets()
   const spreadsheetId = getSpreadsheetId()
+
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: 'InitialBalances!A2:G',
+  })
+  const rows = res.data.values || []
+  const rowIndex = rows.findIndex((r) => String(r[0] || '').toLowerCase() === cleanUser)
 
   const merged: InitialBalancesData = {
     initialBalances: {
@@ -748,7 +817,8 @@ export async function updateBalancesData(data: Partial<InitialBalancesData>): Pr
     updatedAt: new Date().toISOString(),
   }
 
-  const row = [
+  const rowValues = [
+    cleanUser,
     merged.initialBalances.cash,
     merged.initialBalances.bankAccount,
     merged.initialBalances.savings,
@@ -757,17 +827,163 @@ export async function updateBalancesData(data: Partial<InitialBalancesData>): Pr
     merged.updatedAt,
   ]
 
-  await sheets.spreadsheets.values.update({
-    spreadsheetId,
-    range: 'InitialBalances!A2:F2',
-    valueInputOption: 'USER_ENTERED',
-    requestBody: {
-      values: [row],
-    },
-  })
+  if (rowIndex >= 0) {
+    const targetRange = `InitialBalances!A${rowIndex + 2}:G${rowIndex + 2}`
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: targetRange,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [rowValues] },
+    })
+  } else {
+    await sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range: 'InitialBalances!A2:G',
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      requestBody: { values: [rowValues] },
+    })
+  }
 
   clearSheetCache()
+  setCache(`balances_${cleanUser}`, merged)
   return merged
+}
+
+// ---------------------------------------------------------------------------
+// USERS CRUD & AUTHENTICATION
+// ---------------------------------------------------------------------------
+
+export interface UserRecord {
+  username: string
+  password?: string
+  displayName: string
+  createdAt: string
+  avatar?: string
+}
+
+export async function getUsers(): Promise<UserRecord[]> {
+  const cacheKey = 'users_list'
+  const cached = getFromCache<UserRecord[]>(cacheKey)
+  if (cached) return cached
+
+  const sheets = getGoogleSheets()
+  const spreadsheetId = getSpreadsheetId()
+
+  try {
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Users!A2:E',
+    })
+    const rows = res.data.values || []
+    const users: UserRecord[] = rows
+      .filter((r) => Boolean(r[0]))
+      .map((r) => ({
+        username: String(r[0]).trim(),
+        password: String(r[1] || '123456'),
+        displayName: String(r[2] || r[0]),
+        createdAt: String(r[3] || new Date().toISOString()),
+        avatar: r[4] ? String(r[4]).trim() : undefined,
+      }))
+    setCache(cacheKey, users)
+    return users
+  } catch (err) {
+    console.warn('Error reading Users sheet:', err)
+    return [{ username: 'jeandev', password: '123456', displayName: 'Jean Dev', createdAt: new Date().toISOString() }]
+  }
+}
+
+export async function updateUserAvatar(username: string, avatarUrl: string): Promise<boolean> {
+  const cleanUser = username.trim().toLowerCase()
+  if (!cleanUser) return false
+
+  const sheets = getGoogleSheets()
+  const spreadsheetId = getSpreadsheetId()
+
+  try {
+    // 1. Ensure header row has avatar at E1
+    const headerCheck = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Users!A1:E1',
+    })
+    const existingHeaders = headerCheck.data.values?.[0] || []
+    if (existingHeaders.length < 5 || existingHeaders[4] !== 'avatar') {
+      await sheets.spreadsheets.values.update({
+        spreadsheetId,
+        range: 'Users!E1',
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [['avatar']] },
+      })
+    }
+
+    // 2. Fetch rows to locate user index
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Users!A2:E',
+    })
+    const rows = res.data.values || []
+    const rowIndex = rows.findIndex((r) => String(r[0] || '').trim().toLowerCase() === cleanUser)
+
+    if (rowIndex !== -1) {
+      const targetCell = `Users!E${rowIndex + 2}`
+      await sheets.spreadsheets.values.update({
+        spreadsheetId,
+        range: targetCell,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [[avatarUrl]] },
+      })
+      clearSheetCache()
+      return true
+    }
+    return false
+  } catch (err) {
+    console.error('Error updating user avatar in Google Sheets:', err)
+    return false
+  }
+}
+
+export async function authenticateOrRegisterUser(username: string, password: string): Promise<UserRecord | null> {
+  const cleanUser = username.trim().toLowerCase()
+  if (!cleanUser) return null
+
+  // Password requirement: must match 123456
+  if (password !== '123456') {
+    return null
+  }
+
+  const users = await getUsers()
+  const existing = users.find((u) => u.username.toLowerCase() === cleanUser)
+  if (existing) {
+    return existing
+  }
+
+  // Auto-register new user into Users sheet
+  const sheets = getGoogleSheets()
+  const spreadsheetId = getSpreadsheetId()
+  const now = new Date().toISOString()
+  const newUser: UserRecord = {
+    username: cleanUser,
+    password: '123456',
+    displayName: cleanUser,
+    createdAt: now,
+  }
+
+  try {
+    await sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range: 'Users!A2:E',
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      requestBody: {
+        values: [[newUser.username, newUser.password, newUser.displayName, newUser.createdAt, '']],
+      },
+    })
+  } catch (e) {
+    console.error('Error auto-registering user to Users sheet:', e)
+  }
+
+  clearSheetCache()
+  return newUser
 }
 
 export interface StoredOAuthToken {

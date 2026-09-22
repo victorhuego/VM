@@ -21,8 +21,10 @@ export async function GET(req: NextRequest) {
     clearSheetCache()
   }
 
+  const user = req.nextUrl.searchParams.get('user') || 'jeandev'
+
   try {
-    const data = await getBalancesData()
+    const data = await getBalancesData(user)
     return NextResponse.json({ ...data, source: 'google_sheets' })
   } catch (err: any) {
     console.error('Lỗi khi đọc balances từ Sheets:', err)
@@ -44,7 +46,8 @@ export async function PUT(req: NextRequest) {
 
   try {
     const body = await req.json()
-    const updated = await updateBalancesData(body)
+    const user = body.user || req.nextUrl.searchParams.get('user') || 'jeandev'
+    const updated = await updateBalancesData(user, body)
     return NextResponse.json({ success: true, data: updated })
   } catch (err: any) {
     console.error('Lỗi khi cập nhật balances vào Sheets:', err)

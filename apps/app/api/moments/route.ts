@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const saved = await addMoment(body)
+    const saved = await addMoment(body, body.user || 'jeandev')
     return NextResponse.json({ success: true, data: saved }, { status: 201 })
   } catch (err: any) {
     console.error('Lỗi khi thêm khoảnh khắc vào Sheets:', err)

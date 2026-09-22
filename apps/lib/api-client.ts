@@ -1,4 +1,4 @@
-import { ExpenseItem, DebtItem, MomentItem, InitialBalances } from '@/lib/types'
+import { ExpenseItem, DebtItem, MomentItem, InitialBalances, UserProfile } from '@/lib/types'
 
 export interface HealthResponse {
   status: 'ok' | 'not_configured' | 'degraded' | 'error'
@@ -30,6 +30,26 @@ export interface BalancesResponse {
   source?: string
 }
 
+export async function apiLogin(
+  username: string,
+  password: string
+): Promise<{ success: boolean; user?: UserProfile; error?: string }> {
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      return { success: false, error: data.error || 'Đăng nhập thất bại' }
+    }
+    return { success: true, user: data.user }
+  } catch (err: any) {
+    return { success: false, error: err?.message || 'Không thể kết nối tới máy chủ' }
+  }
+}
+
 export async function checkHealth(): Promise<HealthResponse> {
   try {
     const res = await fetch('/api/health', { cache: 'no-store' })
@@ -58,9 +78,12 @@ export async function initSpreadsheetApi(): Promise<{ success: boolean; message:
   }
 }
 
-export async function fetchBalances(refresh?: boolean): Promise<BalancesResponse | null> {
+export async function fetchBalances(refresh?: boolean, user?: string): Promise<BalancesResponse | null> {
   try {
-    const url = refresh ? '/api/balances?refresh=true' : '/api/balances'
+    const params = new URLSearchParams()
+    if (refresh) params.set('refresh', 'true')
+    if (user) params.set('user', user)
+    const url = `/api/balances${params.toString() ? `?${params.toString()}` : ''}`
     const res = await fetch(url, { cache: 'no-store' })
     if (!res.ok) return null
     return await res.json()
@@ -69,12 +92,13 @@ export async function fetchBalances(refresh?: boolean): Promise<BalancesResponse
   }
 }
 
-export async function saveBalances(data: Partial<BalancesResponse>): Promise<boolean> {
+export async function saveBalances(data: Partial<BalancesResponse>, user?: string): Promise<boolean> {
   try {
-    const res = await fetch('/api/balances', {
+    const params = user ? `?user=${encodeURIComponent(user)}` : ''
+    const res = await fetch(`/api/balances${params}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, user }),
     })
     return res.ok
   } catch {
@@ -82,9 +106,12 @@ export async function saveBalances(data: Partial<BalancesResponse>): Promise<boo
   }
 }
 
-export async function fetchExpenses(refresh?: boolean): Promise<{ data: ExpenseItem[]; source: string } | null> {
+export async function fetchExpenses(refresh?: boolean, user?: string): Promise<{ data: ExpenseItem[]; source: string } | null> {
   try {
-    const url = refresh ? '/api/expenses?refresh=true' : '/api/expenses'
+    const params = new URLSearchParams()
+    if (refresh) params.set('refresh', 'true')
+    if (user) params.set('user', user)
+    const url = `/api/expenses${params.toString() ? `?${params.toString()}` : ''}`
     const res = await fetch(url, { cache: 'no-store' })
     if (!res.ok) return null
     return await res.json()
@@ -132,9 +159,12 @@ export async function apiDeleteExpense(id: string): Promise<boolean> {
   }
 }
 
-export async function fetchDebts(refresh?: boolean): Promise<{ data: DebtItem[]; source: string } | null> {
+export async function fetchDebts(refresh?: boolean, user?: string): Promise<{ data: DebtItem[]; source: string } | null> {
   try {
-    const url = refresh ? '/api/debts?refresh=true' : '/api/debts'
+    const params = new URLSearchParams()
+    if (refresh) params.set('refresh', 'true')
+    if (user) params.set('user', user)
+    const url = `/api/debts${params.toString() ? `?${params.toString()}` : ''}`
     const res = await fetch(url, { cache: 'no-store' })
     if (!res.ok) return null
     return await res.json()
@@ -222,13 +252,20 @@ export async function apiDeleteMoment(id: string, driveFileId?: string): Promise
 
 export async function apiUploadImage(
   file: File,
-  customFilename?: string
+  username?: string,
+  customFilename?: string,
+  uploadType: 'image' | 'avatar' = 'image'
 ): Promise<{ fileId: string; url: string; name: string } | null> {
   try {
+    const user = username || 'jeandev'
     const formData = new FormData()
-    const finalFilename = customFilename || file.name
+    const prefix = uploadType === 'avatar' ? `${user}_avatar_` : `${user}_image_`
+    const sanitized = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+    const finalFilename = customFilename || `${prefix}${Date.now()}_${sanitized}`
     formData.append('file', file, finalFilename)
     formData.append('filename', finalFilename)
+    formData.append('username', user)
+    formData.append('type', uploadType)
 
     const res = await fetch('/api/upload', {
       method: 'POST',
@@ -239,5 +276,22 @@ export async function apiUploadImage(
     return await res.json()
   } catch {
     return null
+  }
+}
+
+export async function apiUpdateUserAvatar(
+  username: string,
+  avatarUrl: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const res = await fetch('/api/users/avatar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, avatarUrl }),
+    })
+    const data = await res.json()
+    return { success: res.ok && data.success, error: data.error }
+  } catch (err: any) {
+    return { success: false, error: err?.message || 'Lỗi mạng khi cập nhật avatar' }
   }
 }

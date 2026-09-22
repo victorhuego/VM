@@ -328,3 +328,10 @@ button, [role="button"], input, select, textarea, a, .touch-target {
     @apply bg-background text-foreground;
   }
 }
+
+/* Hide mobile bubble button whenever any modal/dialog is active */
+body:has([role="dialog"]) .bubble-fab-mobile,
+body:has([data-slot="dialog-content"]) .bubble-fab-mobile,
+body:has([data-state="open"]) .bubble-fab-mobile {
+  display: none !important;
+}

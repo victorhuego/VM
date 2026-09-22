@@ -30,12 +30,26 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData()
     file = formData.get('file') as File | null
     const customFilename = (formData.get('filename') as string | null)?.trim()
+    const username = (formData.get('username') as string | null)?.trim() || 'jeandev'
 
     if (!file) {
       return NextResponse.json({ error: 'Không tìm thấy file tải lên' }, { status: 400 })
     }
 
-    const uploadFilename = customFilename || file.name || 'image.jpg'
+    const originalName = file.name || 'photo.jpg'
+    const sanitizedName = originalName.replace(/[^a-zA-Z0-9._-]/g, '_')
+    const uploadType = (formData.get('type') as string | null)?.trim()
+    let uploadFilename = customFilename || ''
+
+    if (uploadType === 'avatar' || uploadFilename.startsWith(`${username}_avatar_`)) {
+      if (!uploadFilename || !uploadFilename.startsWith(`${username}_avatar_`)) {
+        uploadFilename = `${username}_avatar_${Date.now()}_${sanitizedName}`
+      }
+    } else {
+      if (!uploadFilename || !uploadFilename.startsWith(`${username}_image_`)) {
+        uploadFilename = `${username}_image_${Date.now()}_${sanitizedName}`
+      }
+    }
 
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(

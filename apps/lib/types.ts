@@ -1,7 +1,13 @@
 export type ThemeType = 'matcha' | 'sakura' | 'mint' | 'lavender' | 'mocha' | 'slate'
 export type LanguageType = 'vi' | 'en'
-export type TabType = 'expenses' | 'moments'
+export type TabType = 'expenses' | 'moments' | 'users'
 export type MoodType = 'focus' | 'serene' | 'spark' | 'cozy' | 'wander' | 'flow'
+
+export interface UserProfile {
+  username: string
+  displayName: string
+  avatar?: string
+}
 
 export type TransactionType =
   | 'expense'
@@ -64,6 +70,7 @@ export interface ExpenseItem {
   image?: string
   reconcileDiff?: number
   debtId?: string
+  user?: string
 }
 
 export interface MomentItem {
@@ -74,6 +81,7 @@ export interface MomentItem {
   mood: MoodType
   image?: string
   driveName?: string
+  user?: string
 }
 
 export type TimeFilterPeriod = 'month' | 'day' | 'year' | 'all'
@@ -103,4 +111,5 @@ export interface DebtItem {
   date: string
   creditor?: string
   note?: string
+  user?: string
 }

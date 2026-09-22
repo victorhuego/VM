@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Select, { components, OptionProps, SingleValueProps } from 'react-select'
-import { ThemeType, LanguageType, TabType } from '@/lib/types'
+import { ThemeType, LanguageType, TabType, UserProfile } from '@/lib/types'
 import { themeMetadata, dictionary } from '@/lib/i18n'
 import {
   getClientTimeZone,
@@ -11,7 +11,7 @@ import {
   formatClientTime,
   formatClientDayOfWeek,
 } from '@/lib/time'
-import { Wallet, Clock, Palette, Check, Globe, RotateCw } from 'lucide-react'
+import { Wallet, Clock, Palette, Check, Globe, RotateCw, User } from 'lucide-react'
 
 interface ThemeOption {
   value: ThemeType
@@ -28,6 +28,7 @@ interface AppHeaderProps {
   onTabChange: (tab: TabType) => void
   onRefresh?: () => void
   isRefreshing?: boolean
+  currentUser?: UserProfile | null
 }
 
 export function AppHeader({
@@ -39,6 +40,7 @@ export function AppHeader({
   onTabChange,
   onRefresh,
   isRefreshing,
+  currentUser,
 }: AppHeaderProps) {
   const t = dictionary[currentLang]
 
@@ -117,6 +119,22 @@ export function AppHeader({
             >
               <Wallet className="w-3.5 h-3.5 text-theme-accent" />
               <span>{t.tab_expenses}</span>
+            </button>
+            <button
+              onClick={() => onTabChange('users')}
+              className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center space-x-1.5 cursor-pointer ${
+                currentTab === 'users'
+                  ? 'bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold'
+                  : 'text-zinc-500 hover:text-theme-main hover:bg-theme-surface'
+              }`}
+            >
+              <User className="w-3.5 h-3.5 text-theme-accent" />
+              <span>{t.tab_users || 'USER MANAGER'}</span>
+              {currentUser?.username && (
+                <span className="text-[10px] px-1 py-0.2 rounded bg-zinc-200/80 text-zinc-700 font-mono">
+                  @{currentUser.username}
+                </span>
+              )}
             </button>
           </nav>
         </div>

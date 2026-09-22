@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { LanguageType, ExpenseItem, TimeFilterPeriod, FinancialState, DebtItem, InitialBalances } from '@/lib/types'
 import { dictionary, formatMoney } from '@/lib/i18n'
@@ -49,6 +49,7 @@ interface ExpenseListProps {
   onUpdateExpense?: (updatedItem: ExpenseItem, oldItem: ExpenseItem) => void
   finances?: FinancialState
   debts?: DebtItem[]
+  onModalChange?: (isOpen: boolean) => void
 }
 
 const categoryIcons: Record<string, React.ReactNode> = {
@@ -76,6 +77,7 @@ export function ExpenseList({
   onUpdateExpense,
   finances,
   debts = [],
+  onModalChange,
 }: ExpenseListProps) {
   const t = dictionary[lang]
 
@@ -84,6 +86,10 @@ export function ExpenseList({
 
   // Deleting state for confirmation modal
   const [deletingExpense, setDeletingExpense] = useState<ExpenseItem | null>(null)
+
+  useEffect(() => {
+    onModalChange?.(Boolean(editingExpense || deletingExpense))
+  }, [editingExpense, deletingExpense, onModalChange])
 
   // Latest reconciliation date for each source (Lock cutoff date)
   const latestReconciliationDates = useMemo(() => {

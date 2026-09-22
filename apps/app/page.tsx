@@ -11,6 +11,7 @@ import {
   TransferDirection,
   DebtItem,
   InitialBalances,
+  UserProfile,
 } from '@/lib/types'
 import { dictionary } from '@/lib/i18n'
 import {
@@ -31,7 +32,6 @@ import { QuickExpenseModal } from '@/components/QuickExpenseModal'
 import { BudgetModal } from '@/components/BudgetModal'
 import { DebtModal } from '@/components/DebtModal'
 import { CircadianRibbon } from '@/components/CircadianRibbon'
-import { TimeCapsule } from '@/components/TimeCapsule'
 import { MomentComposer } from '@/components/MomentComposer'
 import { MomentsTimeline } from '@/components/MomentsTimeline'
 import { StoryZenModal } from '@/components/StoryZenModal'
@@ -39,6 +39,8 @@ import { LightboxModal } from '@/components/LightboxModal'
 import { MobileBottomNav } from '@/components/MobileBottomNav'
 import { ToastNotification } from '@/components/ToastNotification'
 import { SyncStatusBanner } from '@/components/SyncStatusBanner'
+import { LoginModal } from '@/components/LoginModal'
+import { UserManagerTab } from '@/components/UserManagerTab'
 import {
   fetchBalances,
   saveBalances,
@@ -82,6 +84,10 @@ export default function Home() {
     savings: 0,
   })
 
+  // User Authentication State
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null)
+  const [authChecked, setAuthChecked] = useState<boolean>(false)
+
   // Direct API / Google Sheets Live State
   const [expenses, setExpenses] = useState<ExpenseItem[]>([])
   const [moments, setMoments] = useState<MomentItem[]>([])
@@ -102,6 +108,19 @@ export default function Home() {
   })
   const [isZenStoryOpen, setIsZenStoryOpen] = useState(false)
   const [lightboxImg, setLightboxImg] = useState<string | null>(null)
+  const [isListModalOpen, setIsListModalOpen] = useState(false)
+
+  // Overall check if any modal is currently open
+  const isAnyModalOpen =
+    isBalanceModalOpen ||
+    isSavingsModalOpen ||
+    isBudgetModalOpen ||
+    isDebtModalOpen ||
+    quickExpenseModal.isOpen ||
+    isZenStoryOpen ||
+    Boolean(lightboxImg) ||
+    !currentUser ||
+    isListModalOpen
 
   // Toast Notification State (with interactive action support)
   const [toastConfig, setToastConfig] = useState<{
@@ -118,7 +137,7 @@ export default function Home() {
     })
   }
 
-  // Synchronize client local theme
+  // Synchronize client local theme & auth session
   useEffect(() => {
     const savedTheme = localStorage.getItem('app_theme') as ThemeType | null
     if (savedTheme) {
@@ -126,36 +145,57 @@ export default function Home() {
       document.documentElement.setAttribute('data-theme', savedTheme)
     }
 
-    loadInitialData()
+    const storedUser = localStorage.getItem('dayflow_user')
+    if (storedUser) {
+      try {
+        const parsed: UserProfile = JSON.parse(storedUser)
+        setCurrentUser(parsed)
+        loadInitialData(false, parsed.username)
+      } catch {
+        loadInitialData(false, '')
+      }
+    } else {
+      loadInitialData(false, '')
+    }
+    setAuthChecked(true)
   }, [])
 
-  const loadInitialData = async (forceRefresh = false) => {
+  const loadInitialData = async (forceRefresh = false, userParam?: string) => {
     setIsLoading(true)
+    const targetUser = userParam !== undefined ? userParam : currentUser?.username
     try {
       const [balRes, expRes, debtRes, momRes] = await Promise.all([
-        fetchBalances(forceRefresh),
-        fetchExpenses(forceRefresh),
-        fetchDebts(forceRefresh),
+        targetUser ? fetchBalances(forceRefresh, targetUser) : Promise.resolve(null),
+        targetUser ? fetchExpenses(forceRefresh, targetUser) : Promise.resolve({ data: [] }),
+        targetUser ? fetchDebts(forceRefresh, targetUser) : Promise.resolve({ data: [] }),
         fetchMoments(forceRefresh),
       ])
 
       if (balRes) {
         if (balRes.initialBalances) {
           setInitialBalances(balRes.initialBalances)
+        } else {
+          setInitialBalances({ cash: 0, bankAccount: 0, savings: 0 })
         }
         setFinances((prev) => ({
           ...prev,
           monthlyBudget: balRes.monthlyBudget ?? 0,
           savingsGoal: balRes.savingsGoal ?? 0,
         }))
+      } else if (!targetUser) {
+        setInitialBalances({ cash: 0, bankAccount: 0, savings: 0 })
       }
 
       if (expRes && Array.isArray(expRes.data)) {
         setExpenses(expRes.data.sort(compareExpensesDescending))
+      } else {
+        setExpenses([])
       }
 
       if (debtRes && Array.isArray(debtRes.data)) {
         setDebts(debtRes.data)
+      } else {
+        setDebts([])
       }
 
       if (momRes && Array.isArray(momRes.data)) {
@@ -166,6 +206,53 @@ export default function Home() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleLoginSuccess = (user: UserProfile) => {
+    setCurrentUser(user)
+    localStorage.setItem('dayflow_user', JSON.stringify(user))
+    loadInitialData(true, user.username)
+    showToast(
+      lang === 'vi'
+        ? `Chào mừng ${user.displayName || user.username}!`
+        : `Welcome ${user.displayName || user.username}!`
+    )
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('dayflow_user')
+    setCurrentUser(null)
+    setExpenses([])
+    setDebts([])
+    setFinances({
+      cash: 0,
+      bankAccount: 0,
+      currentSavings: 0,
+      totalDebt: 0,
+      savingsGoal: 0,
+      monthlyBudget: 0,
+      totalMonthlySpent: 0,
+      todaySpent: 0,
+      yesterdaySpent: 0,
+    })
+    setInitialBalances({
+      cash: 0,
+      bankAccount: 0,
+      savings: 0,
+    })
+    setTab('moments')
+    showToast(lang === 'vi' ? 'Đã đăng xuất thành công' : 'Logged out successfully')
+  }
+
+  const handleUpdateAvatar = (newAvatarUrl: string) => {
+    if (!currentUser) return
+    const updatedUser: UserProfile = {
+      ...currentUser,
+      avatar: newAvatarUrl,
+    }
+    setCurrentUser(updatedUser)
+    localStorage.setItem('dayflow_user', JSON.stringify(updatedUser))
+    showToast(lang === 'vi' ? 'Cập nhật ảnh đại diện thành công' : 'Avatar updated successfully')
   }
 
   const handleTabChange = (newTab: TabType) => {
@@ -200,13 +287,14 @@ export default function Home() {
     newExp: Omit<ExpenseItem, 'id' | 'timeAgo'>,
     rawReceiptFile?: File
   ) => {
+    const user = currentUser?.username || 'jeandev'
     let uploadedImage = newExp.image
 
     if (rawReceiptFile) {
       showToast(lang === 'vi' ? 'Đang tải hóa đơn lên Google Drive...' : 'Uploading receipt to Google Drive...')
       const ext = rawReceiptFile.name.includes('.') ? rawReceiptFile.name.split('.').pop()!.toLowerCase() : 'jpg'
-      const receiptFilename = `receipt_${Date.now()}.${ext}`
-      const uploadRes = await apiUploadImage(rawReceiptFile, receiptFilename)
+      const receiptFilename = `${user}_image_${Date.now()}_receipt.${ext}`
+      const uploadRes = await apiUploadImage(rawReceiptFile, user, receiptFilename)
       if (uploadRes?.url) {
         uploadedImage = uploadRes.url
       }
@@ -214,6 +302,7 @@ export default function Home() {
 
     const item: ExpenseItem = {
       ...newExp,
+      user,
       image: uploadedImage,
       id: `exp-${Date.now()}`,
       timeAgo: lang === 'vi' ? 'Vừa xong' : 'Just now',
@@ -339,6 +428,7 @@ export default function Home() {
         ? (lang === 'vi' ? 'Rút tiết kiệm về tài khoản' : 'Withdraw from savings to bank')
         : (lang === 'vi' ? 'Gửi tiền vào quỹ tiết kiệm' : 'Deposit into savings vault')
 
+    const user = currentUser?.username || 'jeandev'
     const transferItem: ExpenseItem = {
       id: `transfer-${Date.now()}`,
       type: 'transfer',
@@ -348,6 +438,7 @@ export default function Home() {
       date: today,
       timeAgo: lang === 'vi' ? 'Vừa xong' : 'Just now',
       transferDirection: direction,
+      user,
     }
 
     setExpenses((prev) => [transferItem, ...prev].sort(compareExpensesDescending))
@@ -405,6 +496,7 @@ export default function Home() {
   }, [moments, todayStr])
 
   // Audit Reconciliation Handler
+  // Audit Reconciliation Handler
   const handleReconcileBalance = ({
     source,
     diff,
@@ -416,6 +508,7 @@ export default function Home() {
     reason: string
   }) => {
     const today = getClientLocalDateString()
+    const user = currentUser?.username || 'jeandev'
     const recItem: ExpenseItem = {
       id: `rec-${Date.now()}`,
       type: 'reconciliation',
@@ -426,6 +519,7 @@ export default function Home() {
       timeAgo: lang === 'vi' ? 'Vừa xong' : 'Just now',
       source: source,
       reconcileDiff: diff,
+      user,
     }
 
     setExpenses((prev) => [recItem, ...prev].sort(compareExpensesDescending))
@@ -434,14 +528,16 @@ export default function Home() {
   }
 
   const handleSaveSavingsGoal = (newGoal: number) => {
+    const user = currentUser?.username || 'jeandev'
     setFinances((prev) => ({ ...prev, savingsGoal: newGoal }))
-    saveBalances({ savingsGoal: newGoal })
+    saveBalances({ savingsGoal: newGoal }, user)
     showToast(dictionary[lang].toast_savings_goal_updated)
   }
 
   const handleUpdateInitialBalances = async (newInit: InitialBalances) => {
+    const user = currentUser?.username || 'jeandev'
     setInitialBalances(newInit)
-    const ok = await saveBalances({ initialBalances: newInit })
+    const ok = await saveBalances({ initialBalances: newInit }, user)
     if (ok) {
       showToast(lang === 'vi' ? 'Đã lưu số dư ban đầu vào Google Sheets' : 'Saved opening balances to Google Sheets')
     } else {
@@ -463,6 +559,7 @@ export default function Home() {
     note?: string
   }) => {
     const today = getClientLocalDateString()
+    const user = currentUser?.username || 'jeandev'
     const payItem: ExpenseItem = {
       id: `debt-pay-${Date.now()}`,
       type: 'expense',
@@ -473,6 +570,7 @@ export default function Home() {
       timeAgo: lang === 'vi' ? 'Vừa xong' : 'Just now',
       source: source,
       debtId: debtId,
+      user,
     }
 
     setExpenses((prev) => [payItem, ...prev].sort(compareExpensesDescending))
@@ -501,12 +599,13 @@ export default function Home() {
 
   // Moments Handlers
   const handleAddMoment = async (newMom: Omit<MomentItem, 'id'>, rawFile?: File) => {
+    const user = currentUser?.username || 'jeandev'
     let uploadedImage = newMom.image
     let driveFileId: string | undefined
 
     if (rawFile) {
       showToast(lang === 'vi' ? 'Đang tải ảnh lên Google Drive...' : 'Uploading photo to Google Drive...')
-      const uploadRes = await apiUploadImage(rawFile, rawFile.name)
+      const uploadRes = await apiUploadImage(rawFile, user)
       if (uploadRes?.url) {
         uploadedImage = uploadRes.url
         driveFileId = uploadRes.fileId
@@ -515,6 +614,7 @@ export default function Home() {
 
     const item: MomentItem = {
       ...newMom,
+      user,
       image: uploadedImage,
       id: `mom-${Date.now()}`,
     }
@@ -528,7 +628,7 @@ export default function Home() {
     const target = moments.find((m) => m.id === id)
     setMoments((prev) => prev.filter((m) => m.id !== id))
     apiDeleteMoment(id)
-    showToast(lang === 'vi' ? 'Đã xóa khoảnh khắc' : 'Moment deleted')
+    showToast(lang === 'vi' ? 'Đã xóa tin' : 'Moment deleted')
   }
 
   const handleSelectMoment = (id: string) => {
@@ -542,8 +642,10 @@ export default function Home() {
 
   // Debt Handlers
   const handleAddDebt = (newDebt: Omit<DebtItem, 'id'>) => {
+    const user = currentUser?.username || 'jeandev'
     const item: DebtItem = {
       ...newDebt,
+      user,
       id: `debt-${Date.now()}`,
     }
     setDebts((prev) => [item, ...prev])
@@ -559,8 +661,9 @@ export default function Home() {
 
   // Budget Handler
   const handleSaveBudget = (newBudget: number) => {
+    const user = currentUser?.username || 'jeandev'
     setFinances((prev) => ({ ...prev, monthlyBudget: newBudget }))
-    saveBalances({ monthlyBudget: newBudget })
+    saveBalances({ monthlyBudget: newBudget }, user)
     showToast(dictionary[lang].toast_budget_updated)
   }
 
@@ -577,6 +680,7 @@ export default function Home() {
         onTabChange={handleTabChange}
         onRefresh={() => loadInitialData(true)}
         isRefreshing={isLoading}
+        currentUser={currentUser}
       />
 
       <div className="max-w-5xl w-full mx-auto px-3 sm:px-6 pt-3 sm:pt-4">
@@ -634,20 +738,23 @@ export default function Home() {
                   onUpdateExpense={handleUpdateExpense}
                   finances={computedFinances}
                   debts={debts}
+                  onModalChange={setIsListModalOpen}
                 />
                 <div className="h-6 sm:h-2" aria-hidden="true" />
               </div>
 
-              <button
-                type="button"
-                onClick={() => handleOpenExpenseModal('general')}
-                className="fixed bottom-20 sm:bottom-8 right-4 sm:right-8 z-40 btn-theme-gradient text-white shadow-2xl hover:shadow-3xl w-14 h-14 sm:w-auto sm:h-auto p-0 sm:px-5 sm:py-3 rounded-full flex items-center justify-center gap-2 font-semibold text-xs sm:text-sm transition-all duration-200 active:scale-90 sm:active:scale-95 cursor-pointer border border-white/25"
-                title={t.btn_note_expense}
-                aria-label={t.btn_note_expense}
-              >
-                <Plus className="w-7 h-7 sm:w-5 sm:h-5 stroke-[2.5]" />
-                <span className="hidden sm:inline">{t.btn_note_expense}</span>
-              </button>
+              {!isAnyModalOpen && (
+                <button
+                  type="button"
+                  onClick={() => handleOpenExpenseModal('general')}
+                  className="fixed bottom-[calc(max(0.75rem,env(safe-area-inset-bottom))+4.25rem)] sm:bottom-8 right-4 sm:right-8 z-40 bubble-fab-mobile btn-theme-gradient text-white shadow-2xl hover:shadow-3xl w-14 h-14 sm:w-auto sm:h-auto p-0 sm:px-5 sm:py-3 rounded-full flex items-center justify-center gap-2 font-semibold text-xs sm:text-sm transition-all duration-200 active:scale-90 sm:active:scale-95 cursor-pointer border border-white/25"
+                  title={t.btn_note_expense}
+                  aria-label={t.btn_note_expense}
+                >
+                  <Plus className="w-7 h-7 sm:w-5 sm:h-5 stroke-[2.5]" />
+                  <span className="hidden sm:inline">{t.btn_note_expense}</span>
+                </button>
+              )}
             </>
           )}
         </main>
@@ -663,7 +770,6 @@ export default function Home() {
             onSelectMoment={handleSelectMoment}
           />
 
-          <TimeCapsule lang={lang} moments={moments} />
           <MomentComposer
             lang={lang}
             onAddMoment={handleAddMoment}
@@ -681,8 +787,22 @@ export default function Home() {
               lang={lang}
               onOpenLightbox={(src) => setLightboxImg(src)}
               onDeleteMoment={handleDeleteMoment}
+              currentUser={currentUser}
             />
           )}
+        </main>
+      )}
+
+      {/* Screen C: USER MANAGER */}
+      {tab === 'users' && currentUser && (
+        <main className="max-w-md w-full mx-auto px-3 sm:px-6 pt-8 sm:pt-16 pb-28 sm:pb-8 flex-1 animate-in fade-in duration-200">
+          <UserManagerTab
+            currentUser={currentUser}
+            lang={lang}
+            onLogout={handleLogout}
+            onUpdateAvatar={handleUpdateAvatar}
+            onOpenLightbox={(src) => setLightboxImg(src)}
+          />
         </main>
       )}
 
@@ -750,6 +870,7 @@ export default function Home() {
         onClose={() => setIsZenStoryOpen(false)}
         moments={todayMoments}
         lang={lang}
+        currentUser={currentUser}
       />
 
       <LightboxModal
@@ -762,6 +883,13 @@ export default function Home() {
         currentTab={tab}
         onTabChange={handleTabChange}
         lang={lang}
+        currentUser={currentUser}
+      />
+
+      <LoginModal
+        open={authChecked && !currentUser}
+        lang={lang}
+        onLoginSuccess={handleLoginSuccess}
       />
 
       <ToastNotification

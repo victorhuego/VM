@@ -21,8 +21,10 @@ export async function GET(req: NextRequest) {
     clearSheetCache()
   }
 
+  const user = req.nextUrl.searchParams.get('user') || undefined
+
   try {
-    const expenses = await getExpenses()
+    const expenses = await getExpenses(user)
     return NextResponse.json({ data: expenses, source: 'google_sheets' })
   } catch (err: any) {
     console.error('Lỗi khi đọc danh sách chi tiêu từ Sheets:', err)
@@ -57,7 +59,7 @@ export async function POST(req: NextRequest) {
       body.image = await normalizeImagePayload(body.image)
     }
 
-    const saved = await addExpense(body)
+    const saved = await addExpense(body, body.user || 'jeandev')
     return NextResponse.json({ success: true, data: saved }, { status: 201 })
   } catch (err: any) {
     console.error('Lỗi khi thêm giao dịch vào Sheets:', err)

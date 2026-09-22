@@ -3,18 +3,20 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { LanguageType, MomentItem } from '@/lib/types'
 import { dictionary, moodMetadata } from '@/lib/i18n'
-import { X, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, Sparkles, User } from 'lucide-react'
 import { MoodIcon } from '@/components/MoodIcon'
 import { getClientLocalDateString, normalizeDateString, normalizeTimeString } from '@/lib/time'
+import { UserProfile } from '@/lib/types'
 
 interface StoryZenModalProps {
   open: boolean
   onClose: () => void
   moments: MomentItem[]
   lang: LanguageType
+  currentUser?: UserProfile | null
 }
 
-export function StoryZenModal({ open, onClose, moments, lang }: StoryZenModalProps) {
+export function StoryZenModal({ open, onClose, moments, lang, currentUser }: StoryZenModalProps) {
   const t = dictionary[lang]
   const todayStr = getClientLocalDateString()
   const todayMoments = useMemo(() => {
@@ -151,11 +153,11 @@ export function StoryZenModal({ open, onClose, moments, lang }: StoryZenModalPro
           </div>
           <div className="space-y-1">
             <h3 className="text-sm font-semibold text-white">
-              {lang === 'vi' ? 'Chưa có Zen Story hôm nay' : 'No Zen Story Today'}
+              {lang === 'vi' ? 'Chưa có Tin hôm nay' : 'No Zen Story Today'}
             </h3>
             <p className="text-xs text-zinc-400 leading-relaxed">
               {lang === 'vi'
-                ? 'Hãy lưu lại ít nhất một khoảnh khắc trong ngày hôm nay để tạo câu chuyện Zen Story của bạn nhé!'
+                ? 'Hãy lưu lại ít nhất một tin trong ngày hôm nay để tạo câu chuyện của bạn nhé!'
                 : 'Capture at least one moment today to start your Zen Story.'}
             </p>
           </div>
@@ -205,6 +207,10 @@ export function StoryZenModal({ open, onClose, moments, lang }: StoryZenModalPro
             <span className="text-xs font-mono text-zinc-400">
               {currentIndex + 1} / {todayMoments.length}
             </span>
+            <span className="text-zinc-500">•</span>
+            <span className="text-xs font-mono text-emerald-400 font-medium">
+              @{current.user || 'jeandev'}
+            </span>
           </div>
           <button
             type="button"
@@ -245,8 +251,18 @@ export function StoryZenModal({ open, onClose, moments, lang }: StoryZenModalPro
         </div>
 
         <div className="space-y-2 w-full px-2">
-          <div className="flex items-center justify-center space-x-2">
+          <div className="flex items-center justify-center space-x-2 flex-wrap gap-y-1">
             <span className="font-mono text-sm font-semibold text-white">{current.time}</span>
+            <span className="text-zinc-600">•</span>
+            {/* User display */}
+            <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-zinc-800 text-zinc-300 border border-zinc-700 flex items-center space-x-1">
+              <User className="w-3 h-3 text-emerald-400" />
+              <span>
+                {current.user === currentUser?.username
+                  ? lang === 'vi' ? 'Bạn' : 'You'
+                  : `@${current.user || 'jeandev'}`}
+              </span>
+            </span>
             <span className="text-zinc-600">•</span>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-zinc-800 text-emerald-300 border border-zinc-700 flex items-center space-x-1.5">
               <MoodIcon name={moodInfo.icon} className="w-3.5 h-3.5" />

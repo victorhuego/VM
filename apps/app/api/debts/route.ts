@@ -21,8 +21,10 @@ export async function GET(req: NextRequest) {
     clearSheetCache()
   }
 
+  const user = req.nextUrl.searchParams.get('user') || undefined
+
   try {
-    const debts = await getDebts()
+    const debts = await getDebts(user)
     return NextResponse.json({ data: debts, source: 'google_sheets' })
   } catch (err: any) {
     console.error('Lỗi khi đọc danh sách nợ từ Sheets:', err)
@@ -52,7 +54,7 @@ export async function POST(req: NextRequest) {
       body.date = new Date().toISOString().split('T')[0]
     }
 
-    const saved = await addDebt(body)
+    const saved = await addDebt(body, body.user || 'jeandev')
     return NextResponse.json({ success: true, data: saved }, { status: 201 })
   } catch (err: any) {
     console.error('Lỗi khi thêm khoản nợ vào Sheets:', err)

@@ -1,17 +1,26 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
-import { LanguageType, MomentItem } from '@/lib/types'
+import React, { useMemo, useState, useEffect } from 'react'
+import Select from 'react-select'
+import { LanguageType, MomentItem, UserProfile } from '@/lib/types'
 import { dictionary, moodMetadata } from '@/lib/i18n'
-import { CalendarClock, Camera, Maximize2, Trash2, History, Calendar } from 'lucide-react'
+import { CalendarClock, Camera, Maximize2, Trash2, History, Calendar, User } from 'lucide-react'
 import { MoodIcon } from '@/components/MoodIcon'
 import { getClientLocalDateString, getClientYesterdayDateString, normalizeDateString, compareMomentsDescending } from '@/lib/time'
+
+interface UserFilterOption {
+  value: string
+  label: string
+  count: number
+  isMe?: boolean
+}
 
 interface MomentsTimelineProps {
   moments: MomentItem[]
   lang: LanguageType
   onOpenLightbox: (src: string) => void
   onDeleteMoment?: (id: string) => void
+  currentUser?: UserProfile | null
 }
 
 export function MomentsTimeline({
@@ -19,6 +28,7 @@ export function MomentsTimeline({
   lang,
   onOpenLightbox,
   onDeleteMoment,
+  currentUser,
 }: MomentsTimelineProps) {
   const t = dictionary[lang]
   const todayStr = getClientLocalDateString()
@@ -26,15 +36,68 @@ export function MomentsTimeline({
 
   // Filter mode: 'today' | 'all' (default: 'today')
   const [filterMode, setFilterMode] = useState<'today' | 'all'>('today')
+  // User filter: 'all' | username
+  const [selectedUser, setSelectedUser] = useState<string>('all')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const availableUsers = useMemo(() => {
+    const userSet = new Set<string>()
+    if (currentUser?.username) {
+      userSet.add(currentUser.username)
+    }
+    userSet.add('jeandev')
+    for (const m of moments) {
+      const u = m.user || 'jeandev'
+      userSet.add(u)
+    }
+    return Array.from(userSet).sort()
+  }, [moments, currentUser])
+
+  const userOptions: UserFilterOption[] = useMemo(() => {
+    const opts: UserFilterOption[] = [
+      {
+        value: 'all',
+        label: lang === 'vi' ? 'Tất cả người dùng' : 'All users',
+        count: moments.length,
+      },
+    ]
+
+    for (const u of availableUsers) {
+      const count = moments.filter((m) => (m.user || 'jeandev') === u).length
+      const isMe = u === currentUser?.username
+      opts.push({
+        value: u,
+        label: isMe
+          ? lang === 'vi'
+            ? `Bạn (@${u})`
+            : `You (@${u})`
+          : `@${u}`,
+        count,
+        isMe,
+      })
+    }
+    return opts
+  }, [availableUsers, moments, currentUser, lang])
+
+  const currentSelectedOption = userOptions.find((opt) => opt.value === selectedUser) || userOptions[0]
+
+  const filteredMoments = useMemo(() => {
+    if (selectedUser === 'all') return moments
+    return moments.filter((item) => (item.user || 'jeandev') === selectedUser)
+  }, [moments, selectedUser])
 
   const todayMoments = useMemo(() => {
-    return moments
+    return filteredMoments
       .filter((item) => normalizeDateString(item.date) === todayStr)
       .sort(compareMomentsDescending)
-  }, [moments, todayStr])
+  }, [filteredMoments, todayStr])
 
   const pastMomentsGrouped = useMemo(() => {
-    const past = moments.filter((item) => normalizeDateString(item.date) !== todayStr)
+    const past = filteredMoments.filter((item) => normalizeDateString(item.date) !== todayStr)
     const groups: Record<string, MomentItem[]> = {}
     for (const item of past) {
       const dKey = normalizeDateString(item.date) || 'unknown'
@@ -56,7 +119,7 @@ export function MomentsTimeline({
           items: groups[dKey].sort(compareMomentsDescending),
         }
       })
-  }, [moments, todayStr, yesterdayStr, lang])
+  }, [filteredMoments, todayStr, yesterdayStr, lang])
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = e.currentTarget
@@ -76,6 +139,7 @@ export function MomentsTimeline({
 
   const renderMomentCard = (item: MomentItem, isFirst: boolean) => {
     const moodInfo = moodMetadata[item.mood] || { vi: item.mood, en: item.mood, icon: 'Leaf' }
+    const isAuthor = (Boolean(item.user) && item.user === currentUser?.username) || (!item.user && currentUser?.username === 'jeandev')
 
     return (
       <div
@@ -95,8 +159,18 @@ export function MomentsTimeline({
         {/* Card Container */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 flex-wrap gap-y-1">
               <span className="font-mono text-zinc-600 font-medium">{item.time}</span>
+              {/* Author badge: 'Bạn' / 'You' or @username */}
+              {isAuthor ? (
+                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
+                  {t.author_you || (lang === 'vi' ? 'Bạn' : 'You')}
+                </span>
+              ) : (
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200">
+                  @{item.user || 'jeandev'}
+                </span>
+              )}
               <span className="text-[11px] px-2 py-0.5 rounded-full border border-theme bg-theme-surface text-theme-main flex items-center space-x-1 font-sans">
                 <MoodIcon name={moodInfo.icon} className="w-3 h-3 text-theme-accent" />
                 <span>{moodInfo[lang]}</span>
@@ -109,12 +183,12 @@ export function MomentsTimeline({
               )}
             </div>
 
-            {onDeleteMoment && (
+            {onDeleteMoment && isAuthor && (
               <button
                 type="button"
                 onClick={() => onDeleteMoment(item.id)}
                 className="text-zinc-400 hover:text-rose-600 p-1 rounded transition-opacity opacity-0 group-hover:opacity-100 touch-target cursor-pointer"
-                title={lang === 'vi' ? 'Xóa khoảnh khắc' : 'Delete moment'}
+                title={lang === 'vi' ? 'Xóa tin' : 'Delete moment'}
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
@@ -156,11 +230,11 @@ export function MomentsTimeline({
     )
   }
 
-  const pastMomentsCount = moments.length - todayMoments.length
+  const pastMomentsCount = filteredMoments.length - todayMoments.length
 
   return (
     <section className="space-y-6 sm:space-y-7">
-      {/* Header: Title + Filter Toggle (Today vs All) */}
+      {/* Header: Title + Filters (User Selector & Today/All Toggle) */}
       <div className="flex items-center justify-between border-b border-theme pb-3 flex-wrap gap-2">
         <div className="flex items-center space-x-2">
           <CalendarClock className="w-3.5 h-3.5 text-theme-accent" />
@@ -172,33 +246,146 @@ export function MomentsTimeline({
           </span>
         </div>
 
-        {/* View Mode Filter: Today vs All */}
-        {pastMomentsCount > 0 && (
-          <div className="flex items-center space-x-1 p-0.5 bg-theme-surface rounded-lg border border-theme text-[11px] font-sans">
-            <button
-              type="button"
-              onClick={() => setFilterMode('today')}
-              className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${
-                filterMode === 'today'
-                  ? 'bg-white text-theme-main font-semibold shadow-2xs border border-theme/60'
-                  : 'text-zinc-500 hover:text-theme-main'
-              }`}
-            >
-              {lang === 'vi' ? `Hôm nay (${todayMoments.length})` : `Today (${todayMoments.length})`}
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilterMode('all')}
-              className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${
-                filterMode === 'all'
-                  ? 'bg-white text-theme-main font-semibold shadow-2xs border border-theme/60'
-                  : 'text-zinc-500 hover:text-theme-main'
-              }`}
-            >
-              {lang === 'vi' ? `Tất cả (${moments.length})` : `All (${moments.length})`}
-            </button>
+        {/* Filters Group: User Filter + View Mode Filter */}
+        <div className="flex items-center space-x-2 flex-wrap gap-1.5">
+          {/* User Filter via react-select */}
+          <div className="w-36 sm:w-44 shrink-0">
+            {!mounted ? (
+              <div className="h-[30px] rounded-lg border border-theme flex items-center px-2 space-x-1.5 text-[11px] text-theme-main bg-white">
+                <User className="w-3 h-3 text-theme-accent shrink-0" />
+                <span className="truncate">{currentSelectedOption?.label}</span>
+              </div>
+            ) : (
+              <Select<UserFilterOption>
+                instanceId="moments-user-filter-select"
+                menuPortalTarget={typeof document !== 'undefined' ? document.body : undefined}
+                menuPosition="fixed"
+                isSearchable={false}
+                value={currentSelectedOption}
+                onChange={(opt) => {
+                  if (opt) setSelectedUser(opt.value)
+                }}
+                options={userOptions}
+                formatOptionLabel={(option, { context }) => (
+                  <div className="flex items-center justify-between space-x-1.5 text-xs w-full">
+                    <div className="flex items-center space-x-1.5 truncate">
+                      <User className="w-3 h-3 text-theme-accent shrink-0" />
+                      <span className="font-medium truncate">{option.label}</span>
+                    </div>
+                    {context === 'menu' && (
+                      <span className="text-[10px] font-mono text-theme-muted shrink-0 ml-1">
+                        {option.count}
+                      </span>
+                    )}
+                  </div>
+                )}
+                styles={{
+                  control: (base, state) => ({
+                    ...base,
+                    minHeight: '30px',
+                    height: '30px',
+                    fontSize: '11px',
+                    backgroundColor: '#ffffff',
+                    borderColor: 'var(--theme-border)',
+                    boxShadow: state.isFocused ? '0 0 0 1px var(--theme-accent)' : 'none',
+                    '&:hover': {
+                      borderColor: 'var(--theme-accent)',
+                      backgroundColor: 'var(--theme-surface)',
+                    },
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer',
+                  }),
+                  valueContainer: (base) => ({
+                    ...base,
+                    padding: '0 6px',
+                    height: '30px',
+                  }),
+                  singleValue: (base) => ({
+                    ...base,
+                    color: 'var(--theme-main)',
+                    margin: 0,
+                  }),
+                  indicatorsContainer: (base) => ({
+                    ...base,
+                    height: '30px',
+                  }),
+                  dropdownIndicator: (base) => ({
+                    ...base,
+                    padding: '2px 4px',
+                    color: 'var(--theme-muted)',
+                    '&:hover': {
+                      color: 'var(--theme-main)',
+                    },
+                  }),
+                  indicatorSeparator: () => ({
+                    display: 'none',
+                  }),
+                  menuPortal: (base) => ({
+                    ...base,
+                    zIndex: 9999,
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    backgroundColor: '#ffffff',
+                    border: '1px solid var(--theme-border)',
+                    borderRadius: '0.5rem',
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04)',
+                    zIndex: 9999,
+                    minWidth: '170px',
+                  }),
+                  menuList: (base) => ({
+                    ...base,
+                    padding: '4px',
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? 'var(--theme-surface)'
+                      : state.isFocused
+                      ? 'rgba(0, 0, 0, 0.04)'
+                      : 'transparent',
+                    color: state.isSelected ? 'var(--theme-accent)' : 'var(--theme-main)',
+                    borderRadius: '0.375rem',
+                    padding: '6px 8px',
+                    fontSize: '11px',
+                    cursor: 'pointer',
+                    '&:active': {
+                      backgroundColor: 'var(--theme-surface)',
+                    },
+                  }),
+                }}
+              />
+            )}
           </div>
-        )}
+
+          {/* View Mode Filter: Today vs All */}
+          {pastMomentsCount > 0 && (
+            <div className="flex items-center space-x-1 p-0.5 bg-theme-surface rounded-lg border border-theme text-[11px] font-sans">
+              <button
+                type="button"
+                onClick={() => setFilterMode('today')}
+                className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${
+                  filterMode === 'today'
+                    ? 'bg-white text-theme-main font-semibold shadow-2xs border border-theme/60'
+                    : 'text-zinc-500 hover:text-theme-main'
+                }`}
+              >
+                {lang === 'vi' ? `Hôm nay (${todayMoments.length})` : `Today (${todayMoments.length})`}
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterMode('all')}
+                className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${
+                  filterMode === 'all'
+                    ? 'bg-white text-theme-main font-semibold shadow-2xs border border-theme/60'
+                    : 'text-zinc-500 hover:text-theme-main'
+                }`}
+              >
+                {lang === 'vi' ? `Tất cả (${filteredMoments.length})` : `All (${filteredMoments.length})`}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Today's Timeline (Strictly Today's Moments) */}
@@ -206,9 +393,13 @@ export function MomentsTimeline({
         <div className="p-8 text-center bg-theme-surface/40 rounded-xl border border-theme border-dashed space-y-2">
           <Camera className="w-8 h-8 text-theme-muted mx-auto opacity-50" />
           <p className="text-xs text-theme-muted">
-            {lang === 'vi'
-              ? 'Chưa có khoảnh khắc nào trong hôm nay. Hãy chia sẻ cảm xúc đầu tiên của bạn ở trên!'
-              : 'No moments recorded today yet. Capture your first moment above!'}
+            {selectedUser !== 'all'
+              ? lang === 'vi'
+                ? `Không có tin nào hôm nay từ @${selectedUser}.`
+                : `No moments recorded today from @${selectedUser}.`
+              : lang === 'vi'
+                ? 'Chưa có khoảnh khắc nào trong hôm nay. Hãy chia sẻ cảm xúc đầu tiên của bạn ở trên!'
+                : 'No moments recorded today yet. Capture your first moment above!'}
           </p>
         </div>
       ) : (

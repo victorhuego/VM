@@ -1,21 +1,23 @@
 'use client'
 
 import React from 'react'
-import { TabType, LanguageType } from '@/lib/types'
+import { TabType, LanguageType, UserProfile } from '@/lib/types'
 import { dictionary } from '@/lib/i18n'
-import { Wallet, Clock } from 'lucide-react'
+import { Wallet, Clock, User } from 'lucide-react'
 
 interface MobileBottomNavProps {
   currentTab: TabType
   onTabChange: (tab: TabType) => void
   lang: LanguageType
   onOpenBalanceModal?: () => void
+  currentUser?: UserProfile | null
 }
 
 export function MobileBottomNav({
   currentTab,
   onTabChange,
   lang,
+  currentUser,
 }: MobileBottomNavProps) {
   const t = dictionary[lang]
 
@@ -45,6 +47,19 @@ export function MobileBottomNav({
       >
         <Wallet className={`w-4 h-4 pointer-events-none ${currentTab === 'expenses' ? 'text-theme-accent' : ''}`} />
         <span className="text-[11px] pointer-events-none">{t.mobile_nav_finance}</span>
+      </button>
+
+      <button
+        type="button"
+        onClick={() => onTabChange('users')}
+        className={`flex-1 flex flex-col items-center justify-center space-y-0.5 min-h-[44px] py-1 rounded-lg touch-target cursor-pointer active:opacity-60 transition-all ${
+          currentTab === 'users'
+            ? 'text-theme-main font-semibold bg-theme-surface/80'
+            : 'text-zinc-500 font-medium hover:text-theme-main'
+        }`}
+      >
+        <User className={`w-4 h-4 pointer-events-none ${currentTab === 'users' ? 'text-theme-accent' : ''}`} />
+        <span className="text-[11px] pointer-events-none">{t.mobile_nav_user || 'Tài khoản'}</span>
       </button>
     </div>
   )
