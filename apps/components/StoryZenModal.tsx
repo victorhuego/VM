@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { LanguageType, MomentItem } from '@/lib/types'
 import { dictionary, moodMetadata } from '@/lib/i18n'
-import { X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
 import { MoodIcon } from '@/components/MoodIcon'
+import { getClientLocalDateString, normalizeDateString, normalizeTimeString } from '@/lib/time'
 
 interface StoryZenModalProps {
   open: boolean
@@ -15,11 +16,23 @@ interface StoryZenModalProps {
 
 export function StoryZenModal({ open, onClose, moments, lang }: StoryZenModalProps) {
   const t = dictionary[lang]
+  const todayStr = getClientLocalDateString()
+  const todayMoments = useMemo(() => {
+    return moments
+      .filter((m) => normalizeDateString(m.date) === todayStr)
+      .sort((a, b) => {
+        const timeA = normalizeTimeString(a.time) || '00:00'
+        const timeB = normalizeTimeString(b.time) || '00:00'
+        if (timeA !== timeB) return timeA.localeCompare(timeB)
+        return a.id.localeCompare(b.id)
+      })
+  }, [moments, todayStr])
+
   const [currentIndex, setCurrentIndex] = useState(0)
   const isSwipedRef = useRef(false)
 
   const handleNext = () => {
-    if (currentIndex < moments.length - 1) {
+    if (currentIndex < todayMoments.length - 1) {
       setCurrentIndex((prev) => prev + 1)
     } else {
       onClose()
@@ -51,7 +64,7 @@ export function StoryZenModal({ open, onClose, moments, lang }: StoryZenModalPro
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [open, moments.length, onClose, currentIndex])
+  }, [open, todayMoments.length, onClose, currentIndex])
 
   const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null)
   const [touchEnd, setTouchEnd] = useState<{ x: number; y: number } | null>(null)
@@ -121,9 +134,44 @@ export function StoryZenModal({ open, onClose, moments, lang }: StoryZenModalPro
     handleNext()
   }
 
-  if (!open || moments.length === 0) return null
+  if (!open) return null
 
-  const current = moments[currentIndex]
+  if (todayMoments.length === 0) {
+    return (
+      <div
+        className="fixed inset-0 bg-zinc-950/95 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4 select-none animate-in fade-in duration-200"
+        onClick={onClose}
+      >
+        <div
+          className="max-w-sm w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-6 text-center space-y-4 shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center">
+            <Sparkles className="w-6 h-6" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-sm font-semibold text-white">
+              {lang === 'vi' ? 'Chưa có Zen Story hôm nay' : 'No Zen Story Today'}
+            </h3>
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              {lang === 'vi'
+                ? 'Hãy lưu lại ít nhất một khoảnh khắc trong ngày hôm nay để tạo câu chuyện Zen Story của bạn nhé!'
+                : 'Capture at least one moment today to start your Zen Story.'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full py-2 px-4 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-medium transition-colors cursor-pointer"
+          >
+            {t.zen_exit || (lang === 'vi' ? 'Đóng' : 'Close')}
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  const current = todayMoments[currentIndex]
   const moodInfo = moodMetadata[current.mood] || { vi: current.mood, en: current.mood, icon: 'Leaf' }
 
   return (
@@ -138,7 +186,7 @@ export function StoryZenModal({ open, onClose, moments, lang }: StoryZenModalPro
       <div className="max-w-2xl w-full mx-auto space-y-3 cursor-default" onClick={(e) => e.stopPropagation()}>
         {/* Segment Progress Indicators */}
         <div className="flex items-center space-x-1.5">
-          {moments.map((_, idx) => (
+          {todayMoments.map((_, idx) => (
             <div
               key={idx}
               className={`h-1 flex-1 rounded-full transition-all duration-300 ${
@@ -155,7 +203,7 @@ export function StoryZenModal({ open, onClose, moments, lang }: StoryZenModalPro
             </span>
             <span className="text-zinc-500">•</span>
             <span className="text-xs font-mono text-zinc-400">
-              {currentIndex + 1} / {moments.length}
+              {currentIndex + 1} / {todayMoments.length}
             </span>
           </div>
           <button

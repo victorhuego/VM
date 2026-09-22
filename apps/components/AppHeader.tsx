@@ -11,7 +11,7 @@ import {
   formatClientTime,
   formatClientDayOfWeek,
 } from '@/lib/time'
-import { Wallet, Clock, Palette, Check, Globe } from 'lucide-react'
+import { Wallet, Clock, Palette, Check, Globe, RotateCw } from 'lucide-react'
 
 interface ThemeOption {
   value: ThemeType
@@ -26,6 +26,8 @@ interface AppHeaderProps {
   onLangChange: (lang: LanguageType) => void
   currentTab: TabType
   onTabChange: (tab: TabType) => void
+  onRefresh?: () => void
+  isRefreshing?: boolean
 }
 
 export function AppHeader({
@@ -35,6 +37,8 @@ export function AppHeader({
   onLangChange,
   currentTab,
   onTabChange,
+  onRefresh,
+  isRefreshing,
 }: AppHeaderProps) {
   const t = dictionary[currentLang]
 
@@ -71,6 +75,22 @@ export function AppHeader({
               {t.app_title}
             </span>
           </div>
+
+          {onRefresh && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                onRefresh()
+              }}
+              disabled={isRefreshing}
+              className="p-1 sm:p-1.5 rounded-md border border-theme bg-white hover:bg-theme-surface text-theme-muted hover:text-theme-main transition-all cursor-pointer shadow-2xs disabled:opacity-50 flex items-center justify-center shrink-0"
+              title={currentLang === 'vi' ? 'Làm mới toàn bộ ứng dụng' : 'Refresh entire app'}
+              aria-label="Refresh app"
+            >
+              <RotateCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-theme-accent ${isRefreshing ? 'animate-spin' : ''}`} />
+            </button>
+          )}
 
           <span className="text-zinc-300 hidden sm:inline">|</span>
 

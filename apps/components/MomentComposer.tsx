@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { LanguageType, MoodType, MomentItem } from '@/lib/types'
 import { dictionary, moodMetadata } from '@/lib/i18n'
-import { getClientTimeZoneOffset } from '@/lib/time'
+import { getClientTimeZoneOffset, getClientLocalDateString } from '@/lib/time'
 import { Camera, Send, X } from 'lucide-react'
 import { MoodIcon } from '@/components/MoodIcon'
 import { getNextMomentImageTag } from '@/lib/moment-utils'
@@ -74,12 +74,12 @@ export function MomentComposer({ lang, onAddMoment, existingMoments = [] }: Mome
 
     const now = new Date()
     const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
-    const dateStampStr = `${now.getFullYear()}.${(now.getMonth() + 1).toString().padStart(2, '0')}.${now.getDate().toString().padStart(2, '0')} ${timeStr}:${now.getSeconds().toString().padStart(2, '0')}`
+    const dateStr = getClientLocalDateString(now)
 
     onAddMoment(
       {
         time: timeStr,
-        date: dateStampStr,
+        date: dateStr,
         caption: caption.trim(),
         mood,
         image: filePreview || undefined,

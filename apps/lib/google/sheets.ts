@@ -1,6 +1,11 @@
 import { getGoogleSheets, getSpreadsheetId } from './client'
 import { ExpenseItem, DebtItem, MomentItem, InitialBalances, FinancialState } from '@/lib/types'
-import { normalizeDateString } from '@/lib/time'
+import {
+  normalizeDateString,
+  normalizeTimeString,
+  compareExpensesDescending,
+  compareMomentsDescending,
+} from '@/lib/time'
 
 // Cache structure
 interface CacheEntry<T> {
@@ -269,13 +274,14 @@ export async function getExpenses(): Promise<ExpenseItem[]> {
         source: (r[5] as any) || 'account',
         transferDirection: r[6] ? (r[6] as any) : undefined,
         note: String(r[7] || ''),
-        timeAgo: dateStr.split('-').slice(1).reverse().join('/') || '',
+        timeAgo: '',
         image: r[8] ? String(r[8]) : undefined,
         debtId: r[9] ? String(r[9]) : undefined,
         reconcileDiff: r[10] ? Number(r[10]) : undefined,
       }
     })
 
+  items.sort(compareExpensesDescending)
   setCache(cacheKey, items)
   return items
 }
@@ -594,13 +600,14 @@ export async function getMoments(): Promise<MomentItem[]> {
     .map((r) => ({
       id: String(r[0] || ''),
       date: normalizeDateString(r[1]),
-      time: String(r[2] || ''),
+      time: normalizeTimeString(r[2]),
       caption: String(r[3] || ''),
       mood: (r[4] as any) || 'serene',
       image: r[5] ? String(r[5]) : undefined,
       driveName: r[7] ? String(r[7]) : undefined,
     }))
 
+  items.sort(compareMomentsDescending)
   setCache(cacheKey, items)
   return items
 }
@@ -609,10 +616,13 @@ export async function addMoment(item: MomentItem & { driveFileId?: string }): Pr
   const sheets = getGoogleSheets()
   const spreadsheetId = getSpreadsheetId()
 
+  const cleanDate = normalizeDateString(item.date) || item.date
+  const cleanTime = normalizeTimeString(item.time) || item.time
+
   const row = [
     item.id,
-    item.date,
-    item.time,
+    `'${cleanDate}`,
+    `'${cleanTime}`,
     item.caption,
     item.mood,
     item.image && item.image.length > 2000 ? '' : (item.image || ''),
@@ -632,7 +642,11 @@ export async function addMoment(item: MomentItem & { driveFileId?: string }): Pr
   })
 
   clearSheetCache()
-  return item
+  return {
+    ...item,
+    date: cleanDate,
+    time: cleanTime,
+  }
 }
 
 export async function deleteMoment(id: string): Promise<boolean> {

@@ -8,6 +8,7 @@ import {
   getClientLocalDateString,
   getClientYesterdayDateString,
   normalizeDateString,
+  compareExpensesDescending,
 } from '@/lib/time'
 import {
   Utensils,
@@ -144,32 +145,34 @@ export function ExpenseList({
     }
   }
 
-  // Filter expenses by selected time period
+  // Filter expenses by selected time period (sorted descending)
   const periodExpenses = useMemo(() => {
-    return expenses.filter((item) => {
-      // Check category first
-      if (categoryFilter !== 'all' && item.category !== categoryFilter) {
-        return false
-      }
+    return expenses
+      .filter((item) => {
+        // Check category first
+        if (categoryFilter !== 'all' && item.category !== categoryFilter) {
+          return false
+        }
 
-      if (period === 'all') return true
+        if (period === 'all') return true
 
-      const normalizedDate = normalizeDateString(item.date)
-      const [yStr, mStr] = normalizedDate.split('-')
-      const itemYear = Number(yStr)
-      const itemMonth = Number(mStr)
+        const normalizedDate = normalizeDateString(item.date)
+        const [yStr, mStr] = normalizedDate.split('-')
+        const itemYear = Number(yStr)
+        const itemMonth = Number(mStr)
 
-      if (period === 'month') {
-        return itemYear === selectedYear && itemMonth === selectedMonth
-      }
-      if (period === 'year') {
-        return itemYear === selectedYear
-      }
-      if (period === 'day') {
-        return normalizedDate === selectedDay
-      }
-      return true
-    })
+        if (period === 'month') {
+          return itemYear === selectedYear && itemMonth === selectedMonth
+        }
+        if (period === 'year') {
+          return itemYear === selectedYear
+        }
+        if (period === 'day') {
+          return normalizedDate === selectedDay
+        }
+        return true
+      })
+      .sort(compareExpensesDescending)
   }, [expenses, categoryFilter, period, selectedYear, selectedMonth, selectedDay])
 
   // Total expense spent in selected period (excluding income and transfers)
@@ -186,7 +189,7 @@ export function ExpenseList({
       .reduce((sum, item) => sum + item.amount, 0)
   }, [periodExpenses])
 
-  // Grouped expenses based on view period
+  // Grouped expenses based on view period (always descending order)
   const groupedData = useMemo(() => {
     if (period === 'year') {
       // Group by month
@@ -198,17 +201,24 @@ export function ExpenseList({
         if (!groups[key]) groups[key] = []
         groups[key].push(item)
       }
-      return Object.entries(groups).map(([monthKey, items]) => ({
-        key: monthKey,
-        label: `${t.month_name_prefix} ${monthKey}`,
-        totalSpent: items
-          .filter((i) => i.type === 'expense')
-          .reduce((sum, i) => sum + i.amount, 0),
-        totalIncome: items
-          .filter((i) => i.type === 'income')
-          .reduce((sum, i) => sum + i.amount, 0),
-        items,
-      }))
+      return Object.entries(groups)
+        .sort(([aKey], [bKey]) => {
+          const [mA, yA] = aKey.split('/').map(Number)
+          const [mB, yB] = bKey.split('/').map(Number)
+          if (yA !== yB) return yB - yA
+          return mB - mA
+        })
+        .map(([monthKey, items]) => ({
+          key: monthKey,
+          label: `${t.month_name_prefix} ${monthKey}`,
+          totalSpent: items
+            .filter((i) => i.type === 'expense')
+            .reduce((sum, i) => sum + i.amount, 0),
+          totalIncome: items
+            .filter((i) => i.type === 'income')
+            .reduce((sum, i) => sum + i.amount, 0),
+          items: items.sort(compareExpensesDescending),
+        }))
     }
 
     if (period === 'month' || period === 'all') {
@@ -232,7 +242,7 @@ export function ExpenseList({
             label = dateKey.split('-').reverse().join('/')
           }
 
-          const items = groups[dateKey]
+          const items = groups[dateKey].sort(compareExpensesDescending)
           return {
             key: dateKey,
             label,
@@ -259,7 +269,7 @@ export function ExpenseList({
             : selectedDay,
         totalSpent: totalPeriodSpent,
         totalIncome: totalPeriodIncome,
-        items: periodExpenses,
+        items: periodExpenses.slice().sort(compareExpensesDescending),
       },
     ]
   }, [period, periodExpenses, selectedDay, todayStr, yesterdayStr, t, totalPeriodSpent, totalPeriodIncome])
@@ -640,7 +650,6 @@ export function ExpenseList({
                                 {t[`cat_${item.category}` as keyof typeof t] || item.category}
                               </span>
                               <span className="whitespace-nowrap">• {item.date}</span>
-                              {item.timeAgo && <span className="whitespace-nowrap">• {item.timeAgo}</span>}
                             </div>
                           </div>
                         </div>

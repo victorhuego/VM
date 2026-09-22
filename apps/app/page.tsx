@@ -13,7 +13,13 @@ import {
   InitialBalances,
 } from '@/lib/types'
 import { dictionary } from '@/lib/i18n'
-import { getClientLocalDateString, getClientYesterdayDateString } from '@/lib/time'
+import {
+  getClientLocalDateString,
+  getClientYesterdayDateString,
+  normalizeDateString,
+  compareExpensesDescending,
+  compareMomentsDescending,
+} from '@/lib/time'
 import { computeLedgerBalances, computeMonthlySpent, computeDaySpent } from '@/lib/accounting'
 import { AppHeader } from '@/components/AppHeader'
 import { MetricCards } from '@/components/MetricCards'
@@ -145,7 +151,7 @@ export default function Home() {
       }
 
       if (expRes && Array.isArray(expRes.data)) {
-        setExpenses(expRes.data)
+        setExpenses(expRes.data.sort(compareExpensesDescending))
       }
 
       if (debtRes && Array.isArray(debtRes.data)) {
@@ -153,7 +159,7 @@ export default function Home() {
       }
 
       if (momRes && Array.isArray(momRes.data)) {
-        setMoments(momRes.data)
+        setMoments(momRes.data.sort(compareMomentsDescending))
       }
     } catch (err) {
       console.warn('Google Sheets sync notice:', err)
@@ -213,7 +219,7 @@ export default function Home() {
       timeAgo: lang === 'vi' ? 'Vừa xong' : 'Just now',
     }
 
-    setExpenses((prev) => [item, ...prev])
+    setExpenses((prev) => [item, ...prev].sort(compareExpensesDescending))
     apiCreateExpense(item)
 
     if (item.type === 'income') {
@@ -344,7 +350,7 @@ export default function Home() {
       transferDirection: direction,
     }
 
-    setExpenses((prev) => [transferItem, ...prev])
+    setExpenses((prev) => [transferItem, ...prev].sort(compareExpensesDescending))
     apiCreateExpense(transferItem)
 
     if (direction === 'savings_to_bank') {
@@ -392,6 +398,12 @@ export default function Home() {
     savingsGoal: finances.savingsGoal,
   }), [ledgerBalances, computedTotalDebt, currentMonthSpent, computedTodaySpent, computedYesterdaySpent, finances.monthlyBudget, finances.savingsGoal])
 
+  // Today's Moments (Strictly filtered for 24H Circadian Ribbon and Zen Story)
+  const todayStr = getClientLocalDateString()
+  const todayMoments = useMemo(() => {
+    return moments.filter((m) => normalizeDateString(m.date) === todayStr)
+  }, [moments, todayStr])
+
   // Audit Reconciliation Handler
   const handleReconcileBalance = ({
     source,
@@ -416,7 +428,7 @@ export default function Home() {
       reconcileDiff: diff,
     }
 
-    setExpenses((prev) => [recItem, ...prev])
+    setExpenses((prev) => [recItem, ...prev].sort(compareExpensesDescending))
     apiCreateExpense(recItem)
     showToast(dictionary[lang].toast_balance_reconciled)
   }
@@ -463,7 +475,7 @@ export default function Home() {
       debtId: debtId,
     }
 
-    setExpenses((prev) => [payItem, ...prev])
+    setExpenses((prev) => [payItem, ...prev].sort(compareExpensesDescending))
     apiCreateExpense(payItem)
 
     setDebts((prevDebts) => {
@@ -507,7 +519,7 @@ export default function Home() {
       id: `mom-${Date.now()}`,
     }
 
-    setMoments((prev) => [item, ...prev])
+    setMoments((prev) => [item, ...prev].sort(compareMomentsDescending))
     apiCreateMoment({ ...item, driveFileId })
     showToast(dictionary[lang].toast_moment_added)
   }
@@ -563,6 +575,8 @@ export default function Home() {
         onLangChange={setLang}
         currentTab={tab}
         onTabChange={handleTabChange}
+        onRefresh={() => loadInitialData(true)}
+        isRefreshing={isLoading}
       />
 
       <div className="max-w-5xl w-full mx-auto px-3 sm:px-6 pt-3 sm:pt-4">
@@ -643,7 +657,7 @@ export default function Home() {
       {tab === 'moments' && (
         <main className="max-w-3xl w-full mx-auto px-3 sm:px-6 pt-4 sm:pt-8 pb-28 sm:pb-8 space-y-5 sm:space-y-6 flex-1 animate-in fade-in duration-200">
           <CircadianRibbon
-            moments={moments}
+            moments={todayMoments}
             lang={lang}
             onOpenZenStory={() => setIsZenStoryOpen(true)}
             onSelectMoment={handleSelectMoment}
@@ -734,7 +748,7 @@ export default function Home() {
       <StoryZenModal
         open={isZenStoryOpen}
         onClose={() => setIsZenStoryOpen(false)}
-        moments={moments}
+        moments={todayMoments}
         lang={lang}
       />
 

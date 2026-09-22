@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { Card } from '@/components/ui/card'
 import { LanguageType, MomentItem } from '@/lib/types'
 import { dictionary } from '@/lib/i18n'
-import { getClientTimeZoneOffset } from '@/lib/time'
+import { getClientTimeZoneOffset, getClientLocalDateString, normalizeDateString } from '@/lib/time'
 import {
   SunMedium,
   PlayCircle,
@@ -116,6 +116,11 @@ export function CircadianRibbon({
     return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
   })
   const [tzOffset, setTzOffset] = useState('')
+
+  const todayStr = getClientLocalDateString()
+  const todayMoments = useMemo(() => {
+    return moments.filter((m) => normalizeDateString(m.date) === todayStr)
+  }, [moments, todayStr])
 
   // Scroll to current time (center the 4-hour visible window on now)
   const scrollToNow = (smooth = true) => {
@@ -371,7 +376,7 @@ export function CircadianRibbon({
             </div>
 
             {/* High Z-Index Event Markers (Moments: z-50) */}
-            {moments.map((m) => {
+            {todayMoments.map((m) => {
               const [hStr, mStr] = m.time.split(':')
               const h = Number(hStr)
               const min = Number(mStr) || 0
