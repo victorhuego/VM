@@ -56,7 +56,7 @@ export function UserManagerTab({
 
   return (
     <div className="max-w-sm mx-auto pt-4 sm:pt-8 animate-in fade-in duration-200">
-      <Card className="border-theme rounded-2xl p-6 sm:p-8 bg-white shadow-card space-y-6">
+      <Card className="bento-card border border-theme/80 rounded-2xl p-6 sm:p-8 bg-white shadow-xs space-y-6">
         {/* Avatar next to Name */}
         <div className="flex items-center justify-center space-x-4 sm:space-x-5">
           {/* Avatar / Placeholder (Bounded Square, Bigger, User Icon) */}
@@ -172,7 +172,7 @@ export function UserManagerTab({
         <button
           type="button"
           onClick={onLogout}
-          className="w-full py-3 px-4 rounded-xl btn-theme-gradient text-white font-semibold text-xs sm:text-sm flex items-center justify-center space-x-2 shadow-md hover:opacity-95 active:scale-[0.98] transition-all cursor-pointer"
+          className="w-full py-3 px-4 rounded-xl btn-theme-gradient text-white font-semibold text-xs sm:text-sm flex items-center justify-center space-x-2 shadow-md hover:opacity-95 btn-spring transition-all cursor-pointer border border-white/20"
         >
           <LogOut className="w-4 h-4" />
           <span>{lang === 'vi' ? 'Đăng xuất' : 'Log out'}</span>

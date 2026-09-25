@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, useRef } from 'react'
 import Select from 'react-select'
 import { LanguageType, MomentItem, UserProfile } from '@/lib/types'
 import { dictionary, moodMetadata } from '@/lib/i18n'
-import { CalendarClock, Camera, Maximize2, Trash2, History, Calendar, User } from 'lucide-react'
+import { CalendarClock, Camera, Maximize2, Trash2, History, Calendar, User, Sparkles, Heart } from 'lucide-react'
 import { MoodIcon } from '@/components/MoodIcon'
 import { getClientLocalDateString, getClientYesterdayDateString, normalizeDateString, compareMomentsDescending } from '@/lib/time'
 
@@ -39,6 +39,10 @@ export function MomentsTimeline({
   // User filter: 'all' | username
   const [selectedUser, setSelectedUser] = useState<string>('all')
   const [mounted, setMounted] = useState(false)
+
+  // Double-tap reaction burst state
+  const [bursts, setBursts] = useState<Record<string, { id: number; x: number; y: number }[]>>({})
+  const lastTapRef = useRef<Record<string, number>>({})
 
   useEffect(() => {
     setMounted(true)
@@ -137,6 +141,31 @@ export function MomentsTimeline({
     e.currentTarget.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)'
   }
 
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>, itemId: string) => {
+    const now = Date.now()
+    const last = lastTapRef.current[itemId] || 0
+    if (now - last < 400) {
+      // Double tap detected!
+      const rect = e.currentTarget.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+      const burstId = Date.now()
+      setBursts((prev) => ({
+        ...prev,
+        [itemId]: [...(prev[itemId] || []), { id: burstId, x, y }],
+      }))
+      setTimeout(() => {
+        setBursts((prev) => ({
+          ...prev,
+          [itemId]: (prev[itemId] || []).filter((b) => b.id !== burstId),
+        }))
+      }, 850)
+      lastTapRef.current[itemId] = 0
+    } else {
+      lastTapRef.current[itemId] = now
+    }
+  }
+
   const renderMomentCard = (item: MomentItem, isFirst: boolean) => {
     const moodInfo = moodMetadata[item.mood] || { vi: item.mood, en: item.mood, icon: 'Leaf' }
     const isAuthor = (Boolean(item.user) && item.user === currentUser?.username) || (!item.user && currentUser?.username === 'jeandev')
@@ -187,7 +216,7 @@ export function MomentsTimeline({
               <button
                 type="button"
                 onClick={() => onDeleteMoment(item.id)}
-                className="text-zinc-400 hover:text-rose-600 p-1 rounded transition-opacity opacity-0 group-hover:opacity-100 touch-target cursor-pointer"
+                className="text-zinc-400 hover:text-rose-600 p-1 rounded-md transition-opacity opacity-0 group-hover:opacity-100 touch-target cursor-pointer btn-spring"
                 title={lang === 'vi' ? 'Xóa tin' : 'Delete moment'}
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -196,16 +225,31 @@ export function MomentsTimeline({
           </div>
 
           <div
+            onClick={(e) => handleCardClick(e, item.id)}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className="tilt-card border border-theme rounded-lg p-3.5 sm:p-4 bg-white shadow-card space-y-3 border-theme-hover transition-all"
+            className="bento-card tilt-card border border-theme/80 rounded-2xl p-3.5 sm:p-4 bg-white shadow-xs space-y-3 transition-all relative overflow-hidden cursor-pointer active:scale-[0.98] select-none"
           >
+            {/* Double-tap Floating Particle Bursts */}
+            {bursts[item.id]?.map((b) => (
+              <div
+                key={b.id}
+                className="absolute pointer-events-none z-30 animate-heart-pop text-rose-500 drop-shadow-md flex items-center justify-center -translate-x-1/2 -translate-y-1/2"
+                style={{ left: b.x, top: b.y }}
+              >
+                <Heart className="w-8 h-8 fill-rose-500 text-rose-400 stroke-rose-600" />
+              </div>
+            ))}
+
             <p className="text-xs sm:text-sm text-zinc-800 leading-relaxed">{item.caption}</p>
 
             {item.image && (
               <div
-                onClick={() => onOpenLightbox(item.image!)}
-                className="border border-theme rounded-md overflow-hidden w-full sm:max-w-sm bg-theme-surface cursor-zoom-in group/img relative"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onOpenLightbox(item.image!)
+                }}
+                className="border border-theme rounded-xl overflow-hidden w-full sm:max-w-sm bg-theme-surface cursor-zoom-in group/img relative"
               >
                 <img
                   src={item.image}
@@ -364,7 +408,7 @@ export function MomentsTimeline({
               <button
                 type="button"
                 onClick={() => setFilterMode('today')}
-                className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${
+                className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer btn-spring ${
                   filterMode === 'today'
                     ? 'bg-white text-theme-main font-semibold shadow-2xs border border-theme/60'
                     : 'text-zinc-500 hover:text-theme-main'
@@ -375,7 +419,7 @@ export function MomentsTimeline({
               <button
                 type="button"
                 onClick={() => setFilterMode('all')}
-                className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${
+                className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer btn-spring ${
                   filterMode === 'all'
                     ? 'bg-white text-theme-main font-semibold shadow-2xs border border-theme/60'
                     : 'text-zinc-500 hover:text-theme-main'

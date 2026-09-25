@@ -1,13 +1,17 @@
-export const themeMetadata = {
+import { ThemeType, MoodType, CurrencyType } from '@/lib/types'
+
+export const themeMetadata: Record<ThemeType, { name: string; color: string }> = {
   matcha: { name: 'Matcha Ombre', color: '#3F6141' },
   sakura: { name: 'Sakura Pink', color: '#822C3D' },
   mint: { name: 'Aqua Mint', color: '#225F5F' },
   lavender: { name: 'Lavender Lilac', color: '#4D3973' },
   mocha: { name: 'Mocha Brown', color: '#59402E' },
-  slate: { name: 'Charcoal Slate', color: '#27272A' }
+  slate: { name: 'Charcoal Slate', color: '#27272A' },
+  ocean: { name: 'Ocean Blue', color: '#1D4ED8' },
+  sunset: { name: 'Sunset Amber', color: '#D97706' },
+  berry: { name: 'Berry Wine', color: '#9F1239' },
+  coral: { name: 'Coral Peach', color: '#EA580C' },
 }
-
-import { MoodType, CurrencyType } from '@/lib/types'
 
 export const moodMetadata: Record<string, { vi: string; en: string; icon: string }> = {
   serene: { vi: 'Thư giãn', en: 'Relax', icon: 'Leaf' },

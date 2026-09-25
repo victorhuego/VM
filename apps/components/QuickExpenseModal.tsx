@@ -43,6 +43,7 @@ import {
   Zap,
   PlusCircle,
 } from 'lucide-react'
+import confetti from 'canvas-confetti'
 
 interface CategoryOption<T extends string = string> {
   value: T
@@ -342,6 +343,17 @@ export function QuickExpenseModal({
       },
       receiptFile || undefined
     )
+
+    if (txType === 'income') {
+      try {
+        confetti({
+          particleCount: 50,
+          spread: 70,
+          origin: { y: 0.65 },
+          colors: ['#10B981', '#34D399', '#6EE7B7', '#F59E0B', '#3B82F6'],
+        })
+      } catch {}
+    }
 
     onClose()
   }
