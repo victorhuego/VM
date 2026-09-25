@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { LanguageType, MoodType, MomentItem } from '@/lib/types'
-import { dictionary, moodMetadata } from '@/lib/i18n'
+import { dictionary, moodMetadata, ACTIVE_MOOD_KEYS } from '@/lib/i18n'
 import { getClientTimeZoneOffset, getClientLocalDateString } from '@/lib/time'
 import { Camera, Send, X } from 'lucide-react'
 import { MoodIcon } from '@/components/MoodIcon'
@@ -123,8 +123,8 @@ export function MomentComposer({ lang, onAddMoment, existingMoments = [] }: Mome
           <label className="text-[11px] font-medium text-theme-muted flex items-center space-x-1">
             <span>{t.label_mood}</span>
           </label>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
-            {(Object.keys(moodMetadata) as MoodType[]).map((key) => {
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+            {ACTIVE_MOOD_KEYS.map((key) => {
               const isSelected = mood === key
               const item = moodMetadata[key]
               return (
@@ -132,7 +132,7 @@ export function MomentComposer({ lang, onAddMoment, existingMoments = [] }: Mome
                   key={key}
                   type="button"
                   onClick={() => setMood(key)}
-                  className={`w-full px-2 py-1.5 min-h-[38px] rounded-md text-xs font-medium transition-all flex items-center justify-center space-x-1 cursor-pointer active:opacity-60 ${
+                  className={`w-full px-2 py-1.5 min-h-[38px] rounded-md text-xs font-medium transition-all flex items-center justify-center space-x-1.5 cursor-pointer active:opacity-60 ${
                     isSelected
                       ? 'btn-theme-gradient text-white shadow-xs font-semibold border border-theme'
                       : 'border border-theme bg-white hover:bg-theme-surface text-theme-main'

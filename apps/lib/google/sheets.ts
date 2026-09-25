@@ -1,5 +1,5 @@
 import { getGoogleSheets, getSpreadsheetId } from './client'
-import { ExpenseItem, DebtItem, MomentItem, InitialBalances, FinancialState } from '@/lib/types'
+import { ExpenseItem, DebtItem, MomentItem, InitialBalances, FinancialState, CurrencyType } from '@/lib/types'
 import {
   normalizeDateString,
   normalizeTimeString,
@@ -97,6 +97,7 @@ export const USERS_HEADERS = [
   'displayName',
   'createdAt',
   'avatar',
+  'currency',
 ]
 
 export const AUTH_TOKENS_HEADERS = [
@@ -860,6 +861,7 @@ export interface UserRecord {
   displayName: string
   createdAt: string
   avatar?: string
+  currency?: CurrencyType
 }
 
 export async function getUsers(): Promise<UserRecord[]> {
@@ -873,23 +875,34 @@ export async function getUsers(): Promise<UserRecord[]> {
   try {
     const res = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: 'Users!A2:E',
+      range: 'Users!A2:F',
     })
     const rows = res.data.values || []
     const users: UserRecord[] = rows
       .filter((r) => Boolean(r[0]))
-      .map((r) => ({
-        username: String(r[0]).trim(),
-        password: String(r[1] || '123456'),
-        displayName: String(r[2] || r[0]),
-        createdAt: String(r[3] || new Date().toISOString()),
-        avatar: r[4] ? String(r[4]).trim() : undefined,
-      }))
+      .map((r) => {
+        const username = String(r[0]).trim()
+        const rawCurrency = r[5] ? String(r[5]).trim().toUpperCase() : ''
+        const currency = (['KRW', 'USD', 'VND'].includes(rawCurrency)
+          ? (rawCurrency as CurrencyType)
+          : username.toLowerCase() === 'jeandev'
+          ? 'VND'
+          : undefined)
+
+        return {
+          username,
+          password: String(r[1] || '123456'),
+          displayName: String(r[2] || r[0]),
+          createdAt: String(r[3] || new Date().toISOString()),
+          avatar: r[4] ? String(r[4]).trim() : undefined,
+          currency,
+        }
+      })
     setCache(cacheKey, users)
     return users
   } catch (err) {
     console.warn('Error reading Users sheet:', err)
-    return [{ username: 'jeandev', password: '123456', displayName: 'Jean Dev', createdAt: new Date().toISOString() }]
+    return [{ username: 'jeandev', password: '123456', displayName: 'Jean Dev', createdAt: new Date().toISOString(), currency: 'VND' }]
   }
 }
 
@@ -942,6 +955,55 @@ export async function updateUserAvatar(username: string, avatarUrl: string): Pro
   }
 }
 
+export async function updateUserCurrency(username: string, currency: CurrencyType): Promise<boolean> {
+  const cleanUser = username.trim().toLowerCase()
+  if (!cleanUser || !['KRW', 'USD', 'VND'].includes(currency)) return false
+
+  const sheets = getGoogleSheets()
+  const spreadsheetId = getSpreadsheetId()
+
+  try {
+    // 1. Ensure header row has currency at F1
+    const headerCheck = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Users!A1:F1',
+    })
+    const existingHeaders = headerCheck.data.values?.[0] || []
+    if (existingHeaders.length < 6 || existingHeaders[5] !== 'currency') {
+      await sheets.spreadsheets.values.update({
+        spreadsheetId,
+        range: 'Users!F1',
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [['currency']] },
+      })
+    }
+
+    // 2. Fetch rows to locate user index
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Users!A2:F',
+    })
+    const rows = res.data.values || []
+    const rowIndex = rows.findIndex((r) => String(r[0] || '').trim().toLowerCase() === cleanUser)
+
+    if (rowIndex !== -1) {
+      const targetCell = `Users!F${rowIndex + 2}`
+      await sheets.spreadsheets.values.update({
+        spreadsheetId,
+        range: targetCell,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [[currency]] },
+      })
+      clearSheetCache()
+      return true
+    }
+    return false
+  } catch (err) {
+    console.error('Error updating user currency in Google Sheets:', err)
+    return false
+  }
+}
+
 export async function authenticateOrRegisterUser(username: string, password: string): Promise<UserRecord | null> {
   const cleanUser = username.trim().toLowerCase()
   if (!cleanUser) return null
@@ -961,21 +1023,23 @@ export async function authenticateOrRegisterUser(username: string, password: str
   const sheets = getGoogleSheets()
   const spreadsheetId = getSpreadsheetId()
   const now = new Date().toISOString()
+  const defaultCurrency: CurrencyType | undefined = cleanUser === 'jeandev' ? 'VND' : undefined
   const newUser: UserRecord = {
     username: cleanUser,
     password: '123456',
     displayName: cleanUser,
     createdAt: now,
+    currency: defaultCurrency,
   }
 
   try {
     await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: 'Users!A2:E',
+      range: 'Users!A2:F',
       valueInputOption: 'USER_ENTERED',
       insertDataOption: 'INSERT_ROWS',
       requestBody: {
-        values: [[newUser.username, newUser.password, newUser.displayName, newUser.createdAt, '']],
+        values: [[newUser.username, newUser.password, newUser.displayName, newUser.createdAt, '', newUser.currency || '']],
       },
     })
   } catch (e) {

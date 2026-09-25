@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
         username: user.username,
         displayName: user.displayName || user.username,
         avatar: user.avatar,
+        currency: user.currency || (user.username.toLowerCase() === 'jeandev' ? 'VND' : undefined),
       },
     })
   } catch (err: any) {

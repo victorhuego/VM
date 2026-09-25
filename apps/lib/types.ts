@@ -1,12 +1,14 @@
 export type ThemeType = 'matcha' | 'sakura' | 'mint' | 'lavender' | 'mocha' | 'slate'
 export type LanguageType = 'vi' | 'en'
 export type TabType = 'expenses' | 'moments' | 'users'
-export type MoodType = 'focus' | 'serene' | 'spark' | 'cozy' | 'wander' | 'flow'
+export type MoodType = 'serene' | 'bored' | 'flow' | 'focus' | 'spark' | 'cozy' | 'wander'
+export type CurrencyType = 'KRW' | 'USD' | 'VND'
 
 export interface UserProfile {
   username: string
   displayName: string
   avatar?: string
+  currency?: CurrencyType
 }
 
 export type TransactionType =

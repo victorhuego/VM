@@ -9,11 +9,14 @@ import {
   Footprints,
   Headphones,
   Sparkles,
+  Meh,
 } from 'lucide-react'
 
 const MOOD_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Coffee,
   Leaf,
+  Sparkles,
+  Meh,
   Lightbulb,
   CloudRain,
   Footprints,

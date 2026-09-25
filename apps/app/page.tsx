@@ -12,8 +12,9 @@ import {
   DebtItem,
   InitialBalances,
   UserProfile,
+  CurrencyType,
 } from '@/lib/types'
-import { dictionary } from '@/lib/i18n'
+import { dictionary, setActiveCurrency } from '@/lib/i18n'
 import {
   getClientLocalDateString,
   getClientYesterdayDateString,
@@ -41,6 +42,7 @@ import { ToastNotification } from '@/components/ToastNotification'
 import { SyncStatusBanner } from '@/components/SyncStatusBanner'
 import { LoginModal } from '@/components/LoginModal'
 import { UserManagerTab } from '@/components/UserManagerTab'
+import { CurrencySetupModal } from '@/components/CurrencySetupModal'
 import {
   fetchBalances,
   saveBalances,
@@ -56,6 +58,7 @@ import {
   apiCreateMoment,
   apiDeleteMoment,
   apiUploadImage,
+  apiUpdateUserCurrency,
 } from '@/lib/api-client'
 import { Plus } from 'lucide-react'
 
@@ -149,7 +152,11 @@ export default function Home() {
     if (storedUser) {
       try {
         const parsed: UserProfile = JSON.parse(storedUser)
+        if (parsed.username.toLowerCase() === 'jeandev' && !parsed.currency) {
+          parsed.currency = 'VND'
+        }
         setCurrentUser(parsed)
+        setActiveCurrency(parsed.currency || (parsed.username.toLowerCase() === 'jeandev' ? 'VND' : 'KRW'))
         loadInitialData(false, parsed.username)
       } catch {
         loadInitialData(false, '')
@@ -209,7 +216,11 @@ export default function Home() {
   }
 
   const handleLoginSuccess = (user: UserProfile) => {
+    if (user.username.toLowerCase() === 'jeandev' && !user.currency) {
+      user.currency = 'VND'
+    }
     setCurrentUser(user)
+    setActiveCurrency(user.currency || (user.username.toLowerCase() === 'jeandev' ? 'VND' : 'KRW'))
     localStorage.setItem('dayflow_user', JSON.stringify(user))
     loadInitialData(true, user.username)
     showToast(
@@ -222,6 +233,7 @@ export default function Home() {
   const handleLogout = () => {
     localStorage.removeItem('dayflow_user')
     setCurrentUser(null)
+    setActiveCurrency('VND')
     setExpenses([])
     setDebts([])
     setFinances({
@@ -242,6 +254,26 @@ export default function Home() {
     })
     setTab('moments')
     showToast(lang === 'vi' ? 'Đã đăng xuất thành công' : 'Logged out successfully')
+  }
+
+  const handleConfirmCurrency = async (selectedCurrency: CurrencyType) => {
+    if (!currentUser) return
+    const res = await apiUpdateUserCurrency(currentUser.username, selectedCurrency)
+    if (!res.success) {
+      throw new Error(res.error || (lang === 'vi' ? 'Không thể thiết lập đơn vị tiền tệ' : 'Failed to set currency'))
+    }
+    const updatedUser: UserProfile = {
+      ...currentUser,
+      currency: selectedCurrency,
+    }
+    setCurrentUser(updatedUser)
+    setActiveCurrency(selectedCurrency)
+    localStorage.setItem('dayflow_user', JSON.stringify(updatedUser))
+    showToast(
+      lang === 'vi'
+        ? `Đã thiết lập đơn vị tiền tệ: ${selectedCurrency}`
+        : `Currency set to: ${selectedCurrency}`
+    )
   }
 
   const handleUpdateAvatar = (newAvatarUrl: string) => {
@@ -890,6 +922,18 @@ export default function Home() {
         open={authChecked && !currentUser}
         lang={lang}
         onLoginSuccess={handleLoginSuccess}
+      />
+
+      <CurrencySetupModal
+        open={
+          authChecked &&
+          Boolean(currentUser) &&
+          !currentUser?.currency &&
+          currentUser?.username.toLowerCase() !== 'jeandev'
+        }
+        lang={lang}
+        username={currentUser?.username || ''}
+        onConfirm={handleConfirmCurrency}
       />
 
       <ToastNotification

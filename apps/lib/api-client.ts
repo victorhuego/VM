@@ -1,4 +1,4 @@
-import { ExpenseItem, DebtItem, MomentItem, InitialBalances, UserProfile } from '@/lib/types'
+import { ExpenseItem, DebtItem, MomentItem, InitialBalances, UserProfile, CurrencyType } from '@/lib/types'
 
 export interface HealthResponse {
   status: 'ok' | 'not_configured' | 'degraded' | 'error'
@@ -293,5 +293,22 @@ export async function apiUpdateUserAvatar(
     return { success: res.ok && data.success, error: data.error }
   } catch (err: any) {
     return { success: false, error: err?.message || 'Lỗi mạng khi cập nhật avatar' }
+  }
+}
+
+export async function apiUpdateUserCurrency(
+  username: string,
+  currency: CurrencyType
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const res = await fetch('/api/users/currency', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, currency }),
+    })
+    const data = await res.json()
+    return { success: res.ok && data.success, error: data.error }
+  } catch (err: any) {
+    return { success: false, error: err?.message || 'Lỗi mạng khi cập nhật đơn vị tiền tệ' }
   }
 }

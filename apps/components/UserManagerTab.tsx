@@ -3,8 +3,9 @@
 import React, { useRef, useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { LanguageType, UserProfile } from '@/lib/types'
-import { LogOut, User, Loader2, Maximize2, Camera } from 'lucide-react'
+import { LogOut, User, Loader2, Maximize2, Camera, Lock } from 'lucide-react'
 import { apiUploadImage, apiUpdateUserAvatar } from '@/lib/api-client'
+import { CURRENCY_METADATA } from '@/lib/i18n'
 
 interface UserManagerTabProps {
   currentUser: UserProfile
@@ -140,6 +141,24 @@ export function UserManagerTab({
             <p className="text-xs sm:text-sm font-mono text-theme-muted truncate">
               @{currentUser.username}
             </p>
+          </div>
+        </div>
+
+        {/* Currency Info (Immutable / Locked) */}
+        <div className="p-3 rounded-xl bg-theme-surface/70 border border-theme flex items-center justify-between text-xs">
+          <span className="text-theme-muted font-medium">
+            {lang === 'vi' ? 'Đơn vị tiền tệ:' : 'Currency:'}
+          </span>
+          <div className="flex items-center space-x-1.5 font-semibold text-theme-main">
+            <span className="font-mono">
+              {currentUser.currency
+                ? `${currentUser.currency} (${CURRENCY_METADATA[currentUser.currency]?.symbol || ''})`
+                : (currentUser.username.toLowerCase() === 'jeandev' ? 'VND (₫)' : 'KRW (₩)')}
+            </span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-200/80 text-zinc-600 font-sans flex items-center gap-0.5">
+              <Lock className="w-2.5 h-2.5" />
+              <span>{lang === 'vi' ? 'Cố định' : 'Fixed'}</span>
+            </span>
           </div>
         </div>
 

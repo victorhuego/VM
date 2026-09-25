@@ -7,14 +7,20 @@ export const themeMetadata = {
   slate: { name: 'Charcoal Slate', color: '#27272A' }
 }
 
+import { MoodType, CurrencyType } from '@/lib/types'
+
 export const moodMetadata: Record<string, { vi: string; en: string; icon: string }> = {
+  serene: { vi: 'Thư giãn', en: 'Relax', icon: 'Leaf' },
+  bored: { vi: 'Chán chường', en: 'Bored', icon: 'Meh' },
+  flow: { vi: 'Thú vị', en: 'Interesting', icon: 'Sparkles' },
   focus: { vi: 'Tập trung', en: 'Focus', icon: 'Coffee' },
-  serene: { vi: 'Thư giãn', en: 'Chilling', icon: 'Leaf' },
+  // Backward compatibility for existing data
   spark: { vi: 'Ý tưởng', en: 'Spark', icon: 'Lightbulb' },
   cozy: { vi: 'Ấm cúng', en: 'Cozy', icon: 'CloudRain' },
   wander: { vi: 'Dạo phố', en: 'Wander', icon: 'Footprints' },
-  flow: { vi: 'Thú vị', en: 'Interesting', icon: 'Sparkles' },
 }
+
+export const ACTIVE_MOOD_KEYS: MoodType[] = ['serene', 'bored', 'flow', 'focus']
 
 export const dictionary = {
   vi: {
@@ -669,24 +675,121 @@ export const dictionary = {
   }
 }
 
-export function formatMoney(amount: number, lang: 'vi' | 'en'): string {
-  const unit = dictionary[lang].currency_unit
-  const locale = lang === 'vi' ? 'vi-VN' : 'en-US'
-  return `${amount.toLocaleString(locale)}\u00A0${unit}`
+export const CURRENCY_METADATA: Record<CurrencyType, {
+  code: CurrencyType
+  symbol: string
+  vi: string
+  en: string
+  locale: string
+  position: 'prefix' | 'suffix'
+}> = {
+  KRW: {
+    code: 'KRW',
+    symbol: '₩',
+    vi: 'Won Hàn Quốc (KRW - ₩)',
+    en: 'Korean Won (KRW - ₩)',
+    locale: 'ko-KR',
+    position: 'prefix',
+  },
+  USD: {
+    code: 'USD',
+    symbol: '$',
+    vi: 'Đô la Mỹ (USD - $)',
+    en: 'US Dollar (USD - $)',
+    locale: 'en-US',
+    position: 'prefix',
+  },
+  VND: {
+    code: 'VND',
+    symbol: '₫',
+    vi: 'Việt Nam Đồng (VND - ₫)',
+    en: 'Vietnamese Dong (VND - ₫)',
+    locale: 'vi-VN',
+    position: 'suffix',
+  },
 }
 
-export function formatCompactMoney(amount: number, lang: 'vi' | 'en'): string {
-  const unit = dictionary[lang].currency_unit
+let activeCurrency: CurrencyType = 'VND'
+
+export function getActiveCurrency(): CurrencyType {
+  return activeCurrency
+}
+
+export function setActiveCurrency(cur: CurrencyType) {
+  if (CURRENCY_METADATA[cur]) {
+    activeCurrency = cur
+  }
+}
+
+export function formatMoney(amount: number, lang: 'vi' | 'en' = 'vi', currency?: CurrencyType): string {
+  const cur = currency || activeCurrency || 'VND'
+
+  if (cur === 'USD') {
+    const formatted = Math.abs(amount).toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    })
+    const sign = amount < 0 ? '-' : ''
+    return `${sign}$${formatted}`
+  }
+
+  if (cur === 'KRW') {
+    const formatted = Math.round(Math.abs(amount)).toLocaleString('ko-KR')
+    const sign = amount < 0 ? '-' : ''
+    return `${sign}₩${formatted}`
+  }
+
+  // VND
+  const unit = lang === 'vi' ? 'đ' : 'VND'
+  const formatted = Math.round(Math.abs(amount)).toLocaleString('vi-VN')
+  const sign = amount < 0 ? '-' : ''
+  return `${sign}${formatted}\u00A0${unit}`
+}
+
+export function formatCompactMoney(amount: number, lang: 'vi' | 'en' = 'vi', currency?: CurrencyType): string {
+  const cur = currency || activeCurrency || 'VND'
   const abs = Math.abs(amount)
+  const sign = amount < 0 ? '-' : ''
+
+  if (cur === 'USD') {
+    if (abs >= 1_000_000) {
+      const val = abs / 1_000_000
+      const str = val % 1 === 0 ? val.toString() : val.toFixed(1).replace(/\.0$/, '')
+      return `${sign}$${str}M`
+    }
+    if (abs >= 1_000) {
+      const val = abs / 1_000
+      const str = val % 1 === 0 ? val.toString() : val.toFixed(1).replace(/\.0$/, '')
+      return `${sign}$${str}k`
+    }
+    return `${sign}$${abs}`
+  }
+
+  if (cur === 'KRW') {
+    if (abs >= 1_000_000) {
+      const val = abs / 1_000_000
+      const str = val % 1 === 0 ? val.toString() : val.toFixed(1).replace(/\.0$/, '')
+      return `${sign}₩${str}M`
+    }
+    if (abs >= 1_000) {
+      const val = abs / 1_000
+      const str = val % 1 === 0 ? val.toString() : val.toFixed(1).replace(/\.0$/, '')
+      return `${sign}₩${str}k`
+    }
+    return `${sign}₩${abs}`
+  }
+
+  // VND
+  const unit = lang === 'vi' ? 'đ' : 'VND'
   if (abs >= 1_000_000) {
-    const val = amount / 1_000_000
+    const val = abs / 1_000_000
     const str = val % 1 === 0 ? val.toString() : val.toFixed(1).replace(/\.0$/, '')
-    return `${str}M\u00A0${unit}`
+    return `${sign}${str}M\u00A0${unit}`
   }
   if (abs >= 1_000) {
-    const val = amount / 1_000
+    const val = abs / 1_000
     const str = val % 1 === 0 ? val.toString() : val.toFixed(1).replace(/\.0$/, '')
-    return `${str}k\u00A0${unit}`
+    return `${sign}${str}k\u00A0${unit}`
   }
-  return `${amount}\u00A0${unit}`
+  return `${sign}${abs}\u00A0${unit}`
 }
