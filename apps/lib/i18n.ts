@@ -3,7 +3,7 @@ import { ThemeType, MoodType, CurrencyType } from '@/lib/types'
 export const themeMetadata: Record<ThemeType, { name: string; viName: string; color: string; descVi: string; descEn: string }> = {
   classic: {
     name: 'Classic',
-    viName: 'Cổ điển',
+    viName: 'Classic',
     color: '#3F6141',
     descVi: 'Tối giản & thanh lịch',
     descEn: 'Clean & minimalist',
@@ -12,8 +12,15 @@ export const themeMetadata: Record<ThemeType, { name: string; viName: string; co
     name: 'Cozy',
     viName: 'Cozy',
     color: '#EA5C79',
-    descVi: 'Ấm cúng & Quán trà boba',
-    descEn: 'Warm cafe & boba shop',
+    descVi: 'Ấm cúng',
+    descEn: 'Warming',
+  },
+  fantasy: {
+    name: 'Fantasy',
+    viName: 'Fantasy',
+    color: '#D3BC8E',
+    descVi: 'Kỳ ảo',
+    descEn: 'Fantasy',
   },
 }
 

@@ -117,7 +117,7 @@ export function CategoryIcon({
   if (showBackground) {
     return (
       <div
-        className={`flex items-center justify-center shrink-0 shadow-xs transition-transform ${bgSizes[size]} ${className}`}
+        className={`category-icon-badge flex items-center justify-center shrink-0 shadow-xs transition-transform ${bgSizes[size]} ${className}`}
         style={{
           backgroundColor: customBg || `${color}18`,
           color: color,
@@ -128,5 +128,5 @@ export function CategoryIcon({
     )
   }
 
-  return <IconComponent className={`${iconSizes[size]} ${className}`} style={{ color }} />
+  return <IconComponent className={`category-icon-standalone ${iconSizes[size]} ${className}`} style={{ color }} />
 }

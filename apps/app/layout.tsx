@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono, Quicksand } from 'next/font/google'
+import { Geist, Geist_Mono, Quicksand, Cinzel, Be_Vietnam_Pro } from 'next/font/google'
 import './globals.css'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
@@ -15,6 +15,18 @@ const geistMono = Geist_Mono({
 
 const quicksand = Quicksand({
   variable: '--font-cozy',
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '500', '600', '700'],
+})
+
+const cinzel = Cinzel({
+  variable: '--font-fantasy-serif',
+  subsets: ['latin'],
+  weight: ['600', '700', '900'],
+})
+
+const beVietnamPro = Be_Vietnam_Pro({
+  variable: '--font-fantasy-sans',
   subsets: ['latin', 'vietnamese'],
   weight: ['400', '500', '600', '700'],
 })
@@ -41,7 +53,7 @@ export default function RootLayout({
     <html
       lang="vi"
       data-theme="classic"
-      className={`${geistSans.variable} ${geistMono.variable} ${quicksand.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${quicksand.variable} ${cinzel.variable} ${beVietnamPro.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-900">

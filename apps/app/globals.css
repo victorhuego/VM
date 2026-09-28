@@ -2,6 +2,14 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@font-face {
+  font-family: 'HYWenHei';
+  src: url('/fonts/HYWenHei-Extended.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -106,6 +114,44 @@ html[data-theme="cozy"] {
   --input: #E8D9CB;
   --ring: #EA5C79;
   --radius: 1.25rem;
+}
+
+/* 3. FANTASY THEME (Genshin Impact / Teyvat Celestial Astral & Mora Gold) */
+html[data-theme="fantasy"] {
+  --theme-id: "fantasy";
+  --theme-text-gradient: linear-gradient(135deg, #FFE5A3 0%, #D3BC8E 50%, #BFA067 100%);
+  --theme-card-bg: #162132;
+  --theme-surface: #141C2A;
+  --theme-border: #D3BC8E;
+  --theme-border-hover: #FFE5A3;
+  --theme-text-main: #F5EAD4;
+  --theme-text-accent: #E5C992;
+  --theme-text-muted: #8E9FAC;
+  --theme-btn-gradient: linear-gradient(180deg, #FFE5A3 0%, #E5C992 50%, #C9A364 100%);
+  --theme-btn-hover: linear-gradient(180deg, #FFF0C2 0%, #F3D58B 50%, #DDB370 100%);
+  --theme-progress: linear-gradient(90deg, #D3BC8E 0%, #E5C992 50%, #FFE5A3 100%);
+  --theme-active-tag: #E5C992;
+  --theme-ring: #D3BC8E;
+  --theme-shadow: rgba(0, 0, 0, 0.65);
+
+  --background: #0D121D;
+  --foreground: #F5EAD4;
+  --card: #162132;
+  --card-foreground: #F5EAD4;
+  --popover: #172030;
+  --popover-foreground: #F5EAD4;
+  --primary: #D3BC8E;
+  --primary-foreground: #1E2533;
+  --secondary: #141C2A;
+  --secondary-foreground: #F5EAD4;
+  --muted: #141C2A;
+  --muted-foreground: #8E9FAC;
+  --accent: #1B2738;
+  --accent-foreground: #E5C992;
+  --border: #443826;
+  --input: #243044;
+  --ring: #D3BC8E;
+  --radius: 1rem;
 }
 
 /* ================= UTILITY CLASSES ================= */
@@ -444,6 +490,402 @@ html[data-theme="cozy"] .floating-dock-shadow {
   background-color: rgba(255, 253, 248, 0.98) !important;
   border: 2px solid #E8D9CB !important;
   box-shadow: 0 12px 32px -4px rgba(82, 54, 38, 0.14), 0 4px 0 #E2D1BF !important;
+}
+
+/* ================= FANTASY THEME COMPONENT STYLING OVERRIDES ================= */
+html[data-theme="fantasy"],
+html[data-theme="fantasy"] body,
+html[data-theme="fantasy"] button,
+html[data-theme="fantasy"] input,
+html[data-theme="fantasy"] select,
+html[data-theme="fantasy"] textarea {
+  font-family: 'HYWenHei', var(--font-fantasy-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+html[data-theme="fantasy"] h1,
+html[data-theme="fantasy"] h2,
+html[data-theme="fantasy"] h3,
+html[data-theme="fantasy"] .font-serif {
+  font-family: 'HYWenHei', var(--font-fantasy-sans), sans-serif !important;
+  letter-spacing: 0.02em;
+}
+
+html[data-theme="fantasy"] body {
+  background-color: #0D121D !important;
+}
+
+/* Fantasy 5-Star Legendary Net Worth Card */
+html[data-theme="fantasy"] .net-worth-card {
+  background: linear-gradient(180deg, #2A2117 0%, #1A1510 60%, #100D0A 100%) !important;
+  border: 2px solid #E5C992 !important;
+  box-shadow: 0 0 20px rgba(229, 201, 146, 0.2), 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+}
+html[data-theme="fantasy"] .net-worth-card .text-theme-main {
+  color: #F5EAD4 !important;
+}
+html[data-theme="fantasy"] .net-worth-card .text-theme-muted {
+  color: #C4B296 !important;
+}
+html[data-theme="fantasy"] .net-worth-card .text-theme-accent {
+  color: #FFE5A3 !important;
+}
+html[data-theme="fantasy"] .net-worth-card .text-theme-gradient {
+  background: linear-gradient(135deg, #FFF2D1 0%, #E5C992 50%, #BFA067 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Fantasy Cards: Astral Navy with Gold trim */
+html[data-theme="fantasy"] .bento-card,
+html[data-theme="fantasy"] [data-slot="card"] {
+  border-radius: 1rem !important;
+  border-width: 1px !important;
+  border-color: rgba(211, 188, 142, 0.45) !important;
+  background-color: #162132 !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(211, 188, 142, 0.04) !important;
+}
+
+html[data-theme="fantasy"] .bento-card:hover,
+html[data-theme="fantasy"] [data-slot="card"]:hover {
+  border-color: #E5C992 !important;
+  box-shadow: 0 8px 28px -4px rgba(0, 0, 0, 0.6), 0 0 12px rgba(229, 201, 146, 0.15) !important;
+}
+
+/* Fantasy Golden Action Buttons */
+html[data-theme="fantasy"] .btn-theme-gradient {
+  background: linear-gradient(180deg, #FFE5A3 0%, #E5C992 50%, #C9A364 100%) !important;
+  color: #1E2533 !important;
+  border-radius: 9999px !important;
+  border: 1px solid #FFF2D1 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em;
+  box-shadow: 0 0 14px rgba(229, 201, 146, 0.35) !important;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease !important;
+}
+
+html[data-theme="fantasy"] .btn-theme-gradient:hover {
+  background: linear-gradient(180deg, #FFF0C2 0%, #F3D58B 50%, #DDB370 100%) !important;
+  box-shadow: 0 0 18px rgba(229, 201, 146, 0.5) !important;
+  filter: brightness(1.05);
+}
+
+html[data-theme="fantasy"] .btn-theme-gradient:active {
+  transform: scale(0.97) !important;
+}
+
+/* Fantasy FAB (Primogem Wish Star) */
+html[data-theme="fantasy"] .bubble-fab-mobile {
+  box-shadow: 0 0 24px rgba(229, 201, 146, 0.55), 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+  border: 2px solid #FFF2D1 !important;
+}
+
+/* Fantasy Ornate Dialog Modals (Paimon prompt style) */
+html[data-theme="fantasy"] [role="dialog"],
+html[data-theme="fantasy"] [data-slot="dialog-content"] {
+  border-radius: 1.25rem !important;
+  border: 2px solid #D3BC8E !important;
+  background-color: #172030 !important;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.85), 0 0 24px rgba(211, 188, 142, 0.25) !important;
+  color: #F5EAD4 !important;
+}
+
+/* Fantasy Floating Dock on Mobile */
+html[data-theme="fantasy"] .floating-dock-shadow {
+  background-color: rgba(19, 28, 42, 0.96) !important;
+  border: 1px solid rgba(211, 188, 142, 0.5) !important;
+  box-shadow: 0 12px 36px -4px rgba(0, 0, 0, 0.7), 0 0 16px rgba(211, 188, 142, 0.15) !important;
+}
+
+/* Fantasy Expense List Card & Period Switcher */
+html[data-theme="fantasy"] .expense-list-card {
+  border-radius: 1rem !important;
+  border-width: 1px !important;
+  border-color: rgba(211, 188, 142, 0.45) !important;
+  background-color: #141C2A !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
+}
+
+html[data-theme="fantasy"] .period-switcher-container {
+  background-color: #0C121D !important;
+  border-radius: 0.75rem !important;
+  border-color: rgba(211, 188, 142, 0.3) !important;
+}
+
+html[data-theme="fantasy"] .period-tab-btn {
+  border-radius: 0.5rem !important;
+  color: #8E9FAC;
+}
+
+html[data-theme="fantasy"] .period-tab-active {
+  background: #D3BC8E !important;
+  color: #1E2533 !important;
+  border: 1px solid #FFE5A3 !important;
+  box-shadow: 0 2px 8px rgba(211, 188, 142, 0.3) !important;
+  font-weight: 700 !important;
+}
+
+/* Fantasy Expense List Details & Navigation */
+html[data-theme="fantasy"] .expense-list-card .bg-white {
+  background-color: #162132 !important;
+  color: #F5EAD4 !important;
+}
+
+html[data-theme="fantasy"] .expense-list-card .divide-zinc-100 > * + * {
+  border-color: rgba(211, 188, 142, 0.12) !important;
+}
+
+html[data-theme="fantasy"] .expense-list-card .text-zinc-900,
+html[data-theme="fantasy"] .expense-list-card .text-zinc-800,
+html[data-theme="fantasy"] .expense-list-card .text-zinc-700 {
+  color: #F5EAD4 !important;
+}
+
+html[data-theme="fantasy"] .expense-list-card .text-zinc-600,
+html[data-theme="fantasy"] .expense-list-card .text-zinc-500,
+html[data-theme="fantasy"] .expense-list-card .text-zinc-400 {
+  color: #8E9FAC !important;
+}
+
+html[data-theme="fantasy"] .expense-list-card button.bg-white,
+html[data-theme="fantasy"] .expense-list-card div.bg-white {
+  background-color: #1A2537 !important;
+  border-color: rgba(211, 188, 142, 0.35) !important;
+  color: #E5C992 !important;
+}
+
+html[data-theme="fantasy"] .expense-list-card input[type="date"] {
+  background-color: #1A2537 !important;
+  border-color: rgba(211, 188, 142, 0.35) !important;
+  color: #F5EAD4 !important;
+}
+
+/* ================= FANTASY STRICT COLOR PALETTE: GOLD - BLACK - WHITE ONLY ================= */
+/* 1. Eliminate greens (emerald, green) -> Gold / Pure White */
+html[data-theme="fantasy"] .text-emerald-950,
+html[data-theme="fantasy"] .text-emerald-900,
+html[data-theme="fantasy"] .text-emerald-800,
+html[data-theme="fantasy"] .text-emerald-700,
+html[data-theme="fantasy"] .text-emerald-600,
+html[data-theme="fantasy"] .text-emerald-500,
+html[data-theme="fantasy"] .text-green-600,
+html[data-theme="fantasy"] .text-green-700 {
+  color: #FFFFFF !important;
+}
+
+html[data-theme="fantasy"] .bg-emerald-50,
+html[data-theme="fantasy"] .bg-emerald-100,
+html[data-theme="fantasy"] .bg-emerald-200 {
+  background-color: #1A2537 !important;
+  border-color: rgba(211, 188, 142, 0.35) !important;
+}
+
+html[data-theme="fantasy"] .border-emerald-200,
+html[data-theme="fantasy"] .border-emerald-300,
+html[data-theme="fantasy"] .border-emerald-400,
+html[data-theme="fantasy"] .border-emerald-500 {
+  border-color: rgba(211, 188, 142, 0.35) !important;
+}
+
+/* Pulsing beacon dots (green -> gold) */
+html[data-theme="fantasy"] .bg-emerald-500,
+html[data-theme="fantasy"] .bg-emerald-600 {
+  background-color: #E5C992 !important;
+  box-shadow: 0 0 10px rgba(229, 201, 146, 0.6) !important;
+}
+
+/* 2. Eliminate blues & cyans (blue, sky, cyan) -> Pure White / Gold */
+html[data-theme="fantasy"] .text-blue-950,
+html[data-theme="fantasy"] .text-blue-900,
+html[data-theme="fantasy"] .text-blue-800,
+html[data-theme="fantasy"] .text-blue-700,
+html[data-theme="fantasy"] .text-blue-600,
+html[data-theme="fantasy"] .text-blue-500,
+html[data-theme="fantasy"] .text-cyan-500,
+html[data-theme="fantasy"] .text-sky-500 {
+  color: #FFFFFF !important;
+}
+
+html[data-theme="fantasy"] .bg-blue-50,
+html[data-theme="fantasy"] .bg-blue-100,
+html[data-theme="fantasy"] .bg-blue-200 {
+  background-color: #1A2537 !important;
+  border-color: rgba(211, 188, 142, 0.35) !important;
+}
+
+html[data-theme="fantasy"] .border-blue-200,
+html[data-theme="fantasy"] .border-blue-300,
+html[data-theme="fantasy"] .border-blue-400,
+html[data-theme="fantasy"] .border-blue-500 {
+  border-color: rgba(211, 188, 142, 0.35) !important;
+}
+
+/* 3. Eliminate reds & roses (rose, red) -> Gold / Warm White */
+html[data-theme="fantasy"] .text-rose-950,
+html[data-theme="fantasy"] .text-rose-900,
+html[data-theme="fantasy"] .text-rose-800,
+html[data-theme="fantasy"] .text-rose-700,
+html[data-theme="fantasy"] .text-rose-600,
+html[data-theme="fantasy"] .text-rose-500,
+html[data-theme="fantasy"] .text-red-600,
+html[data-theme="fantasy"] .text-red-500 {
+  color: #FFE5A3 !important;
+}
+
+html[data-theme="fantasy"] .bg-rose-50,
+html[data-theme="fantasy"] .bg-rose-100,
+html[data-theme="fantasy"] .bg-rose-200,
+html[data-theme="fantasy"] .bg-red-50 {
+  background-color: #1A2537 !important;
+  border-color: rgba(211, 188, 142, 0.35) !important;
+}
+
+html[data-theme="fantasy"] .border-rose-200,
+html[data-theme="fantasy"] .border-rose-300,
+html[data-theme="fantasy"] .border-rose-400,
+html[data-theme="fantasy"] .border-rose-500,
+html[data-theme="fantasy"] .border-red-200 {
+  border-color: rgba(211, 188, 142, 0.35) !important;
+}
+
+html[data-theme="fantasy"] .bg-rose-500,
+html[data-theme="fantasy"] .bg-rose-600 {
+  background: linear-gradient(90deg, #D3BC8E 0%, #E5C992 50%, #FFE5A3 100%) !important;
+}
+
+/* 4. Eliminate purples & violets */
+html[data-theme="fantasy"] .text-purple-600,
+html[data-theme="fantasy"] .text-purple-700,
+html[data-theme="fantasy"] .text-purple-800,
+html[data-theme="fantasy"] .text-violet-600 {
+  color: #E5C992 !important;
+}
+
+html[data-theme="fantasy"] .bg-purple-50,
+html[data-theme="fantasy"] .bg-purple-100 {
+  background-color: #1A2537 !important;
+  border-color: rgba(211, 188, 142, 0.35) !important;
+}
+
+/* 5. Unify Ambers & Oranges into Mora Gold spectrum */
+html[data-theme="fantasy"] .text-amber-600,
+html[data-theme="fantasy"] .text-amber-700,
+html[data-theme="fantasy"] .text-amber-800,
+html[data-theme="fantasy"] .text-amber-900,
+html[data-theme="fantasy"] .text-orange-600 {
+  color: #E5C992 !important;
+}
+
+html[data-theme="fantasy"] .bg-amber-50,
+html[data-theme="fantasy"] .bg-amber-100,
+html[data-theme="fantasy"] .bg-amber-200 {
+  background-color: #1A2537 !important;
+  border-color: rgba(211, 188, 142, 0.35) !important;
+}
+
+html[data-theme="fantasy"] .border-amber-200,
+html[data-theme="fantasy"] .border-amber-300,
+html[data-theme="fantasy"] .border-amber-400 {
+  border-color: rgba(211, 188, 142, 0.35) !important;
+}
+
+/* 6. Category Icons & Standalone Badges -> Strictly Gold & Astral Dark */
+html[data-theme="fantasy"] .category-icon-badge {
+  background-color: #1A2537 !important;
+  color: #E5C992 !important;
+  border: 1px solid rgba(211, 188, 142, 0.35) !important;
+}
+
+html[data-theme="fantasy"] .category-icon-badge svg,
+html[data-theme="fantasy"] .category-icon-standalone {
+  color: #E5C992 !important;
+  stroke: #E5C992 !important;
+}
+
+/* All icons inside metric cards & lists */
+html[data-theme="fantasy"] .bento-card svg:not(.text-white) {
+  color: #E5C992 !important;
+}
+
+/* Circadian track in fantasy theme -> gold/dark only */
+html[data-theme="fantasy"] .circadian-track {
+  background: linear-gradient(90deg, 
+    rgba(13, 18, 29, 0.95) 0%, 
+    rgba(211, 188, 142, 0.25) 50%, 
+    rgba(13, 18, 29, 0.95) 100%) !important;
+}
+
+/* Fantasy Modal & Dialog Surfaces (Paimon Astral Window) */
+html[data-theme="fantasy"] [role="dialog"] .border-b,
+html[data-theme="fantasy"] [role="dialog"] .border-t,
+html[data-theme="fantasy"] [role="dialog"] .border {
+  border-color: rgba(211, 188, 142, 0.3) !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] .bg-zinc-50,
+html[data-theme="fantasy"] [role="dialog"] .bg-zinc-50\/70,
+html[data-theme="fantasy"] [role="dialog"] .bg-zinc-50\/80,
+html[data-theme="fantasy"] [role="dialog"] .bg-white {
+  background-color: #172030 !important;
+  color: #F5EAD4 !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] input,
+html[data-theme="fantasy"] [role="dialog"] textarea,
+html[data-theme="fantasy"] [role="dialog"] select {
+  background-color: #111827 !important;
+  border-color: rgba(211, 188, 142, 0.4) !important;
+  color: #F5EAD4 !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] input:focus,
+html[data-theme="fantasy"] [role="dialog"] textarea:focus {
+  border-color: #E5C992 !important;
+  box-shadow: 0 0 10px rgba(229, 201, 146, 0.25) !important;
+}
+
+/* Fantasy Keypad & Touchpad */
+html[data-theme="fantasy"] .bg-zinc-50\/70 {
+  background-color: #131B29 !important;
+}
+
+html[data-theme="fantasy"] .grid-cols-3 button {
+  background-color: #1C273A !important;
+  border-color: rgba(211, 188, 142, 0.25) !important;
+  color: #F5EAD4 !important;
+}
+
+html[data-theme="fantasy"] .grid-cols-3 button:hover {
+  background-color: #24334C !important;
+  border-color: #E5C992 !important;
+}
+
+/* Fantasy Dropdown Menus (React-Select & Radix) */
+html[data-theme="fantasy"] [class*="-menu"] {
+  background-color: #172030 !important;
+  border: 1px solid #D3BC8E !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+  color: #F5EAD4 !important;
+}
+
+html[data-theme="fantasy"] [class*="-option"] {
+  background-color: transparent !important;
+  color: #F5EAD4 !important;
+}
+
+html[data-theme="fantasy"] [class*="-option"]:hover,
+html[data-theme="fantasy"] [class*="-option"][class*="--is-focused"] {
+  background-color: #24334C !important;
+  color: #FFE5A3 !important;
+}
+
+html[data-theme="fantasy"] [class*="-control"] {
+  background-color: #141C2A !important;
+  border-color: rgba(211, 188, 142, 0.4) !important;
+  color: #F5EAD4 !important;
+}
+
+html[data-theme="fantasy"] [class*="-singleValue"] {
+  color: #F5EAD4 !important;
 }
 
 /* Hide mobile bubble button whenever any modal/dialog is active */

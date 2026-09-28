@@ -1,4 +1,4 @@
-export type ThemeType = 'classic' | 'cozy'
+export type ThemeType = 'classic' | 'cozy' | 'fantasy'
 export type LanguageType = 'vi' | 'en'
 export type TabType = 'expenses' | 'moments' | 'users'
 export type MoodType = 'serene' | 'bored' | 'flow' | 'focus' | 'spark' | 'cozy' | 'wander'

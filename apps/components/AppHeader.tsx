@@ -69,9 +69,12 @@ export function AppHeader({
   }))
 
   return (
-    <header className="w-full border-b border-theme bg-white/95 backdrop-blur-md sticky top-0 z-40 transition-colors">
+    <header className="w-full border-b border-theme bg-background/95 backdrop-blur-md sticky top-0 z-40 transition-colors">
       {currentTheme === 'cozy' && (
         <div className="h-1.5 sm:h-2 w-full cafe-awning-stripes" />
+      )}
+      {currentTheme === 'fantasy' && (
+        <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#E5C992] to-transparent shadow-[0_0_8px_#E5C992]" />
       )}
       <div className="w-full px-2.5 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         {/* Brand & Desktop Navigation */}
@@ -80,6 +83,14 @@ export function AppHeader({
             {currentTheme === 'cozy' ? (
               <div className="w-7 h-7 rounded-xl bg-amber-100 border border-amber-300/80 flex items-center justify-center text-sm shadow-xs transition-transform active:scale-90 shrink-0">
                 🧋
+              </div>
+            ) : currentTheme === 'fantasy' ? (
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#FFE5A3] via-[#D3BC8E] to-[#8C6D37] p-[1.5px] shadow-sm shrink-0 flex items-center justify-center">
+                <div className="w-full h-full rounded-full bg-[#162132] flex items-center justify-center">
+                  <svg className="w-3.5 h-3.5 text-[#E5C992]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C12 7.2 16.8 12 22 12C16.8 12 12 16.8 12 22C12 16.8 7.2 12 2 12C7.2 12 12 7.2 12 2Z" />
+                  </svg>
+                </div>
               </div>
             ) : (
               <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full btn-theme-gradient ring-2 ring-theme" />

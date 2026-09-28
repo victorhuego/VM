@@ -143,7 +143,7 @@ export default function Home() {
   // Synchronize client local theme & auth session
   useEffect(() => {
     const savedTheme = localStorage.getItem('app_theme')
-    const activeTheme: ThemeType = savedTheme === 'cozy' ? 'cozy' : 'classic'
+    const activeTheme: ThemeType = (savedTheme === 'cozy' || savedTheme === 'fantasy') ? savedTheme : 'classic'
     setTheme(activeTheme)
     document.documentElement.setAttribute('data-theme', activeTheme)
 
@@ -702,7 +702,7 @@ export default function Home() {
   const t = dictionary[lang]
 
   return (
-    <div className="min-h-screen bg-white flex flex-col pb-16 sm:pb-0">
+    <div className="min-h-screen bg-background text-foreground flex flex-col pb-16 sm:pb-0">
       <AppHeader
         currentTheme={theme}
         onThemeChange={handleThemeChange}
@@ -781,11 +781,21 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => handleOpenExpenseModal('general')}
-                  className="fixed bottom-[calc(max(0.75rem,env(safe-area-inset-bottom))+4.25rem)] sm:bottom-8 right-4 sm:right-8 z-40 bubble-fab-mobile btn-theme-gradient text-white shadow-2xl hover:shadow-3xl w-14 h-14 sm:w-auto sm:h-auto p-0 sm:px-5 sm:py-3 rounded-full flex items-center justify-center gap-2 font-semibold text-xs sm:text-sm transition-all duration-200 active:scale-90 sm:active:scale-95 cursor-pointer border border-white/25"
+                  className={`fixed bottom-[calc(max(0.75rem,env(safe-area-inset-bottom))+4.25rem)] sm:bottom-8 right-4 sm:right-8 z-40 bubble-fab-mobile btn-theme-gradient w-14 h-14 sm:w-auto sm:h-auto p-0 sm:px-5 sm:py-3 rounded-full flex items-center justify-center gap-2 font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
+                    theme === 'fantasy'
+                      ? 'text-[#1E2533] border-2 border-[#FFF2D1] shadow-[0_0_20px_rgba(229,201,146,0.5)]'
+                      : theme === 'cozy'
+                      ? 'text-white border-2 border-white shadow-xl'
+                      : 'text-white shadow-2xl hover:shadow-3xl border border-white/25 active:scale-95'
+                  }`}
                   title={t.btn_note_expense}
                   aria-label={t.btn_note_expense}
                 >
-                  <Plus className="w-7 h-7 sm:w-5 sm:h-5 stroke-[2.5]" />
+                  {theme === 'fantasy' ? (
+                    <span className="text-xl sm:text-lg font-black leading-none">✦</span>
+                  ) : (
+                    <Plus className="w-7 h-7 sm:w-5 sm:h-5 stroke-[2.5]" />
+                  )}
                   <span className="hidden sm:inline">{t.btn_note_expense}</span>
                 </button>
               )}
@@ -905,6 +915,7 @@ export default function Home() {
         moments={todayMoments}
         lang={lang}
         currentUser={currentUser}
+        theme={theme}
       />
 
       <LightboxModal
@@ -944,7 +955,7 @@ export default function Home() {
         onAction={toastConfig.onAction}
       />
 
-      <footer className="hidden sm:block border-t border-theme py-6 text-center text-xs text-theme-muted bg-white mt-auto">
+      <footer className="hidden sm:block border-t border-theme py-6 text-center text-xs text-theme-muted bg-background mt-auto">
         <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span className="font-medium">{t.footer_title}</span>
           <span className="font-mono text-[11px] text-zinc-400">{t.footer_backend}</span>
