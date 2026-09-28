@@ -312,3 +312,28 @@ export async function apiUpdateUserCurrency(
     return { success: false, error: err?.message || 'Lỗi mạng khi cập nhật đơn vị tiền tệ' }
   }
 }
+
+export interface DriveAuthStatus {
+  hasOAuthConfig: boolean
+  hasRefreshToken: boolean
+  isTokenValid: boolean
+  needsReauth: boolean
+  authUrl?: string
+  error?: string
+}
+
+export async function checkGoogleDriveAuthStatus(): Promise<DriveAuthStatus> {
+  try {
+    const res = await fetch('/api/auth/google/status', { cache: 'no-store' })
+    return await res.json()
+  } catch (err: any) {
+    return {
+      hasOAuthConfig: false,
+      hasRefreshToken: false,
+      isTokenValid: false,
+      needsReauth: false,
+      error: err?.message || 'Không thể kiểm tra trạng thái OAuth',
+    }
+  }
+}
+

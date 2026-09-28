@@ -29,6 +29,7 @@ interface AppHeaderProps {
   onRefresh?: () => void
   isRefreshing?: boolean
   currentUser?: UserProfile | null
+  driveAuthIndicator?: React.ReactNode
 }
 
 export function AppHeader({
@@ -41,6 +42,7 @@ export function AppHeader({
   onRefresh,
   isRefreshing,
   currentUser,
+  driveAuthIndicator,
 }: AppHeaderProps) {
   const t = dictionary[currentLang]
 
@@ -93,6 +95,8 @@ export function AppHeader({
               <RotateCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-theme-accent ${isRefreshing ? 'animate-spin' : ''}`} />
             </button>
           )}
+
+          {driveAuthIndicator}
 
           <span className="text-zinc-300 hidden sm:inline">|</span>
 

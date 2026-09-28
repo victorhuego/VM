@@ -123,10 +123,79 @@ export function getGoogleAuthClient() {
 
 let cachedDriveOAuth: InstanceType<typeof google.auth.OAuth2> | null = null
 
+/**
+ * Reset the cached Drive OAuth2 client.
+ * Call this after obtaining a new refresh token so next request uses fresh credentials.
+ */
+export function resetDriveOAuthCache() {
+  cachedDriveOAuth = null
+}
+
 export function createOAuth2Client(redirectUri?: string) {
   const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
   const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET
   return new google.auth.OAuth2(clientId, clientSecret, redirectUri)
+}
+
+/**
+ * Check if Google Drive OAuth is configured and the token is still valid.
+ * Returns status info for the frontend to decide whether to show a re-auth banner.
+ */
+export async function checkDriveOAuthStatus(): Promise<{
+  hasOAuthConfig: boolean
+  hasRefreshToken: boolean
+  isTokenValid: boolean
+  needsReauth: boolean
+}> {
+  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
+  const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET
+  const hasOAuthConfig = Boolean(clientId && clientSecret)
+
+  if (!hasOAuthConfig) {
+    return { hasOAuthConfig: false, hasRefreshToken: false, isTokenValid: false, needsReauth: false }
+  }
+
+  // Check if refresh token exists
+  let hasRefreshToken = Boolean(process.env.GOOGLE_OAUTH_REFRESH_TOKEN)
+  if (!hasRefreshToken) {
+    try {
+      const { getOAuthTokenFromSheet } = await import('./sheets')
+      const sheetToken = await getOAuthTokenFromSheet('google_drive')
+      hasRefreshToken = Boolean(sheetToken?.refreshToken)
+    } catch {
+      hasRefreshToken = false
+    }
+  }
+
+  if (!hasRefreshToken) {
+    return { hasOAuthConfig: true, hasRefreshToken: false, isTokenValid: false, needsReauth: true }
+  }
+
+  // Try a lightweight API call to verify the token is still valid
+  try {
+    const auth = await getGoogleDriveAuth()
+    const drive = google.drive({ version: 'v3', auth })
+    await drive.about.get({ fields: 'user' })
+    return { hasOAuthConfig: true, hasRefreshToken: true, isTokenValid: true, needsReauth: false }
+  } catch (err: any) {
+    const message = String(err?.message || '').toLowerCase()
+    const code = err?.response?.status || err?.code
+    const isAuthError =
+      message.includes('invalid_grant') ||
+      message.includes('token has been expired or revoked') ||
+      message.includes('token has been revoked') ||
+      code === 401 ||
+      code === 403
+
+    if (isAuthError) {
+      // Reset cached client so next auth attempt uses fresh token
+      resetDriveOAuthCache()
+      return { hasOAuthConfig: true, hasRefreshToken: true, isTokenValid: false, needsReauth: true }
+    }
+
+    // Other errors (network, etc.) — don't flag as needing re-auth
+    return { hasOAuthConfig: true, hasRefreshToken: true, isTokenValid: false, needsReauth: false }
+  }
 }
 
 export async function getGoogleDriveAuth() {

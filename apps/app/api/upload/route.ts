@@ -78,7 +78,20 @@ export async function POST(req: NextRequest) {
         name: result.name,
       })
     } catch (driveErr: any) {
-      console.warn('Google Drive notice (fallback to local server storage):', driveErr?.message)
+      const errMsg = String(driveErr?.message || '').toLowerCase()
+      const errCode = driveErr?.response?.status || driveErr?.code
+      const isAuthError =
+        errMsg.includes('invalid_grant') ||
+        errMsg.includes('token has been expired or revoked') ||
+        errMsg.includes('token has been revoked') ||
+        errCode === 401 ||
+        errCode === 403
+
+      if (isAuthError) {
+        console.warn('Google Drive OAuth token expired/revoked, flagging for re-auth:', driveErr?.message)
+      } else {
+        console.warn('Google Drive notice (fallback to local server storage):', driveErr?.message)
+      }
 
       // Save locally to public/uploads so the URL is short and safe for Google Sheets
       const { saveLocalImage } = await import('@/lib/image-storage')
@@ -90,6 +103,7 @@ export async function POST(req: NextRequest) {
         url: localUrl,
         name: uploadFilename,
         isLocalFallback: true,
+        driveAuthExpired: isAuthError,
       })
     }
   } catch (err: any) {

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getGoogleConfigStatus } from '@/lib/google/client'
+import { getGoogleConfigStatus, checkDriveOAuthStatus } from '@/lib/google/client'
 import { testDriveAccess } from '@/lib/google/drive'
 import { getSheetMap } from '@/lib/google/sheets'
 
@@ -44,6 +44,14 @@ export async function GET() {
 
   const allReady = sheetsOk && driveOk
 
+  // Check Drive OAuth token status (for personal Drive via OAuth2)
+  let driveOAuth: { hasOAuthConfig: boolean; hasRefreshToken: boolean; isTokenValid: boolean; needsReauth: boolean } | undefined
+  try {
+    driveOAuth = await checkDriveOAuthStatus()
+  } catch {
+    // Non-critical — skip if check fails
+  }
+
   return NextResponse.json({
     status: allReady ? 'ok' : 'degraded',
     config: configStatus,
@@ -57,5 +65,6 @@ export async function GET() {
       folderName: driveFolder,
       error: driveError,
     },
+    driveOAuth,
   })
 }

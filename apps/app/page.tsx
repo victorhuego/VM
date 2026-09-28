@@ -39,7 +39,7 @@ import { StoryZenModal } from '@/components/StoryZenModal'
 import { LightboxModal } from '@/components/LightboxModal'
 import { MobileBottomNav } from '@/components/MobileBottomNav'
 import { ToastNotification } from '@/components/ToastNotification'
-import { SyncStatusBanner } from '@/components/SyncStatusBanner'
+import { GoogleDriveAuthIndicator } from '@/components/GoogleDriveAuthBanner'
 import { LoginModal } from '@/components/LoginModal'
 import { UserManagerTab } from '@/components/UserManagerTab'
 import { CurrencySetupModal } from '@/components/CurrencySetupModal'
@@ -713,11 +713,13 @@ export default function Home() {
         onRefresh={() => loadInitialData(true)}
         isRefreshing={isLoading}
         currentUser={currentUser}
+        driveAuthIndicator={
+          <GoogleDriveAuthIndicator
+            lang={lang}
+            onReauthSuccess={() => loadInitialData(true)}
+          />
+        }
       />
-
-      <div className="max-w-5xl w-full mx-auto px-3 sm:px-6 pt-3 sm:pt-4">
-        <SyncStatusBanner lang={lang} onRefreshData={() => loadInitialData(true)} />
-      </div>
 
       {/* Screen A: Financial Dashboard */}
       {tab === 'expenses' && (
