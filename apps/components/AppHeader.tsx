@@ -64,17 +64,26 @@ export function AppHeader({
 
   const themeOptions: ThemeOption[] = (Object.keys(themeMetadata) as ThemeType[]).map((key) => ({
     value: key,
-    label: themeMetadata[key].name,
+    label: currentLang === 'vi' ? themeMetadata[key].viName : themeMetadata[key].name,
     color: themeMetadata[key].color,
   }))
 
   return (
-    <header className="w-full border-b border-theme bg-white/95 backdrop-blur-md sticky top-0 z-40">
+    <header className="w-full border-b border-theme bg-white/95 backdrop-blur-md sticky top-0 z-40 transition-colors">
+      {currentTheme === 'cozy' && (
+        <div className="h-1.5 sm:h-2 w-full cafe-awning-stripes" />
+      )}
       <div className="w-full px-2.5 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         {/* Brand & Desktop Navigation */}
         <div className="flex items-center space-x-2 sm:space-x-6 min-w-0">
           <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0 cursor-pointer" onClick={() => onTabChange('moments')}>
-            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full btn-theme-gradient ring-2 ring-theme" />
+            {currentTheme === 'cozy' ? (
+              <div className="w-7 h-7 rounded-xl bg-amber-100 border border-amber-300/80 flex items-center justify-center text-sm shadow-xs transition-transform active:scale-90 shrink-0">
+                🧋
+              </div>
+            ) : (
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full btn-theme-gradient ring-2 ring-theme" />
+            )}
             <span className="font-bold tracking-tight text-xs sm:text-base text-theme-gradient truncate">
               {t.app_title}
             </span>
@@ -186,8 +195,12 @@ export function AppHeader({
                   className="w-2.5 h-2.5 rounded-full ring-1 ring-black/10 shrink-0"
                   style={{ backgroundColor: themeMetadata[currentTheme].color }}
                 />
-                <span className="truncate sm:inline hidden">{themeMetadata[currentTheme].name}</span>
-                <span className="truncate sm:hidden inline">{themeMetadata[currentTheme].name.split(' ')[0]}</span>
+                <span className="truncate sm:inline hidden">
+                  {currentLang === 'vi' ? themeMetadata[currentTheme]?.viName || 'Cổ điển' : themeMetadata[currentTheme]?.name || 'Classic'}
+                </span>
+                <span className="truncate sm:hidden inline">
+                  {(currentLang === 'vi' ? themeMetadata[currentTheme]?.viName || 'Cổ điển' : themeMetadata[currentTheme]?.name || 'Classic').split(' ')[0]}
+                </span>
               </div>
             ) : (
               <Select<ThemeOption>

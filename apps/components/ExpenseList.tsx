@@ -284,7 +284,7 @@ export function ExpenseList({
     selectedYear === new Date().getFullYear() && selectedMonth === new Date().getMonth() + 1
 
   return (
-    <Card className="border-theme rounded-xl p-4 sm:p-5 bg-white shadow-xs space-y-4">
+    <Card className="border-theme rounded-xl expense-list-card p-4 sm:p-5 bg-white shadow-xs space-y-4">
       {/* 1. Header & Time Period Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-theme pb-3.5">
         <div className="flex items-center space-x-2">
@@ -295,13 +295,13 @@ export function ExpenseList({
         </div>
 
         {/* Period Switcher: Theo Tháng (Mặc định) | Theo Ngày | Theo Năm */}
-        <div className="flex items-center bg-zinc-100/90 p-1 rounded-xl border border-zinc-200/70 gap-1 self-start sm:self-auto shrink-0">
+        <div className="flex items-center bg-zinc-100/90 period-switcher-container p-1 rounded-xl border border-zinc-200/70 gap-1 self-start sm:self-auto shrink-0">
           <button
             type="button"
             onClick={() => setPeriod('month')}
-            className={`px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 sm:px-3.5 py-1.5 rounded-lg period-tab-btn text-xs font-semibold transition-all cursor-pointer ${
               period === 'month'
-                ? 'bg-white text-theme-main shadow-xs ring-1 ring-black/5 font-bold'
+                ? 'bg-white text-theme-main shadow-xs ring-1 ring-black/5 font-bold period-tab-active'
                 : 'text-zinc-500 hover:text-zinc-900 hover:bg-white/60'
             }`}
           >
@@ -310,9 +310,9 @@ export function ExpenseList({
           <button
             type="button"
             onClick={() => setPeriod('day')}
-            className={`px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 sm:px-3.5 py-1.5 rounded-lg period-tab-btn text-xs font-semibold transition-all cursor-pointer ${
               period === 'day'
-                ? 'bg-white text-theme-main shadow-xs ring-1 ring-black/5 font-bold'
+                ? 'bg-white text-theme-main shadow-xs ring-1 ring-black/5 font-bold period-tab-active'
                 : 'text-zinc-500 hover:text-zinc-900 hover:bg-white/60'
             }`}
           >
@@ -321,9 +321,9 @@ export function ExpenseList({
           <button
             type="button"
             onClick={() => setPeriod('year')}
-            className={`px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-3 sm:px-3.5 py-1.5 rounded-lg period-tab-btn text-xs font-semibold transition-all cursor-pointer ${
               period === 'year'
-                ? 'bg-white text-theme-main shadow-xs ring-1 ring-black/5 font-bold'
+                ? 'bg-white text-theme-main shadow-xs ring-1 ring-black/5 font-bold period-tab-active'
                 : 'text-zinc-500 hover:text-zinc-900 hover:bg-white/60'
             }`}
           >

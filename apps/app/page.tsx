@@ -14,7 +14,7 @@ import {
   UserProfile,
   CurrencyType,
 } from '@/lib/types'
-import { dictionary, setActiveCurrency } from '@/lib/i18n'
+import { dictionary, setActiveCurrency, themeMetadata } from '@/lib/i18n'
 import {
   getClientLocalDateString,
   getClientYesterdayDateString,
@@ -63,7 +63,7 @@ import {
 import { Plus } from 'lucide-react'
 
 export default function Home() {
-  const [theme, setTheme] = useState<ThemeType>('matcha')
+  const [theme, setTheme] = useState<ThemeType>('classic')
   const [lang, setLang] = useState<LanguageType>('vi')
   const [tab, setTab] = useState<TabType>('moments')
 
@@ -142,11 +142,10 @@ export default function Home() {
 
   // Synchronize client local theme & auth session
   useEffect(() => {
-    const savedTheme = localStorage.getItem('app_theme') as ThemeType | null
-    if (savedTheme) {
-      setTheme(savedTheme)
-      document.documentElement.setAttribute('data-theme', savedTheme)
-    }
+    const savedTheme = localStorage.getItem('app_theme')
+    const activeTheme: ThemeType = savedTheme === 'cozy' ? 'cozy' : 'classic'
+    setTheme(activeTheme)
+    document.documentElement.setAttribute('data-theme', activeTheme)
 
     const storedUser = localStorage.getItem('dayflow_user')
     if (storedUser) {
@@ -295,7 +294,8 @@ export default function Home() {
     setTheme(newTheme)
     document.documentElement.setAttribute('data-theme', newTheme)
     localStorage.setItem('app_theme', newTheme)
-    showToast(lang === 'vi' ? `Đã chuyển sang tông màu ${newTheme}` : `Switched to ${newTheme} theme`)
+    const themeName = lang === 'vi' ? themeMetadata[newTheme]?.viName || newTheme : themeMetadata[newTheme]?.name || newTheme
+    showToast(lang === 'vi' ? `Đã chuyển sang giao diện ${themeName}` : `Switched to ${themeName} theme`)
   }
 
   const showToast = (

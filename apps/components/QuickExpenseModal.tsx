@@ -365,6 +365,11 @@ export function QuickExpenseModal({
         role="dialog"
         aria-modal="true"
       >
+        {/* Cozy Drag Handle Indicator (from reference photo) */}
+        <div className="hidden [html[data-theme='cozy']_&]:block pt-2 pb-0.5 text-center shrink-0">
+          <div className="w-10 h-1.5 rounded-full bg-[#D4C3B3] mx-auto" />
+        </div>
+
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-theme/70 bg-theme-surface/60 shrink-0">
           <div className="flex items-center space-x-2.5 min-w-0">

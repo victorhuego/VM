@@ -87,6 +87,11 @@ export function ConfirmDeleteModal({
         role="dialog"
         aria-modal="true"
       >
+        {/* Cozy Drag Handle */}
+        <div className="hidden [html[data-theme='cozy']_&]:block pt-2 pb-0.5 text-center shrink-0">
+          <div className="w-10 h-1.5 rounded-full bg-[#D4C3B3] mx-auto" />
+        </div>
+
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-theme flex items-center justify-between bg-zinc-50/80 shrink-0">
           <div className="flex items-center space-x-3">

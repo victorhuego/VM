@@ -27,11 +27,11 @@ export function MobileBottomNav({
     <div className="sm:hidden fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-4 right-4 z-40 max-w-sm mx-auto pointer-events-auto">
       <nav
         aria-label="Mobile Navigation"
-        className="relative bg-white/95 backdrop-blur-xl border border-white/80 rounded-2xl p-1 floating-dock-shadow flex items-center justify-between shadow-lg overflow-hidden"
+        className="relative bg-white/95 backdrop-blur-xl border border-white/80 rounded-2xl [html[data-theme='cozy']_&]:rounded-3xl p-1 floating-dock-shadow flex items-center justify-between shadow-lg overflow-hidden"
       >
         {/* Animated Sliding Pill Indicator */}
         <div
-          className="absolute top-1 bottom-1 left-1 w-[calc((100%-8px)/3)] rounded-xl bg-theme-surface/95 border border-theme/60 shadow-xs transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none"
+          className="absolute top-1 bottom-1 left-1 w-[calc((100%-8px)/3)] rounded-xl [html[data-theme='cozy']_&]:rounded-2xl bg-theme-surface/95 border border-theme/60 shadow-xs transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none"
           style={{
             transform: `translateX(${tabIndex * 100}%)`,
           }}

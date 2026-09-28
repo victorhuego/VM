@@ -30,8 +30,11 @@
   --radius-lg: var(--radius);
 }
 
-/* ================= 6 PASTEL OMBRE THEMES (FROM TUMBLER COLLECTION) ================= */
-:root, html[data-theme="matcha"] {
+/* ================= 2 THEMES: CLASSIC (MATCHA GREEN) & COZY (CACAO TRÀ / CAFE) ================= */
+
+/* 1. CLASSIC THEME (Green Matcha - Modern & Elegant) */
+:root, html[data-theme="classic"], html[data-theme="matcha"] {
+  --theme-id: "classic";
   --theme-text-gradient: linear-gradient(135deg, #1D301F 0%, #3F6141 55%, #719B73 100%);
   --theme-card-bg: linear-gradient(180deg, #F4F8F4 0%, #FFFFFF 100%);
   --theme-surface: #F5F8F5;
@@ -64,232 +67,45 @@
   --border: #E3EAE3;
   --input: #E3EAE3;
   --ring: #3F6141;
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 }
 
-html[data-theme="sakura"] {
-  --theme-text-gradient: linear-gradient(135deg, #42161E 0%, #822C3D 55%, #D47B8C 100%);
-  --theme-card-bg: linear-gradient(180deg, #FCF5F6 0%, #FFFFFF 100%);
-  --theme-surface: #FAF2F3;
-  --theme-border: #F3DBE0;
-  --theme-border-hover: #E8C1C9;
-  --theme-text-main: #42161E;
-  --theme-text-accent: #822C3D;
-  --theme-text-muted: #9E747C;
-  --theme-btn-gradient: linear-gradient(90deg, #5E202C 0%, #822C3D 100%);
-  --theme-btn-hover: linear-gradient(90deg, #42161E 0%, #5E202C 100%);
-  --theme-progress: linear-gradient(90deg, #A84457 0%, #E28F9E 100%);
-  --theme-active-tag: #D47B8C;
-  --theme-ring: #F9EBEE;
-  --theme-shadow: rgba(130, 44, 61, 0.15);
+/* 2. COZY THEME (Cacao Trà / Warm Tea & Boba Shop Cafe Aesthetic) */
+html[data-theme="cozy"] {
+  --theme-id: "cozy";
+  --theme-text-gradient: linear-gradient(135deg, #3E271E 0%, #6E4532 55%, #A86B4D 100%);
+  --theme-card-bg: #FFFDF9;
+  --theme-surface: #F5ECE2;
+  --theme-border: #E8D9CB;
+  --theme-border-hover: #D7C3B0;
+  --theme-text-main: #3E271E;
+  --theme-text-accent: #8D5B41;
+  --theme-text-muted: #9E8678;
+  --theme-btn-gradient: linear-gradient(135deg, #EA5C79 0%, #F06784 100%);
+  --theme-btn-hover: linear-gradient(135deg, #DF4B6B 0%, #E65574 100%);
+  --theme-progress: linear-gradient(90deg, #EA5C79 0%, #F89EB0 100%);
+  --theme-active-tag: #EA5C79;
+  --theme-ring: #FDE8ED;
+  --theme-shadow: rgba(82, 54, 38, 0.14);
 
-  --foreground: #42161E;
-  --primary: #5E202C;
-  --secondary: #FAF2F3;
-  --secondary-foreground: #42161E;
-  --border: #F3DBE0;
-  --input: #F3DBE0;
-  --ring: #822C3D;
-}
-
-html[data-theme="mint"] {
-  --theme-text-gradient: linear-gradient(135deg, #102F2F 0%, #225F5F 55%, #4AA8A8 100%);
-  --theme-card-bg: linear-gradient(180deg, #F2F8F8 0%, #FFFFFF 100%);
-  --theme-surface: #EDF6F6;
-  --theme-border: #D5EBEB;
-  --theme-border-hover: #B7DCDC;
-  --theme-text-main: #102F2F;
-  --theme-text-accent: #225F5F;
-  --theme-text-muted: #6E9494;
-  --theme-btn-gradient: linear-gradient(90deg, #184747 0%, #225F5F 100%);
-  --theme-btn-hover: linear-gradient(90deg, #102F2F 0%, #184747 100%);
-  --theme-progress: linear-gradient(90deg, #327E7E 0%, #68BDBD 100%);
-  --theme-active-tag: #4AA8A8;
-  --theme-ring: #E6F3F3;
-  --theme-shadow: rgba(34, 95, 95, 0.15);
-
-  --foreground: #102F2F;
-  --primary: #184747;
-  --secondary: #EDF6F6;
-  --secondary-foreground: #102F2F;
-  --border: #D5EBEB;
-  --input: #D5EBEB;
-  --ring: #225F5F;
-}
-
-html[data-theme="lavender"] {
-  --theme-text-gradient: linear-gradient(135deg, #241A38 0%, #4D3973 55%, #937EB8 100%);
-  --theme-card-bg: linear-gradient(180deg, #F6F4F9 0%, #FFFFFF 100%);
-  --theme-surface: #F3EFF7;
-  --theme-border: #E4DCF0;
-  --theme-border-hover: #CEC3E3;
-  --theme-text-main: #241A38;
-  --theme-text-accent: #4D3973;
-  --theme-text-muted: #85759E;
-  --theme-btn-gradient: linear-gradient(90deg, #382954 0%, #4D3973 100%);
-  --theme-btn-hover: linear-gradient(90deg, #241A38 0%, #382954 100%);
-  --theme-progress: linear-gradient(90deg, #684F9B 0%, #B19FD1 100%);
-  --theme-active-tag: #937EB8;
-  --theme-ring: #EEE9F5;
-  --theme-shadow: rgba(77, 57, 115, 0.15);
-
-  --foreground: #241A38;
-  --primary: #382954;
-  --secondary: #F3EFF7;
-  --secondary-foreground: #241A38;
-  --border: #E4DCF0;
-  --input: #E4DCF0;
-  --ring: #4D3973;
-}
-
-html[data-theme="mocha"] {
-  --theme-text-gradient: linear-gradient(135deg, #2E2117 0%, #59402E 55%, #9C785C 100%);
-  --theme-card-bg: linear-gradient(180deg, #FAF7F5 0%, #FFFFFF 100%);
-  --theme-surface: #F7F3EF;
-  --theme-border: #ECE4DC;
-  --theme-border-hover: #D8C7B8;
-  --theme-text-main: #2E2117;
-  --theme-text-accent: #59402E;
-  --theme-text-muted: #948070;
-  --theme-btn-gradient: linear-gradient(90deg, #422F22 0%, #59402E 100%);
-  --theme-btn-hover: linear-gradient(90deg, #2E2117 0%, #422F22 100%);
-  --theme-progress: linear-gradient(90deg, #7A5B44 0%, #BD9B80 100%);
-  --theme-active-tag: #9C785C;
-  --theme-ring: #F4ECE4;
-  --theme-shadow: rgba(89, 64, 46, 0.15);
-
-  --foreground: #2E2117;
-  --primary: #422F22;
-  --secondary: #F7F3EF;
-  --secondary-foreground: #2E2117;
-  --border: #ECE4DC;
-  --input: #ECE4DC;
-  --ring: #59402E;
-}
-
-html[data-theme="slate"] {
-  --theme-text-gradient: linear-gradient(135deg, #09090B 0%, #27272A 55%, #71717A 100%);
-  --theme-card-bg: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
-  --theme-surface: #F4F4F5;
-  --theme-border: #E4E4E7;
-  --theme-border-hover: #D4D4D8;
-  --theme-text-main: #09090B;
-  --theme-text-accent: #27272A;
-  --theme-text-muted: #71717A;
-  --theme-btn-gradient: linear-gradient(90deg, #18181B 0%, #27272A 100%);
-  --theme-btn-hover: linear-gradient(90deg, #09090B 0%, #18181B 100%);
-  --theme-progress: linear-gradient(90deg, #3F3F46 0%, #A1A1AA 100%);
-  --theme-active-tag: #71717A;
-  --theme-ring: #F4F4F5;
-  --theme-shadow: rgba(24, 24, 27, 0.15);
-
-  --foreground: #09090B;
-  --primary: #18181B;
-  --secondary: #F4F4F5;
-  --secondary-foreground: #09090B;
-  --border: #E4E4E7;
-  --input: #E4E4E7;
-  --ring: #27272A;
-}
-
-html[data-theme="ocean"] {
-  --theme-text-gradient: linear-gradient(135deg, #0A2540 0%, #1D4ED8 55%, #60A5FA 100%);
-  --theme-card-bg: linear-gradient(180deg, #F0F6FF 0%, #FFFFFF 100%);
-  --theme-surface: #EFF6FF;
-  --theme-border: #DBEAFE;
-  --theme-border-hover: #BFDBFE;
-  --theme-text-main: #0A2540;
-  --theme-text-accent: #1D4ED8;
-  --theme-text-muted: #64748B;
-  --theme-btn-gradient: linear-gradient(90deg, #1E3A8A 0%, #1D4ED8 100%);
-  --theme-btn-hover: linear-gradient(90deg, #0F172A 0%, #1E3A8A 100%);
-  --theme-progress: linear-gradient(90deg, #2563EB 0%, #93C5FD 100%);
-  --theme-active-tag: #3B82F6;
-  --theme-ring: #E0EDFD;
-  --theme-shadow: rgba(29, 78, 216, 0.15);
-
-  --foreground: #0A2540;
-  --primary: #1E3A8A;
-  --secondary: #EFF6FF;
-  --secondary-foreground: #0A2540;
-  --border: #DBEAFE;
-  --input: #DBEAFE;
-  --ring: #1D4ED8;
-}
-
-html[data-theme="sunset"] {
-  --theme-text-gradient: linear-gradient(135deg, #451A03 0%, #B45309 55%, #F59E0B 100%);
-  --theme-card-bg: linear-gradient(180deg, #FEFBF3 0%, #FFFFFF 100%);
-  --theme-surface: #FFFBEB;
-  --theme-border: #FDE68A;
-  --theme-border-hover: #FCD34D;
-  --theme-text-main: #451A03;
-  --theme-text-accent: #B45309;
-  --theme-text-muted: #92400E;
-  --theme-btn-gradient: linear-gradient(90deg, #78350F 0%, #B45309 100%);
-  --theme-btn-hover: linear-gradient(90deg, #451A03 0%, #78350F 100%);
-  --theme-progress: linear-gradient(90deg, #D97706 0%, #FDE68A 100%);
-  --theme-active-tag: #F59E0B;
-  --theme-ring: #FEF3C7;
-  --theme-shadow: rgba(180, 83, 9, 0.15);
-
-  --foreground: #451A03;
-  --primary: #78350F;
-  --secondary: #FFFBEB;
-  --secondary-foreground: #451A03;
-  --border: #FDE68A;
-  --input: #FDE68A;
-  --ring: #B45309;
-}
-
-html[data-theme="berry"] {
-  --theme-text-gradient: linear-gradient(135deg, #3B0716 0%, #9F1239 55%, #FB7185 100%);
-  --theme-card-bg: linear-gradient(180deg, #FFF1F4 0%, #FFFFFF 100%);
-  --theme-surface: #FFF0F3;
-  --theme-border: #FECDD6;
-  --theme-border-hover: #FDA4B4;
-  --theme-text-main: #3B0716;
-  --theme-text-accent: #9F1239;
-  --theme-text-muted: #9F5164;
-  --theme-btn-gradient: linear-gradient(90deg, #700B26 0%, #9F1239 100%);
-  --theme-btn-hover: linear-gradient(90deg, #3B0716 0%, #700B26 100%);
-  --theme-progress: linear-gradient(90deg, #BE123C 0%, #FDA4B4 100%);
-  --theme-active-tag: #E11D48;
-  --theme-ring: #FFE4E8;
-  --theme-shadow: rgba(159, 18, 57, 0.15);
-
-  --foreground: #3B0716;
-  --primary: #700B26;
-  --secondary: #FFF0F3;
-  --secondary-foreground: #3B0716;
-  --border: #FECDD6;
-  --input: #FECDD6;
-  --ring: #9F1239;
-}
-
-html[data-theme="coral"] {
-  --theme-text-gradient: linear-gradient(135deg, #431407 0%, #C2410C 55%, #FB923C 100%);
-  --theme-card-bg: linear-gradient(180deg, #FFF7F2 0%, #FFFFFF 100%);
-  --theme-surface: #FFF4EE;
-  --theme-border: #FED7C7;
-  --theme-border-hover: #FDBA9B;
-  --theme-text-main: #431407;
-  --theme-text-accent: #C2410C;
-  --theme-text-muted: #9A5844;
-  --theme-btn-gradient: linear-gradient(90deg, #9A3412 0%, #EA580C 100%);
-  --theme-btn-hover: linear-gradient(90deg, #431407 0%, #9A3412 100%);
-  --theme-progress: linear-gradient(90deg, #EA580C 0%, #FDBA74 100%);
-  --theme-active-tag: #F97316;
-  --theme-ring: #FFEDD5;
-  --theme-shadow: rgba(194, 65, 12, 0.15);
-
-  --foreground: #431407;
-  --primary: #9A3412;
-  --secondary: #FFF4EE;
-  --secondary-foreground: #431407;
-  --border: #FED7C7;
-  --input: #FED7C7;
-  --ring: #EA580C;
+  --background: #FAF5ED;
+  --foreground: #3E271E;
+  --card: #FFFDF9;
+  --card-foreground: #3E271E;
+  --popover: #FFFDF9;
+  --popover-foreground: #3E271E;
+  --primary: #EA5C79;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F5ECE2;
+  --secondary-foreground: #3E271E;
+  --muted: #F5ECE2;
+  --muted-foreground: #9E8678;
+  --accent: #FDE8ED;
+  --accent-foreground: #EA5C79;
+  --border: #E8D9CB;
+  --input: #E8D9CB;
+  --ring: #EA5C79;
+  --radius: 1.25rem;
 }
 
 /* ================= UTILITY CLASSES ================= */
@@ -496,6 +312,138 @@ button, [role="button"], input, select, textarea, a, .touch-target {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ================= COZY THEME COMPONENT STYLING OVERRIDES ================= */
+html[data-theme="cozy"],
+html[data-theme="cozy"] body,
+html[data-theme="cozy"] button,
+html[data-theme="cozy"] input,
+html[data-theme="cozy"] select,
+html[data-theme="cozy"] textarea {
+  font-family: var(--font-cozy), 'Quicksand', 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Cozy Cafe Awning Scalloped Stripes (Inspired by the awning in the photo) */
+.cafe-awning-stripes {
+  background: repeating-linear-gradient(
+    90deg,
+    #F06583 0px,
+    #F06583 18px,
+    #FFFDF9 18px,
+    #FFFDF9 36px
+  );
+  box-shadow: 0 2px 8px rgba(234, 92, 121, 0.22);
+}
+
+/* Cozy Dark Cocoa Chalkboard (Inspired by "Menu hôm nay" in the photo) */
+.cozy-chalkboard {
+  background-color: #3E2A20 !important;
+  color: #FBF7F0 !important;
+  border: 2px solid #5C4133 !important;
+  box-shadow: 0 4px 0 #281A13, 0 12px 28px rgba(62, 42, 32, 0.25) !important;
+}
+
+/* Cozy Cards: 24px corner radius, 2px biscuit border, 3D bottom lift */
+html[data-theme="cozy"] .bento-card,
+html[data-theme="cozy"] [data-slot="card"] {
+  border-radius: 1.5rem !important;
+  border-width: 2px !important;
+  border-color: #E8D9CB !important;
+  background: #FFFDF9 !important;
+  box-shadow: 0 4px 0 #E2D1BF, 0 10px 24px -4px rgba(82, 54, 38, 0.08) !important;
+}
+
+/* Cozy Net Worth Card (Dark Cocoa Chalkboard style in Cozy mode) */
+html[data-theme="cozy"] .net-worth-card {
+  background-color: #3E2A20 !important;
+  color: #FBF7F0 !important;
+  border: 2px solid #5C4133 !important;
+  box-shadow: 0 4px 0 #281A13, 0 12px 28px rgba(62, 42, 32, 0.25) !important;
+}
+html[data-theme="cozy"] .net-worth-card .text-theme-main {
+  color: #EBD8C8 !important;
+}
+html[data-theme="cozy"] .net-worth-card .text-theme-muted {
+  color: #BCA898 !important;
+}
+html[data-theme="cozy"] .net-worth-card .text-theme-accent {
+  color: #FCD34D !important;
+}
+html[data-theme="cozy"] .net-worth-card .text-theme-gradient {
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+  color: #FFFDF8 !important;
+}
+
+/* Cozy Expense List Card & Period Switcher */
+html[data-theme="cozy"] .expense-list-card {
+  border-radius: 1.5rem !important;
+  border-width: 2px !important;
+  border-color: #E8D9CB !important;
+  background-color: #FFFDF9 !important;
+  box-shadow: 0 4px 0 #E2D1BF, 0 10px 24px -4px rgba(82, 54, 38, 0.08) !important;
+}
+
+html[data-theme="cozy"] .period-switcher-container {
+  background-color: #F3ECE2 !important;
+  border-radius: 9999px !important;
+  border-color: #E8D9CB !important;
+}
+
+html[data-theme="cozy"] .period-tab-btn {
+  border-radius: 9999px !important;
+}
+
+html[data-theme="cozy"] .period-tab-active {
+  background-color: #FFFFFF !important;
+  color: #3E271E !important;
+  border: 1px solid #D7C4B2 !important;
+  box-shadow: 0 2px 4px rgba(82, 54, 38, 0.08) !important;
+}
+
+/* Cozy 3D Tactile Action Buttons ("Buồn ghê" style from photo) */
+html[data-theme="cozy"] .btn-theme-gradient {
+  background: linear-gradient(135deg, #EC607D 0%, #EA5573 100%) !important;
+  color: #FFFFFF !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 4px 0 #BD3C56 !important;
+  border: 1px solid #FFA6B7 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease !important;
+}
+
+html[data-theme="cozy"] .btn-theme-gradient:hover {
+  background: linear-gradient(135deg, #E04E6E 0%, #D84261 100%) !important;
+  box-shadow: 0 4px 0 #A8334C !important;
+}
+
+html[data-theme="cozy"] .btn-theme-gradient:active {
+  transform: translateY(3px) !important;
+  box-shadow: 0 1px 0 #A8334C !important;
+}
+
+/* Cozy Floating Action Button (FAB - Inspired by floating heart circle) */
+html[data-theme="cozy"] .bubble-fab-mobile {
+  box-shadow: 0 6px 0 #BD3C56, 0 14px 32px rgba(234, 92, 121, 0.38) !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+/* Cozy Modals & Dialogs: 28px radius, biscuit border, soft warm shadow */
+html[data-theme="cozy"] [role="dialog"],
+html[data-theme="cozy"] [data-slot="dialog-content"] {
+  border-radius: 28px !important;
+  border: 2px solid #E8D9CB !important;
+  background-color: #FFFDF9 !important;
+  box-shadow: 0 24px 60px -12px rgba(62, 39, 30, 0.28) !important;
+}
+
+/* Cozy Floating Dock on Mobile */
+html[data-theme="cozy"] .floating-dock-shadow {
+  background-color: rgba(255, 253, 248, 0.98) !important;
+  border: 2px solid #E8D9CB !important;
+  box-shadow: 0 12px 32px -4px rgba(82, 54, 38, 0.14), 0 4px 0 #E2D1BF !important;
 }
 
 /* Hide mobile bubble button whenever any modal/dialog is active */

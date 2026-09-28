@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Quicksand } from 'next/font/google'
 import './globals.css'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
@@ -11,6 +11,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
+})
+
+const quicksand = Quicksand({
+  variable: '--font-cozy',
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '500', '600', '700'],
 })
 
 export const viewport: Viewport = {
@@ -34,11 +40,11 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      data-theme="matcha"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      data-theme="classic"
+      className={`${geistSans.variable} ${geistMono.variable} ${quicksand.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full bg-white flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-900">
+      <body className="min-h-full flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-900">
         <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>

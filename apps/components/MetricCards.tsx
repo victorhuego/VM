@@ -123,7 +123,7 @@ export function MetricCards({
         {/* CARD 1: Tổng tài sản (Cash + Bank + Savings) */}
         <Card
           onClick={onOpenBalanceModal}
-          className={`${cardBase} cursor-pointer hover:border-theme-accent/70 hover:shadow-md transition-all active:scale-[0.97] group`}
+          className={`${cardBase} net-worth-card cursor-pointer hover:border-theme-accent/70 hover:shadow-md transition-all active:scale-[0.97] group`}
           title={lang === 'vi' ? 'Bấm để cập nhật số dư' : 'Click to update balance'}
         >
           <div className="flex items-start justify-between gap-1">

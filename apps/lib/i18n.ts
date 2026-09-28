@@ -1,16 +1,20 @@
 import { ThemeType, MoodType, CurrencyType } from '@/lib/types'
 
-export const themeMetadata: Record<ThemeType, { name: string; color: string }> = {
-  matcha: { name: 'Matcha Ombre', color: '#3F6141' },
-  sakura: { name: 'Sakura Pink', color: '#822C3D' },
-  mint: { name: 'Aqua Mint', color: '#225F5F' },
-  lavender: { name: 'Lavender Lilac', color: '#4D3973' },
-  mocha: { name: 'Mocha Brown', color: '#59402E' },
-  slate: { name: 'Charcoal Slate', color: '#27272A' },
-  ocean: { name: 'Ocean Blue', color: '#1D4ED8' },
-  sunset: { name: 'Sunset Amber', color: '#D97706' },
-  berry: { name: 'Berry Wine', color: '#9F1239' },
-  coral: { name: 'Coral Peach', color: '#EA580C' },
+export const themeMetadata: Record<ThemeType, { name: string; viName: string; color: string; descVi: string; descEn: string }> = {
+  classic: {
+    name: 'Classic',
+    viName: 'Cổ điển',
+    color: '#3F6141',
+    descVi: 'Tối giản & thanh lịch',
+    descEn: 'Clean & minimalist',
+  },
+  cozy: {
+    name: 'Cozy',
+    viName: 'Cozy',
+    color: '#EA5C79',
+    descVi: 'Ấm cúng & Quán trà boba',
+    descEn: 'Warm cafe & boba shop',
+  },
 }
 
 export const moodMetadata: Record<string, { vi: string; en: string; icon: string }> = {
@@ -32,7 +36,7 @@ export const dictionary = {
     tab_expenses: 'Tài chính & Chi tiêu',
     tab_moments: 'Tin',
     tab_users: 'Tài khoản',
-    theme_select_title: 'Bảng màu Gradient',
+    theme_select_title: 'Chủ đề giao diện',
     btn_adjust_balance: 'Điều chỉnh số dư',
     btn_adjust_short: 'Số dư',
     actual_net_worth: 'Tổng tài sản hiện tại',
@@ -264,7 +268,7 @@ export const dictionary = {
     mobile_nav_user: 'Tài khoản',
     mobile_nav_adjust: 'Số dư',
     author_you: 'Bạn',
-    footer_title: 'DayFlow • Hệ thống Màu Ombre',
+    footer_title: 'DayFlow • Classic & Cozy System',
     footer_backend: 'Cơ sở dữ liệu: Google Sheets • Lưu trữ: Google Drive',
     currency_unit: 'đ',
     toast_expense_added: 'Đã ghi nhận & trừ vào số dư!',
@@ -378,7 +382,7 @@ export const dictionary = {
     tab_expenses: 'Finance & Expenses',
     tab_moments: 'Moments',
     tab_users: 'User',
-    theme_select_title: 'Gradient Themes',
+    theme_select_title: 'UI Theme',
     btn_adjust_balance: 'Adjust Balances',
     btn_adjust_short: 'Balances',
     actual_net_worth: 'Total Assets',
@@ -610,7 +614,7 @@ export const dictionary = {
     mobile_nav_user: 'User',
     mobile_nav_adjust: 'Balances',
     author_you: 'You',
-    footer_title: 'DayFlow • Multi-Theme Ombre System',
+    footer_title: 'DayFlow • Classic & Cozy System',
     footer_backend: 'Database: Google Sheets • Storage: Google Drive',
     currency_unit: 'VND',
     toast_expense_added: 'Expense recorded & deducted from balances!',
