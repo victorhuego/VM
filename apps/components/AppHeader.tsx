@@ -69,7 +69,7 @@ export function AppHeader({
   }))
 
   return (
-    <header className="w-full border-b border-theme bg-background/95 backdrop-blur-md sticky top-0 z-40 transition-colors">
+    <header className="w-full border-b border-theme bg-background/95 backdrop-blur-md sticky top-0 z-40 transition-colors pt-[env(safe-area-inset-top,0px)]">
       {currentTheme === 'cozy' && (
         <div className="h-1.5 sm:h-2 w-full cafe-awning-stripes" />
       )}

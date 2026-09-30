@@ -15,6 +15,7 @@ import {
   CurrencyType,
 } from '@/lib/types'
 import { dictionary, setActiveCurrency, themeMetadata } from '@/lib/i18n'
+import { applyTheme } from '@/lib/theme'
 import {
   getClientLocalDateString,
   getClientYesterdayDateString,
@@ -145,7 +146,7 @@ export default function Home() {
     const savedTheme = localStorage.getItem('app_theme')
     const activeTheme: ThemeType = (savedTheme === 'cozy' || savedTheme === 'fantasy' || savedTheme === 'retro') ? savedTheme : 'classic'
     setTheme(activeTheme)
-    document.documentElement.setAttribute('data-theme', activeTheme)
+    applyTheme(activeTheme)
 
     const storedUser = localStorage.getItem('dayflow_user')
     if (storedUser) {
@@ -292,7 +293,7 @@ export default function Home() {
 
   const handleThemeChange = (newTheme: ThemeType) => {
     setTheme(newTheme)
-    document.documentElement.setAttribute('data-theme', newTheme)
+    applyTheme(newTheme)
     localStorage.setItem('app_theme', newTheme)
     const themeName = lang === 'vi' ? themeMetadata[newTheme]?.viName || newTheme : themeMetadata[newTheme]?.name || newTheme
     showToast(lang === 'vi' ? `Đã chuyển sang giao diện ${themeName}` : `Switched to ${themeName} theme`)

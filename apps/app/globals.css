@@ -409,6 +409,9 @@ button, [role="button"], input, select, textarea, a, .touch-target {
   * {
     @apply border-border;
   }
+  html {
+    background-color: var(--background);
+  }
   body {
     @apply bg-background text-foreground;
   }
@@ -1143,6 +1146,7 @@ html[data-theme="retro"] table {
 }
 
 /* Desktop Canvas: Authentic Windows 95 Teal */
+html[data-theme="retro"],
 html[data-theme="retro"] body {
   background-color: #008080 !important;
   color: #000000 !important;
