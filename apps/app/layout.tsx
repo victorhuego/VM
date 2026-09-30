@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono, Quicksand, Cinzel, Be_Vietnam_Pro } from 'next/font/google'
+import { Geist, Geist_Mono, Quicksand, Cinzel, Be_Vietnam_Pro, Chakra_Petch } from 'next/font/google'
 import './globals.css'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
@@ -27,7 +27,13 @@ const cinzel = Cinzel({
 const beVietnamPro = Be_Vietnam_Pro({
   variable: '--font-fantasy-sans',
   subsets: ['latin', 'vietnamese'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700', '800'],
+})
+
+const chakraPetch = Chakra_Petch({
+  variable: '--font-ronin',
+  subsets: ['latin', 'vietnamese'],
+  weight: ['300', '400', '500', '600', '700'],
 })
 
 export const viewport: Viewport = {
@@ -58,7 +64,7 @@ export default function RootLayout({
     <html
       lang="vi"
       data-theme="classic"
-      className={`${geistSans.variable} ${geistMono.variable} ${quicksand.variable} ${cinzel.variable} ${beVietnamPro.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${quicksand.variable} ${cinzel.variable} ${beVietnamPro.variable} ${chakraPetch.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
@@ -68,20 +74,22 @@ export default function RootLayout({
               (function() {
                 try {
                   var saved = localStorage.getItem('app_theme');
-                  var validThemes = ['classic', 'cozy', 'fantasy', 'retro'];
+                  var validThemes = ['classic', 'cozy', 'fantasy', 'retro', 'ronin'];
                   var theme = validThemes.indexOf(saved) !== -1 ? saved : 'classic';
                   document.documentElement.setAttribute('data-theme', theme);
                   var topColors = {
                     classic: '#FFFFFF',
                     cozy: '#FAF5ED',
                     fantasy: '#0D131F',
-                    retro: '#C0C0C0'
+                    retro: '#C0C0C0',
+                    ronin: '#070809'
                   };
                   var rootColors = {
                     classic: '#FFFFFF',
                     cozy: '#FAF5ED',
                     fantasy: '#0D131F',
-                    retro: '#008080'
+                    retro: '#008080',
+                    ronin: '#070809'
                   };
                   var topColor = topColors[theme] || '#FFFFFF';
                   var rootColor = rootColors[theme] || '#FFFFFF';

@@ -29,6 +29,13 @@ export const themeMetadata: Record<ThemeType, { name: string; viName: string; co
     descVi: 'Windows 95',
     descEn: 'Windows 95',
   },
+  ronin: {
+    name: 'Nazis',
+    viName: 'Nazis',
+    color: '#E52535',
+    descVi: 'Nazis',
+    descEn: 'Nazis',
+  },
 }
 
 export const moodMetadata: Record<string, { vi: string; en: string; icon: string }> = {

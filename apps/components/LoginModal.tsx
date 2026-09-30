@@ -51,7 +51,7 @@ export function LoginModal({ open, lang, onLoginSuccess }: LoginModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 select-none animate-in fade-in duration-200">
-      <Card className="w-full max-w-sm p-6 sm:p-7 bg-white shadow-2xl border-theme rounded-2xl space-y-5 relative">
+      <Card className="w-full max-w-sm p-6 sm:p-7 bg-card border border-theme shadow-2xl rounded-2xl space-y-5 relative">
         {/* Header */}
         <div className="text-center space-y-1.5">
           <div className="w-12 h-12 mx-auto rounded-2xl btn-theme-gradient flex items-center justify-center shadow-md">
@@ -60,7 +60,7 @@ export function LoginModal({ open, lang, onLoginSuccess }: LoginModalProps) {
           <h2 className="text-lg sm:text-xl font-bold text-theme-main tracking-tight">
             {lang === 'vi' ? 'Đăng nhập DayFlow' : 'Sign in to DayFlow'}
           </h2>
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-theme-muted">
             {lang === 'vi'
               ? 'Nhập tên người dùng và mật khẩu để tiếp tục'
               : 'Enter your username and password to proceed'}
@@ -69,7 +69,7 @@ export function LoginModal({ open, lang, onLoginSuccess }: LoginModalProps) {
 
         {/* Error Alert */}
         {error && (
-          <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs text-center font-medium">
+          <div className="p-2.5 rounded-lg bg-rose-500/15 border border-rose-300/40 text-rose-600 text-xs text-center font-medium">
             {error}
           </div>
         )}
@@ -77,7 +77,7 @@ export function LoginModal({ open, lang, onLoginSuccess }: LoginModalProps) {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-zinc-700 flex items-center gap-1.5">
+            <label className="text-xs font-semibold text-theme-main flex items-center gap-1.5">
               <User className="w-3.5 h-3.5 text-theme-accent" />
               <span>{lang === 'vi' ? 'Tên đăng nhập' : 'Username'}</span>
             </label>
@@ -88,12 +88,12 @@ export function LoginModal({ open, lang, onLoginSuccess }: LoginModalProps) {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder={lang === 'vi' ? 'VD: nana' : 'E.g., nana'}
-              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-theme rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-theme-accent/40 font-mono transition-all"
+              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-theme rounded-lg bg-theme-surface text-theme-main placeholder:text-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent/40 font-mono transition-all"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-zinc-700 flex items-center gap-1.5">
+            <label className="text-xs font-semibold text-theme-main flex items-center gap-1.5">
               <Lock className="w-3.5 h-3.5 text-theme-accent" />
               <span>{lang === 'vi' ? 'Mật khẩu' : 'Password'}</span>
             </label>
@@ -103,7 +103,7 @@ export function LoginModal({ open, lang, onLoginSuccess }: LoginModalProps) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder={lang === 'vi' ? 'Nhập mật khẩu...' : 'Enter password...'}
-              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-theme rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-theme-accent/40 font-mono transition-all"
+              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-theme rounded-lg bg-theme-surface text-theme-main placeholder:text-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent/40 font-mono transition-all"
             />
           </div>
 

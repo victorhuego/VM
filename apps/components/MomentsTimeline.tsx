@@ -295,7 +295,7 @@ export function MomentsTimeline({
           {/* User Filter via react-select */}
           <div className="w-36 sm:w-44 shrink-0">
             {!mounted ? (
-              <div className="h-[30px] rounded-lg border border-theme flex items-center px-2 space-x-1.5 text-[11px] text-theme-main bg-white">
+              <div className="h-[30px] rounded-lg border border-theme flex items-center px-2 space-x-1.5 text-[11px] text-theme-main bg-theme-surface">
                 <User className="w-3 h-3 text-theme-accent shrink-0" />
                 <span className="truncate">{currentSelectedOption?.label}</span>
               </div>
@@ -329,7 +329,7 @@ export function MomentsTimeline({
                     minHeight: '30px',
                     height: '30px',
                     fontSize: '11px',
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--theme-surface)',
                     borderColor: 'var(--theme-border)',
                     boxShadow: state.isFocused ? '0 0 0 1px var(--theme-accent)' : 'none',
                     '&:hover': {
@@ -370,10 +370,10 @@ export function MomentsTimeline({
                   }),
                   menu: (base) => ({
                     ...base,
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--card)',
                     border: '1px solid var(--theme-border)',
                     borderRadius: '0.5rem',
-                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04)',
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
                     zIndex: 9999,
                     minWidth: '170px',
                   }),
@@ -386,7 +386,7 @@ export function MomentsTimeline({
                     backgroundColor: state.isSelected
                       ? 'var(--theme-surface)'
                       : state.isFocused
-                      ? 'rgba(0, 0, 0, 0.04)'
+                      ? 'var(--accent)'
                       : 'transparent',
                     color: state.isSelected ? 'var(--theme-accent)' : 'var(--theme-main)',
                     borderRadius: '0.375rem',
@@ -410,8 +410,8 @@ export function MomentsTimeline({
                 onClick={() => setFilterMode('today')}
                 className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer btn-spring ${
                   filterMode === 'today'
-                    ? 'bg-white text-theme-main font-semibold shadow-2xs border border-theme/60'
-                    : 'text-zinc-500 hover:text-theme-main'
+                    ? 'timeline-filter-active btn-theme-gradient text-white font-semibold shadow-2xs'
+                    : 'text-theme-muted hover:text-theme-main'
                 }`}
               >
                 {lang === 'vi' ? `Hôm nay (${todayMoments.length})` : `Today (${todayMoments.length})`}
@@ -421,8 +421,8 @@ export function MomentsTimeline({
                 onClick={() => setFilterMode('all')}
                 className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer btn-spring ${
                   filterMode === 'all'
-                    ? 'bg-white text-theme-main font-semibold shadow-2xs border border-theme/60'
-                    : 'text-zinc-500 hover:text-theme-main'
+                    ? 'timeline-filter-active btn-theme-gradient text-white font-semibold shadow-2xs'
+                    : 'text-theme-muted hover:text-theme-main'
                 }`}
               >
                 {lang === 'vi' ? `Tất cả (${filteredMoments.length})` : `All (${filteredMoments.length})`}

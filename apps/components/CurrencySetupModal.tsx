@@ -37,7 +37,7 @@ export function CurrencySetupModal({ open, lang, username, onConfirm }: Currency
 
   return (
     <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 select-none animate-in fade-in duration-200">
-      <Card className="w-full max-w-md p-6 sm:p-7 bg-white shadow-2xl border-theme rounded-2xl space-y-5 relative">
+      <Card className="w-full max-w-md p-5 sm:p-7 bg-theme-card shadow-2xl border-theme rounded-2xl space-y-4 sm:space-y-5 relative">
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="w-12 h-12 mx-auto rounded-2xl btn-theme-gradient flex items-center justify-center shadow-md">
@@ -46,7 +46,7 @@ export function CurrencySetupModal({ open, lang, username, onConfirm }: Currency
           <h2 className="text-xl font-bold text-theme-main tracking-tight">
             {lang === 'vi' ? 'Thiết lập đơn vị tiền tệ' : 'Select Account Currency'}
           </h2>
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-theme-muted">
             {lang === 'vi'
               ? `Xin chào @${username}! Vui lòng chọn đơn vị tiền tệ chính cho tài khoản của bạn.`
               : `Hello @${username}! Please choose the primary currency for your account.`}
@@ -54,13 +54,13 @@ export function CurrencySetupModal({ open, lang, username, onConfirm }: Currency
         </div>
 
         {/* Warning / Lock Notice */}
-        <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-200/80 text-amber-800 text-xs flex items-start space-x-2.5">
-          <Lock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+        <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-500/40 text-amber-200 text-xs flex items-start space-x-2.5">
+          <Lock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
           <div className="leading-relaxed">
-            <span className="font-semibold">
+            <span className="font-semibold text-amber-300">
               {lang === 'vi' ? 'Quy định cố định: ' : 'Fixed Policy: '}
             </span>
-            <span>
+            <span className="text-amber-300/90">
               {lang === 'vi'
                 ? 'Đơn vị tiền tệ chỉ được chọn 1 lần duy nhất trong lần đầu thiết lập và sẽ đi theo tài khoản suốt quá trình sử dụng, không thể thay đổi sau này.'
                 : 'Currency can only be chosen once during initial setup and will be permanently bound to this account. It cannot be changed later.'}
@@ -69,8 +69,8 @@ export function CurrencySetupModal({ open, lang, username, onConfirm }: Currency
         </div>
 
         {errorMsg && (
-          <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs text-center font-medium flex items-center justify-center gap-1.5">
-            <AlertCircle className="w-4 h-4 shrink-0" />
+          <div className="p-2.5 rounded-lg bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs text-center font-medium flex items-center justify-center gap-1.5">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
             <span>{errorMsg}</span>
           </div>
         )}
@@ -88,7 +88,7 @@ export function CurrencySetupModal({ open, lang, username, onConfirm }: Currency
                   className={`p-3.5 rounded-xl border-2 transition-all cursor-pointer flex items-center justify-between ${
                     isSelected
                       ? 'border-theme-accent bg-theme-surface/70 shadow-xs'
-                      : 'border-theme/60 bg-white hover:bg-theme-surface/30'
+                      : 'border-theme/60 bg-theme-surface hover:bg-theme-surface/80'
                   }`}
                 >
                   <div className="flex items-center space-x-3">
@@ -96,7 +96,7 @@ export function CurrencySetupModal({ open, lang, username, onConfirm }: Currency
                       className={`w-10 h-10 rounded-xl font-bold font-mono text-base flex items-center justify-center ${
                         isSelected
                           ? 'btn-theme-gradient text-white shadow-2xs'
-                          : 'bg-zinc-100 text-zinc-700 border border-zinc-200'
+                          : 'bg-theme-card text-theme-main border border-theme/60'
                       }`}
                     >
                       {meta.symbol}
@@ -105,12 +105,12 @@ export function CurrencySetupModal({ open, lang, username, onConfirm }: Currency
                       <div className="flex items-center space-x-1.5">
                         <span className="font-bold text-sm text-theme-main">{code}</span>
                         {code === 'KRW' && (
-                          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 font-medium">
+                          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 font-medium">
                             {lang === 'vi' ? 'Mặc định' : 'Default'}
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-zinc-500 font-sans mt-0.5">{meta[lang]}</p>
+                      <p className="text-xs text-theme-muted font-sans mt-0.5">{meta[lang]}</p>
                     </div>
                   </div>
 
@@ -118,7 +118,7 @@ export function CurrencySetupModal({ open, lang, username, onConfirm }: Currency
                     {isSelected ? (
                       <CheckCircle2 className="w-5 h-5 text-theme-accent" />
                     ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-zinc-300" />
+                      <div className="w-5 h-5 rounded-full border-2 border-theme/60" />
                     )}
                   </div>
                 </div>

@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState, useEffect, useRef } from 'react'
 import { Card } from '@/components/ui/card'
-import { FinancialState, LanguageType, ExpenseItem } from '@/lib/types'
+import { FinancialState, LanguageType, ExpenseItem, ThemeType } from '@/lib/types'
 import { dictionary, formatMoney, formatCompactMoney } from '@/lib/i18n'
 import { normalizeDateString } from '@/lib/time'
 import { ShieldCheck, Target, Wallet, Building2, TrendingUp, AlertCircle, Coins } from 'lucide-react'
@@ -71,6 +71,7 @@ interface MetricCardsProps {
   onOpenExpenseModal?: (type: 'cash' | 'account' | 'debt' | 'month' | 'general') => void
   onOpenBudgetModal: () => void
   onOpenDebtModal: () => void
+  theme?: ThemeType
 }
 
 export function MetricCards({
@@ -82,6 +83,7 @@ export function MetricCards({
   onOpenExpenseModal,
   onOpenBudgetModal,
   onOpenDebtModal,
+  theme,
 }: MetricCardsProps) {
   const t = dictionary[lang]
 
@@ -113,7 +115,9 @@ export function MetricCards({
   const remainingBudget = Math.max(0, finances.monthlyBudget - monthlySpent)
   const isOverBudget = budgetPercent >= 90
 
-  const cardBase = 'bento-card bg-theme-card border border-theme/80 flex flex-col justify-between min-h-[114px] sm:min-h-[124px] h-full p-3.5 sm:p-4 rounded-2xl'
+  const cardBase = `bento-card bg-theme-card border border-theme/80 flex flex-col justify-between min-h-[114px] sm:min-h-[124px] h-full p-3.5 sm:p-4 ${
+    theme === 'ronin' ? 'rounded-none katana-cut-tr relative overflow-hidden' : 'rounded-2xl'
+  }`
 
   return (
     <section className="space-y-3 sm:space-y-4">
@@ -135,11 +139,11 @@ export function MetricCards({
                 {t.net_worth_formula}
               </p>
             </div>
-            <Coins className="w-4 h-4 text-theme-accent shrink-0 mt-0.5 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-200" />
+            <Coins className={`w-4 h-4 shrink-0 mt-0.5 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-200 ${theme === 'ronin' ? 'text-[#FF3B4E]' : 'text-theme-accent'}`} />
           </div>
 
           <div className="pt-2">
-            <div className="text-xl sm:text-2xl font-bold font-mono-nums tracking-tight text-theme-gradient whitespace-nowrap truncate">
+            <div className={`text-lg sm:text-xl font-bold font-mono-nums tracking-tight whitespace-nowrap truncate ${theme === 'ronin' ? 'text-white' : 'text-theme-gradient'}`}>
               <AnimatedMoney amount={totalAssets} lang={lang} />
             </div>
           </div>
@@ -154,11 +158,11 @@ export function MetricCards({
               </h3>
               <p className="text-[10px] text-theme-muted mt-0.5">{lang === 'vi' ? 'Ví / tiền túi' : 'Wallet / pocket'}</p>
             </div>
-            <Wallet className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+            <Wallet className={`w-4 h-4 shrink-0 mt-0.5 ${theme === 'ronin' ? 'text-[#FF3B4E]' : 'text-emerald-600'}`} />
           </div>
 
           <div className="pt-2">
-            <div className="text-xl sm:text-2xl font-bold font-mono-nums tracking-tight text-emerald-700 whitespace-nowrap truncate">
+            <div className={`text-lg sm:text-xl font-bold font-mono-nums tracking-tight whitespace-nowrap truncate ${theme === 'ronin' ? 'text-white' : 'text-emerald-700'}`}>
               <AnimatedMoney amount={finances.cash} lang={lang} />
             </div>
           </div>
@@ -173,11 +177,11 @@ export function MetricCards({
               </h3>
               <p className="text-[10px] text-theme-muted mt-0.5">{lang === 'vi' ? 'Số dư ngân hàng' : 'Bank balance'}</p>
             </div>
-            <Building2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+            <Building2 className={`w-4 h-4 shrink-0 mt-0.5 ${theme === 'ronin' ? 'text-[#FF3B4E]' : 'text-blue-600'}`} />
           </div>
 
           <div className="pt-2">
-            <div className="text-xl sm:text-2xl font-bold font-mono-nums tracking-tight text-blue-700 whitespace-nowrap truncate">
+            <div className={`text-lg sm:text-xl font-bold font-mono-nums tracking-tight whitespace-nowrap truncate ${theme === 'ronin' ? 'text-white' : 'text-blue-700'}`}>
               <AnimatedMoney amount={finances.bankAccount} lang={lang} />
             </div>
           </div>
@@ -189,7 +193,7 @@ export function MetricCards({
           className={`${cardBase} cursor-pointer hover:border-amber-400/80 hover:shadow-md transition-all active:scale-[0.97] group`}
           title={lang === 'vi' ? 'Bấm để chỉnh sửa ngân sách tháng này' : 'Click to edit monthly budget'}
         >
-          <div className="flex items-start justify-between gap-1">
+          <div className="flex items-center justify-between gap-1">
             <div className="min-w-0">
               <h3 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-theme-main whitespace-nowrap leading-tight">
                 {currentMonthLabel}
@@ -204,18 +208,24 @@ export function MetricCards({
           </div>
 
           <div className="pt-1.5">
-            <div className={`text-xl sm:text-2xl font-bold font-mono-nums tracking-tight whitespace-nowrap truncate ${isOverBudget ? 'text-rose-600' : 'text-amber-700'}`}>
+            <div className={`text-lg sm:text-xl font-bold font-mono-nums tracking-tight whitespace-nowrap truncate ${
+              theme === 'ronin' ? (isOverBudget ? 'text-[#FF2E44]' : 'text-white') : (isOverBudget ? 'text-rose-600' : 'text-amber-700')
+            }`}>
               <AnimatedMoney amount={monthlySpent} lang={lang} />
             </div>
-            <div className="w-full bg-theme-surface h-2 rounded-full overflow-hidden border border-theme/70 mt-1.5 relative">
+            <div className={`w-full h-2.5 overflow-hidden border mt-1.5 relative ${
+              theme === 'ronin' ? 'bg-[#06080B] border-[#1E232E] rounded-none' : 'bg-theme-surface rounded-full border-theme/70'
+            }`}>
               <div
-                className={`h-full transition-all duration-700 ease-out progress-shimmer relative ${
-                  isOverBudget ? 'bg-rose-500' : 'bg-theme-progress'
+                className={`h-full transition-all duration-700 ease-out relative ${
+                  theme === 'ronin'
+                    ? 'bg-gradient-to-r from-[#7F0910] via-[#E52535] to-[#FF2E44] shadow-[0_0_10px_#E52535]'
+                    : isOverBudget ? 'bg-rose-500' : 'bg-theme-progress progress-shimmer'
                 }`}
                 style={{ width: `${budgetPercent}%` }}
               >
                 {budgetPercent > 4 && (
-                  <span className="absolute right-0 top-1/2 w-2 h-2 rounded-full bg-white progress-tip-glow" />
+                  <span className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white progress-tip-glow" />
                 )}
               </div>
             </div>
@@ -228,30 +238,40 @@ export function MetricCards({
         {/* Tiết kiệm */}
         <Card
           onClick={onOpenSavingsModal}
-          className="bento-card bg-theme-card border border-theme/80 hover:border-amber-400/80 shadow-xs hover:shadow-md p-3.5 sm:p-4 rounded-2xl !flex-row flex-row items-center gap-3.5 sm:gap-4 transition-all cursor-pointer group active:scale-[0.97]"
+          className={`bento-card bg-theme-card border border-theme/80 hover:border-amber-400/80 shadow-xs hover:shadow-md p-3.5 sm:p-4 !flex-row flex-row items-center gap-3.5 sm:gap-4 transition-all cursor-pointer group active:scale-[0.97] ${
+            theme === 'ronin' ? 'rounded-none katana-cut-tr' : 'rounded-2xl'
+          }`}
           title={lang === 'vi' ? 'Bấm để quản lý tiết kiệm (rút / nạp)' : 'Click to manage savings'}
         >
-          <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 group-hover:bg-amber-100 flex items-center justify-center shrink-0 transition-colors">
-            <TrendingUp className="w-5 h-5 text-amber-700 group-hover:scale-110 transition-transform duration-200" />
+          <div className={`w-10 h-10 flex items-center justify-center shrink-0 transition-colors ${
+            theme === 'ronin' ? 'bg-[#151922] border border-[#E52535]/40 rounded-none' : 'rounded-xl bg-amber-50 border border-amber-200 group-hover:bg-amber-100'
+          }`}>
+            <TrendingUp className={`w-5 h-5 group-hover:scale-110 transition-transform duration-200 ${theme === 'ronin' ? 'text-[#FF3B4E]' : 'text-amber-700'}`} />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
               <span className="text-[11px] sm:text-xs font-semibold text-theme-main uppercase tracking-wide">
                 {t.current_savings}
               </span>
-              <span className="text-base sm:text-lg font-bold font-mono-nums text-amber-800 whitespace-nowrap">
+              <span className={`text-base sm:text-lg font-bold font-mono-nums whitespace-nowrap ${theme === 'ronin' ? 'text-white' : 'text-amber-800'}`}>
                 <AnimatedMoney amount={finances.currentSavings} lang={lang} />
               </span>
             </div>
 
             <div className="flex items-center gap-2 mt-2">
-              <div className="flex-1 h-2 bg-theme-surface rounded-full overflow-hidden border border-theme/70 relative">
+              <div className={`flex-1 h-2.5 overflow-hidden border relative ${
+                theme === 'ronin' ? 'bg-[#06080B] border-[#1E232E] rounded-none' : 'bg-theme-surface rounded-full border-theme/70'
+              }`}>
                 <div
-                  className="h-full bg-theme-progress transition-all duration-700 progress-shimmer relative"
+                  className={`h-full transition-all duration-700 relative ${
+                    theme === 'ronin'
+                      ? 'bg-gradient-to-r from-[#7F0910] via-[#E52535] to-[#FF2E44] shadow-[0_0_10px_#E52535]'
+                      : 'bg-theme-progress progress-shimmer'
+                  }`}
                   style={{ width: `${savingsPercent}%` }}
                 >
                   {savingsPercent > 4 && (
-                    <span className="absolute right-0 top-1/2 w-2 h-2 rounded-full bg-white progress-tip-glow" />
+                    <span className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white progress-tip-glow" />
                   )}
                 </div>
               </div>
@@ -263,10 +283,12 @@ export function MetricCards({
           </div>
         </Card>
 
-        {/* CARD 6: Khoản nợ còn lại (Bấm vào xem list scrollable, thêm/xoá nợ, người khác nợ) */}
+        {/* CARD 6: Khoản nợ còn lại */}
         <Card
           onClick={onOpenDebtModal}
-          className={`bento-card border rounded-2xl p-3.5 sm:p-4 !flex-row flex-row items-center gap-3.5 sm:gap-4 cursor-pointer transition-all active:scale-[0.97] hover:shadow-md group ${
+          className={`bento-card border p-3.5 sm:p-4 !flex-row flex-row items-center gap-3.5 sm:gap-4 cursor-pointer transition-all active:scale-[0.97] hover:shadow-md group ${
+            theme === 'ronin' ? 'rounded-none katana-cut-tr' : 'rounded-2xl'
+          } ${
             finances.totalDebt > 0
               ? 'bg-amber-50/60 border-amber-200 hover:border-amber-400'
               : (finances.totalReceivable ?? 0) > 0
@@ -275,7 +297,9 @@ export function MetricCards({
           }`}
           title={lang === 'vi' ? 'Bấm để xem danh sách & quản lý khoản nợ' : 'Click to manage debts'}
         >
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+          <div className={`w-10 h-10 flex items-center justify-center shrink-0 ${
+            theme === 'ronin' ? 'bg-[#151922] border border-[#E52535]/40 rounded-none' : 'rounded-xl'
+          } ${
             finances.totalDebt > 0
               ? 'bg-amber-100 border border-amber-300'
               : (finances.totalReceivable ?? 0) > 0
@@ -283,11 +307,11 @@ export function MetricCards({
               : 'bg-emerald-50 border border-emerald-200'
           }`}>
             {finances.totalDebt > 0 ? (
-              <AlertCircle className="w-5 h-5 text-amber-700 group-hover:scale-110 transition-transform duration-200" />
+              <AlertCircle className={`w-5 h-5 group-hover:scale-110 transition-transform duration-200 ${theme === 'ronin' ? 'text-[#FF3B4E]' : 'text-amber-700'}`} />
             ) : (finances.totalReceivable ?? 0) > 0 ? (
-              <Coins className="w-5 h-5 text-emerald-700 group-hover:scale-110 transition-transform duration-200" />
+              <Coins className={`w-5 h-5 group-hover:scale-110 transition-transform duration-200 ${theme === 'ronin' ? 'text-[#FF3B4E]' : 'text-emerald-700'}`} />
             ) : (
-              <ShieldCheck className="w-5 h-5 text-emerald-600 group-hover:scale-110 transition-transform duration-200" />
+              <ShieldCheck className={`w-5 h-5 group-hover:scale-110 transition-transform duration-200 ${theme === 'ronin' ? 'text-[#FF3B4E]' : 'text-emerald-600'}`} />
             )}
           </div>
           <div className="flex-1 min-w-0">
@@ -306,7 +330,9 @@ export function MetricCards({
                   : (lang === 'vi' ? 'Nợ còn lại' : 'Remaining Debt')}
               </span>
               <span className={`text-base sm:text-lg font-bold font-mono-nums whitespace-nowrap ${
-                finances.totalDebt > 0
+                theme === 'ronin'
+                  ? (finances.totalDebt > 0 ? 'text-[#FF3B4E]' : 'text-white')
+                  : finances.totalDebt > 0
                   ? 'text-amber-700'
                   : (finances.totalReceivable ?? 0) > 0
                   ? 'text-emerald-700'

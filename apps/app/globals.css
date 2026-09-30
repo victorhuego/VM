@@ -208,6 +208,44 @@ html[data-theme="retro"] {
   --radius: 0px;
 }
 
+/* 5. RONIN THEME (Samurai Minimalist & Blood Blade Scheme) */
+html[data-theme="ronin"] {
+  --theme-id: "ronin";
+  --theme-text-gradient: linear-gradient(135deg, #FFFFFF 0%, #EDF0F2 50%, #E52535 100%);
+  --theme-card-bg: #121417;
+  --theme-surface: #0C0D0F;
+  --theme-border: #24282F;
+  --theme-border-hover: #E52535;
+  --theme-text-main: #EDF0F2;
+  --theme-text-accent: #E52535;
+  --theme-text-muted: #889098;
+  --theme-btn-gradient: linear-gradient(135deg, #E52535 0%, #99111D 100%);
+  --theme-btn-hover: linear-gradient(135deg, #FF2E44 0%, #B81423 100%);
+  --theme-progress: #E52535;
+  --theme-active-tag: #E52535;
+  --theme-ring: #E52535;
+  --theme-shadow: rgba(229, 37, 53, 0.25);
+
+  --background: #070809; /* Deep Sumi Ink Black */
+  --foreground: #EDF0F2;
+  --card: #121417;
+  --card-foreground: #EDF0F2;
+  --popover: #121417;
+  --popover-foreground: #EDF0F2;
+  --primary: #E52535;
+  --primary-foreground: #FFFFFF;
+  --secondary: #181B20;
+  --secondary-foreground: #EDF0F2;
+  --muted: #181B20;
+  --muted-foreground: #889098;
+  --accent: #1E2228;
+  --accent-foreground: #FF2E44;
+  --border: #24282F;
+  --input: #121417;
+  --ring: #E52535;
+  --radius: 0.25rem;
+}
+
 /* ================= UTILITY CLASSES ================= */
 .text-theme-gradient {
   background: var(--theme-text-gradient);
@@ -863,6 +901,14 @@ html[data-theme="fantasy"] .bento-card svg:not(.text-white) {
   color: #E5C992 !important;
 }
 
+/* Ensure icons inside Fantasy golden action buttons remain crisp dark navy */
+html[data-theme="fantasy"] .btn-theme-gradient svg,
+html[data-theme="fantasy"] .bento-card .btn-theme-gradient svg,
+html[data-theme="fantasy"] .timeline-filter-active svg {
+  color: #1E2533 !important;
+  stroke: #1E2533 !important;
+}
+
 /* Circadian track in fantasy theme -> gold/dark only */
 html[data-theme="fantasy"] .circadian-track {
   background: linear-gradient(90deg, 
@@ -1038,13 +1084,17 @@ html[data-theme="fantasy"] [role="dialog"] .bg-emerald-200\/80 {
   color: #A7F3D0 !important;
 }
 
-/* Fantasy Dialog Active Filter Tabs: Stand out vividly with golden/mint aura */
-html[data-theme="fantasy"] [role="dialog"] button.bg-white {
+/* Fantasy Dialog Active Filter Tabs (e.g. general modal type tabs) */
+html[data-theme="fantasy"] [role="dialog"] .p-1 button.bg-white {
   background: #D3BC8E !important;
   color: #1A2232 !important;
   border: 1px solid #FFE5A3 !important;
   box-shadow: 0 0 12px rgba(211, 188, 142, 0.35) !important;
   font-weight: 700 !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] .p-1 button.bg-white * {
+  color: #1A2232 !important;
 }
 
 html[data-theme="fantasy"] [role="dialog"] button.bg-white.text-amber-900 {
@@ -1060,6 +1110,73 @@ html[data-theme="fantasy"] [role="dialog"] button.bg-white.text-emerald-800 {
   color: #0A261E !important;
   border: 1px solid #A7F3D0 !important;
   box-shadow: 0 0 12px rgba(52, 211, 153, 0.4) !important;
+  font-weight: 700 !important;
+}
+
+/* Selected source / direction buttons in QuickExpenseModal & EditExpenseModal */
+html[data-theme="fantasy"] [role="dialog"] .bg-emerald-50\/90,
+html[data-theme="fantasy"] [role="dialog"] .bg-blue-50\/90,
+html[data-theme="fantasy"] [role="dialog"] button.bg-blue-50 {
+  background: #D3BC8E !important;
+  border-color: #FFE5A3 !important;
+  color: #1A2232 !important;
+  box-shadow: 0 0 12px rgba(211, 188, 142, 0.35) !important;
+}
+html[data-theme="fantasy"] [role="dialog"] .bg-emerald-50\/90 *,
+html[data-theme="fantasy"] [role="dialog"] .bg-blue-50\/90 *,
+html[data-theme="fantasy"] [role="dialog"] button.bg-blue-50 * {
+  color: #1A2232 !important;
+}
+html[data-theme="fantasy"] [role="dialog"] .bg-emerald-50\/90 .bg-emerald-100,
+html[data-theme="fantasy"] [role="dialog"] .bg-blue-50\/90 .bg-blue-100 {
+  background-color: rgba(26, 34, 50, 0.2) !important;
+  color: #1A2232 !important;
+}
+
+/* Unselected source buttons in QuickExpenseModal & EditExpenseModal */
+html[data-theme="fantasy"] [role="dialog"] button.border-zinc-200.bg-white {
+  background-color: #141C2A !important;
+  border-color: rgba(211, 188, 142, 0.35) !important;
+  color: #F5EAD4 !important;
+}
+html[data-theme="fantasy"] [role="dialog"] button.border-zinc-200.bg-white:hover {
+  background-color: #1E2B3E !important;
+  border-color: #E5C992 !important;
+}
+html[data-theme="fantasy"] [role="dialog"] button.border-zinc-200.bg-white * {
+  color: #F5EAD4 !important;
+}
+html[data-theme="fantasy"] [role="dialog"] button.border-zinc-200.bg-white .text-zinc-500,
+html[data-theme="fantasy"] [role="dialog"] button.border-zinc-200.bg-white .text-zinc-400 {
+  color: #8E9FAC !important;
+}
+
+/* Fantasy MomentComposer & Timeline Filters */
+html[data-theme="fantasy"] .bento-card textarea {
+  background-color: #141C2A !important;
+  border-color: rgba(211, 188, 142, 0.4) !important;
+  color: #F5EAD4 !important;
+}
+html[data-theme="fantasy"] .bento-card textarea::placeholder {
+  color: #8E9FAC !important;
+}
+html[data-theme="fantasy"] .bento-card button.bg-white {
+  background-color: #141C2A !important;
+  border-color: rgba(211, 188, 142, 0.35) !important;
+  color: #F5EAD4 !important;
+}
+html[data-theme="fantasy"] .bento-card button.bg-white:hover {
+  background-color: #1E2B3E !important;
+  border-color: #E5C992 !important;
+}
+html[data-theme="fantasy"] .bento-card button.bg-white * {
+  color: #F5EAD4 !important;
+}
+html[data-theme="fantasy"] .timeline-filter-active {
+  background: #D3BC8E !important;
+  color: #1A2232 !important;
+  border: 1px solid #FFE5A3 !important;
+  box-shadow: 0 2px 8px rgba(211, 188, 142, 0.3) !important;
   font-weight: 700 !important;
 }
 
@@ -1452,4 +1569,709 @@ html[data-theme="retro"] div[role="button"] {
 html[data-theme="retro"] div[role="button"] .font-mono-nums {
   color: #000080 !important;
   font-weight: bold !important;
+}
+
+/* ================= RONIN THEME (SAMURAI MINIMALIST & BLOOD BLADE) ================= */
+
+/* Katana Bevel Utilities */
+.katana-cut-tr {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+}
+.katana-cut-bl {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+.katana-cut-both {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+}
+
+.hanko-logo-stamp {
+  box-shadow: inset 0 0 0 1.5px #E52535, 0 0 14px rgba(229, 37, 53, 0.45);
+}
+
+.blade-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(229, 37, 53, 0.4) 15%, #EDF0F2 50%, rgba(229, 37, 53, 0.4) 85%, transparent 100%);
+  box-shadow: 0 0 8px rgba(237, 240, 242, 0.4);
+}
+
+/* ================= 6. RONIN THEME (YAKUZA RONIN: EDGY, BRUTAL BLACK & BLOOD RED) ================= */
+html[data-theme="ronin"],
+html[data-theme="ronin"] body {
+  background-color: #050608 !important;
+  background-image: 
+    radial-gradient(ellipse 90% 40% at 50% -10%, rgba(229, 37, 53, 0.16), transparent 70%),
+    radial-gradient(circle at 100% 100%, rgba(229, 37, 53, 0.05), transparent 50%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24' viewBox='0 0 48 24'%3E%3Cpath d='M24 0a24 24 0 0 0 24 24H0A24 24 0 0 0 24 0zm0 4a20 20 0 0 0 20 20H4A20 20 0 0 0 24 4zm0 4a16 16 0 0 0 16 16H8A16 16 0 0 0 24 8z' fill='%23ffffff' fill-opacity='0.015' fill-rule='evenodd'/%3E%3C/svg%3E") !important;
+  color: #F0F3F6 !important;
+  font-family: var(--font-ronin), 'Chakra Petch', system-ui, -apple-system, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* PERSIST 1 UNIFIED FONT: Chakra Petch across ALL elements in Ronin */
+html[data-theme="ronin"] h1,
+html[data-theme="ronin"] h2,
+html[data-theme="ronin"] h3,
+html[data-theme="ronin"] h4,
+html[data-theme="ronin"] h5,
+html[data-theme="ronin"] h6,
+html[data-theme="ronin"] p,
+html[data-theme="ronin"] span,
+html[data-theme="ronin"] a,
+html[data-theme="ronin"] div,
+html[data-theme="ronin"] button,
+html[data-theme="ronin"] input,
+html[data-theme="ronin"] textarea,
+html[data-theme="ronin"] select,
+html[data-theme="ronin"] label,
+html[data-theme="ronin"] .font-ronin-title,
+html[data-theme="ronin"] .font-mono-nums,
+html[data-theme="ronin"] .btn-theme-gradient {
+  font-family: var(--font-ronin), 'Chakra Petch', system-ui, -apple-system, sans-serif !important;
+}
+
+/* Balanced Headings (No longer oversized or cartoonish) */
+html[data-theme="ronin"] h1 {
+  font-size: 1.125rem !important; /* 18px */
+  line-height: 1.35 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+}
+@media (min-width: 640px) {
+  html[data-theme="ronin"] h1 {
+    font-size: 1.25rem !important; /* 20px */
+  }
+}
+
+html[data-theme="ronin"] h2 {
+  font-size: 0.9375rem !important; /* 15px */
+  line-height: 1.3 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+}
+@media (min-width: 640px) {
+  html[data-theme="ronin"] h2 {
+    font-size: 1rem !important; /* 16px */
+  }
+}
+
+html[data-theme="ronin"] h3 {
+  font-size: 0.8125rem !important; /* 13px */
+  line-height: 1.25 !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.015em !important;
+}
+@media (min-width: 640px) {
+  html[data-theme="ronin"] h3 {
+    font-size: 0.875rem !important; /* 14px */
+  }
+}
+
+html[data-theme="ronin"] h4 {
+  font-size: 0.75rem !important; /* 12px */
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+}
+
+/* Fix overly tiny text (No more microscopic, unreadable text) */
+html[data-theme="ronin"] .text-\[9px\] {
+  font-size: 0.6875rem !important; /* 11px */
+  line-height: 1.25 !important;
+}
+
+html[data-theme="ronin"] .text-\[10px\] {
+  font-size: 0.6875rem !important; /* 11px */
+  line-height: 1.3 !important;
+}
+
+html[data-theme="ronin"] .text-\[11px\] {
+  font-size: 0.75rem !important; /* 12px */
+  line-height: 1.35 !important;
+}
+
+/* High-contrast, comfortable body text */
+html[data-theme="ronin"] p {
+  font-size: 0.8125rem !important; /* 13px */
+  line-height: 1.45 !important;
+  color: #CFD6E2 !important;
+}
+
+/* Numerals: Tabular & crisp */
+html[data-theme="ronin"] .font-mono-nums {
+  font-variant-numeric: tabular-nums !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Buttons: Consistent font sizing and weight */
+html[data-theme="ronin"] button {
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* ELIMINATE ALL SOFT ROUNDED CORNERS IN RONIN (BRUTALIST SHARP SILHOUETTE) */
+html[data-theme="ronin"] .bento-card,
+html[data-theme="ronin"] [role="dialog"],
+html[data-theme="ronin"] [data-slot="dialog-content"],
+html[data-theme="ronin"] [data-slot="card"],
+html[data-theme="ronin"] .expense-list-card,
+html[data-theme="ronin"] button,
+html[data-theme="ronin"] input,
+html[data-theme="ronin"] select,
+html[data-theme="ronin"] textarea {
+  border-radius: 0px !important;
+}
+
+/* Header: Dark Steel Frame with Katana Hamon Glowing Edge */
+html[data-theme="ronin"] header {
+  background-color: rgba(5, 6, 8, 0.98) !important;
+  border-bottom: 2px solid #1F242E !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Samurai Armor Plate Bento Cards: 2 Opposite Corner Brackets, No Top Line */
+html[data-theme="ronin"] .bento-card,
+html[data-theme="ronin"] [data-slot="card"],
+html[data-theme="ronin"] .expense-list-card {
+  background: linear-gradient(180deg, #10131B 0%, #07090C 100%) !important;
+  border: 1px solid #1E232E !important;
+  color: #F0F3F6 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), inset 0 0 12px rgba(229, 37, 53, 0.04) !important;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+/* Modals & Dialogs: Strictly preserve standard fixed centering and responsiveness */
+html[data-theme="ronin"] [role="dialog"],
+html[data-theme="ronin"] [data-slot="dialog-content"] {
+  background: #0E1117 !important;
+  border: 1px solid #242A36 !important;
+  color: #F0F3F6 !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95), 0 0 20px rgba(229, 37, 53, 0.15) !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] .bento-card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-top: 2px solid #E52535 !important;
+  border-left: 2px solid #E52535 !important;
+  background: transparent !important;
+  pointer-events: none !important;
+  z-index: 5 !important;
+}
+
+html[data-theme="ronin"] .bento-card::after {
+  content: '' !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  right: 0 !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-bottom: 2px solid #E52535 !important;
+  border-right: 2px solid #E52535 !important;
+  pointer-events: none !important;
+  z-index: 5 !important;
+}
+
+html[data-theme="ronin"] .bento-card:hover,
+html[data-theme="ronin"] [data-slot="card"]:hover {
+  border-color: #E52535 !important;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.95), 0 0 20px rgba(229, 37, 53, 0.25) !important;
+  transform: translateY(-1px);
+}
+
+/* Eradicate ALL white surfaces & light greys -> Pure Dark Obsidian Steel */
+html[data-theme="ronin"] .bg-white,
+html[data-theme="ronin"] div.bg-white,
+html[data-theme="ronin"] .bg-slate-50 {
+  background-color: #0E1117 !important;
+  border-color: #1E232D !important;
+  color: #F0F3F6 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] button.bg-white {
+  background-color: #10131A !important;
+  border-color: #242A36 !important;
+  color: #F0F3F6 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] button.bg-white:hover {
+  background-color: #181C26 !important;
+  border-color: #E52535 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 12px rgba(229, 37, 53, 0.4) !important;
+}
+
+/* Deep Carbon Backgrounds for Sub-containers */
+html[data-theme="ronin"] .bg-zinc-50,
+html[data-theme="ronin"] .bg-zinc-50\/70,
+html[data-theme="ronin"] .bg-zinc-50\/80,
+html[data-theme="ronin"] .bg-zinc-100,
+html[data-theme="ronin"] .bg-zinc-100\/90,
+html[data-theme="ronin"] .bg-zinc-200 {
+  background-color: #07090D !important;
+  border-color: #1D222C !important;
+  color: #F0F3F6 !important;
+  border-radius: 0px !important;
+}
+
+/* Form Inputs, Textarea, Select: Angular & Razor Focus */
+html[data-theme="ronin"] input,
+html[data-theme="ronin"] textarea,
+html[data-theme="ronin"] select {
+  background-color: #06080B !important;
+  border: 1px solid #1F242F !important;
+  color: #F0F3F6 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] input::placeholder,
+html[data-theme="ronin"] textarea::placeholder {
+  color: #8E99A8 !important;
+  font-size: 0.8125rem !important;
+}
+
+html[data-theme="ronin"] input:focus,
+html[data-theme="ronin"] textarea:focus,
+html[data-theme="ronin"] select:focus {
+  border-color: #E52535 !important;
+  box-shadow: 0 0 14px rgba(229, 37, 53, 0.4), inset 0 0 6px rgba(229, 37, 53, 0.2) !important;
+  outline: none !important;
+}
+
+/* Buttons: Blood Red Blade Gradients & High Impact */
+html[data-theme="ronin"] .btn-theme-gradient {
+  background: linear-gradient(135deg, #E52535 0%, #7F0910 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #FF263B !important;
+  box-shadow: 0 0 16px rgba(229, 37, 53, 0.5) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.015em !important;
+  border-radius: 0px !important;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  transition: all 0.2s ease-in-out;
+}
+
+html[data-theme="ronin"] .btn-theme-gradient:hover {
+  background: linear-gradient(135deg, #FF1E38 0%, #A30D18 100%) !important;
+  box-shadow: 0 0 24px rgba(229, 37, 53, 0.8), 0 0 8px rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   RONIN / AUTISTIC THEME: ERADICATE ALL LIGHT SURFACES & UNREADABLE TEXT
+   ========================================================================== */
+
+/* 1. Universal Light Background Eradication (White, Slate, Zinc, Gray) */
+html[data-theme="ronin"] .bg-white,
+html[data-theme="ronin"] div.bg-white,
+html[data-theme="ronin"] [class*="bg-white"],
+html[data-theme="ronin"] [class*="bg-slate-"],
+html[data-theme="ronin"] [class*="bg-zinc-"],
+html[data-theme="ronin"] [class*="bg-gray-"],
+html[data-theme="ronin"] [class*="bg-neutral-"] {
+  background-color: #0E1117 !important;
+  border-color: #1F242F !important;
+  color: #F0F3F6 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] button.bg-white,
+html[data-theme="ronin"] button[class*="bg-white"] {
+  background-color: #10131A !important;
+  border-color: #242A36 !important;
+  color: #F0F3F6 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] button.bg-white:hover,
+html[data-theme="ronin"] button[class*="bg-white"]:hover {
+  background-color: #181C26 !important;
+  border-color: #E52535 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 12px rgba(229, 37, 53, 0.4) !important;
+}
+
+/* 2. Emerald / Green Backgrounds -> Deep Dark Forest Obsidian ("Xanh lá đậm") */
+html[data-theme="ronin"] [class*="bg-emerald-"],
+html[data-theme="ronin"] [class*="bg-green-"] {
+  background-color: #032011 !important;
+  border-color: #0E5C32 !important;
+  color: #D1FAE5 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] [class*="border-emerald-"],
+html[data-theme="ronin"] [class*="border-green-"] {
+  border-color: #0E5C32 !important;
+}
+
+/* Emerald icon badges / sub-elements */
+html[data-theme="ronin"] [class*="bg-emerald-100"],
+html[data-theme="ronin"] [class*="bg-emerald-200"],
+html[data-theme="ronin"] [class*="bg-green-100"],
+html[data-theme="ronin"] [class*="bg-green-200"] {
+  background-color: #052A16 !important;
+  color: #4ADE80 !important;
+  border-color: #0E5C32 !important;
+}
+
+/* 3. Amber / Yellow / Orange Backgrounds -> Deep Obsidian Carbon */
+html[data-theme="ronin"] [class*="bg-amber-"],
+html[data-theme="ronin"] [class*="bg-yellow-"],
+html[data-theme="ronin"] [class*="bg-orange-"] {
+  background-color: #12151D !important;
+  border-color: #2D2319 !important;
+  color: #F0F3F6 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] [class*="border-amber-"],
+html[data-theme="ronin"] [class*="border-yellow-"],
+html[data-theme="ronin"] [class*="border-orange-"] {
+  border-color: #382414 !important;
+}
+
+/* Amber icon badges / sub-elements */
+html[data-theme="ronin"] [class*="bg-amber-100"],
+html[data-theme="ronin"] [class*="bg-amber-200"],
+html[data-theme="ronin"] [class*="bg-yellow-100"],
+html[data-theme="ronin"] [class*="bg-orange-100"] {
+  background-color: #241A0B !important;
+  color: #FBBF24 !important;
+  border-color: #5C380E !important;
+}
+
+/* 4. Blue / Sky / Indigo Backgrounds -> Deep Midnight Obsidian */
+html[data-theme="ronin"] [class*="bg-blue-"],
+html[data-theme="ronin"] [class*="bg-sky-"],
+html[data-theme="ronin"] [class*="bg-indigo-"] {
+  background-color: #090E17 !important;
+  border-color: #1A283D !important;
+  color: #F0F3F6 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] [class*="border-blue-"],
+html[data-theme="ronin"] [class*="border-sky-"],
+html[data-theme="ronin"] [class*="border-indigo-"] {
+  border-color: #1A283D !important;
+}
+
+/* Blue icon badges / sub-elements */
+html[data-theme="ronin"] [class*="bg-blue-100"],
+html[data-theme="ronin"] [class*="bg-blue-200"] {
+  background-color: #0A1E38 !important;
+  color: #60A5FA !important;
+  border-color: #1E3A5F !important;
+}
+
+/* 5. Purple / Violet Backgrounds -> Dark Amethyst Obsidian */
+html[data-theme="ronin"] [class*="bg-purple-"],
+html[data-theme="ronin"] [class*="bg-violet-"] {
+  background-color: #120C1F !important;
+  border-color: #2E1A47 !important;
+  color: #F0F3F6 !important;
+  border-radius: 0px !important;
+}
+
+/* 6. Rose / Red Backgrounds -> Deep Crimson Obsidian Tint */
+html[data-theme="ronin"] [class*="bg-rose-"],
+html[data-theme="ronin"] [class*="bg-red-"] {
+  background-color: rgba(229, 37, 53, 0.14) !important;
+  border-color: rgba(229, 37, 53, 0.4) !important;
+  color: #F0F3F6 !important;
+  border-radius: 0px !important;
+}
+
+/* 7. High Contrast Text Overrides for Ronin Dark Mode */
+html[data-theme="ronin"] [class*="text-zinc-9"],
+html[data-theme="ronin"] [class*="text-zinc-8"],
+html[data-theme="ronin"] [class*="text-zinc-7"],
+html[data-theme="ronin"] [class*="text-slate-9"],
+html[data-theme="ronin"] [class*="text-slate-8"],
+html[data-theme="ronin"] [class*="text-gray-9"],
+html[data-theme="ronin"] [class*="text-gray-8"] {
+  color: #F0F3F6 !important;
+}
+
+html[data-theme="ronin"] [class*="text-zinc-6"],
+html[data-theme="ronin"] [class*="text-zinc-5"],
+html[data-theme="ronin"] [class*="text-zinc-4"],
+html[data-theme="ronin"] [class*="text-slate-6"],
+html[data-theme="ronin"] [class*="text-slate-5"] {
+  color: #8C96A2 !important;
+}
+
+/* High contrast colored texts */
+html[data-theme="ronin"] [class*="text-emerald-9"],
+html[data-theme="ronin"] [class*="text-emerald-8"],
+html[data-theme="ronin"] [class*="text-emerald-7"],
+html[data-theme="ronin"] [class*="text-emerald-6"],
+html[data-theme="ronin"] [class*="text-green-"] {
+  color: #4ADE80 !important;
+}
+
+html[data-theme="ronin"] [class*="text-blue-9"],
+html[data-theme="ronin"] [class*="text-blue-8"],
+html[data-theme="ronin"] [class*="text-blue-7"],
+html[data-theme="ronin"] [class*="text-blue-6"],
+html[data-theme="ronin"] [class*="text-sky-"] {
+  color: #60A5FA !important;
+}
+
+html[data-theme="ronin"] [class*="text-amber-9"],
+html[data-theme="ronin"] [class*="text-amber-8"],
+html[data-theme="ronin"] [class*="text-amber-7"],
+html[data-theme="ronin"] [class*="text-yellow-"] {
+  color: #FBBF24 !important;
+}
+
+html[data-theme="ronin"] [class*="text-rose-"],
+html[data-theme="ronin"] [class*="text-red-"] {
+  color: #FF3B4E !important;
+}
+
+/* Category Icons & Badges: Blood Red Seal Styling */
+html[data-theme="ronin"] .category-icon-badge {
+  background-color: rgba(229, 37, 53, 0.15) !important;
+  color: #FF3B4E !important;
+  border: 1px solid rgba(229, 37, 53, 0.4) !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] .category-icon-badge svg,
+html[data-theme="ronin"] .category-icon-standalone {
+  color: #FF3B4E !important;
+}
+
+/* 8. React-Select Dropdowns (Timeline User Filter & Modal Selects) */
+html[data-theme="ronin"] [class*="-control"] {
+  background-color: #0C0D0F !important;
+  border-color: #24282F !important;
+  color: #EDF0F2 !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="ronin"] [class*="-control"]:hover {
+  border-color: #E52535 !important;
+}
+
+html[data-theme="ronin"] [class*="-singleValue"] {
+  color: #EDF0F2 !important;
+}
+
+html[data-theme="ronin"] [class*="-menu"] {
+  background-color: #0E1117 !important;
+  border: 1px solid #242A36 !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.95), 0 0 15px rgba(229, 37, 53, 0.2) !important;
+  color: #EDF0F2 !important;
+  border-radius: 0px !important;
+  z-index: 9999 !important;
+}
+
+html[data-theme="ronin"] [class*="-menuList"] {
+  background-color: #0E1117 !important;
+  padding: 4px !important;
+}
+
+html[data-theme="ronin"] [class*="-option"] {
+  background-color: transparent !important;
+  color: #EDF0F2 !important;
+  border-radius: 0px !important;
+  cursor: pointer !important;
+}
+
+html[data-theme="ronin"] [class*="-option"]:hover,
+html[data-theme="ronin"] [class*="-option"][class*="--is-focused"] {
+  background-color: #1A1F2B !important;
+  color: #FF3B4E !important;
+}
+
+html[data-theme="ronin"] [class*="-option"][class*="--is-selected"] {
+  background-color: rgba(229, 37, 53, 0.2) !important;
+  color: #FF3B4E !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme="ronin"] [class*="-indicatorContainer"],
+html[data-theme="ronin"] [class*="-dropdownIndicator"] {
+  color: #8C96A2 !important;
+}
+
+html[data-theme="ronin"] [class*="-dropdownIndicator"]:hover {
+  color: #FF3B4E !important;
+}
+
+/* 9. Modal Active Filter Tabs */
+html[data-theme="ronin"] [role="dialog"] .p-1 button[class*="bg-white"],
+html[data-theme="ronin"] [role="dialog"] .grid-cols-3 button[class*="bg-white"],
+html[data-theme="ronin"] [role="dialog"] button.bg-white[class*="shadow"] {
+  background: linear-gradient(135deg, #E52535 0%, #7F0910 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #FF263B !important;
+  box-shadow: 0 0 12px rgba(229, 37, 53, 0.5) !important;
+  font-weight: 700 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] [role="dialog"] .p-1 button[class*="bg-white"] *,
+html[data-theme="ronin"] [role="dialog"] .grid-cols-3 button[class*="bg-white"] *,
+html[data-theme="ronin"] [role="dialog"] button.bg-white[class*="shadow"] * {
+  color: #FFFFFF !important;
+}
+
+/* 10. Selected Source / Direction Buttons in Dialogs */
+html[data-theme="ronin"] [role="dialog"] [class*="bg-emerald-50/80"],
+html[data-theme="ronin"] [role="dialog"] [class*="bg-emerald-50/90"],
+html[data-theme="ronin"] [role="dialog"] [class*="bg-blue-50/80"],
+html[data-theme="ronin"] [role="dialog"] [class*="bg-blue-50/90"],
+html[data-theme="ronin"] [role="dialog"] [class*="bg-amber-50/80"] {
+  background: rgba(229, 37, 53, 0.22) !important;
+  border-color: #E52535 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 14px rgba(229, 37, 53, 0.4) !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] [role="dialog"] [class*="bg-emerald-50/80"] *,
+html[data-theme="ronin"] [role="dialog"] [class*="bg-blue-50/80"] *,
+html[data-theme="ronin"] [role="dialog"] [class*="bg-amber-50/80"] * {
+  color: #FFFFFF !important;
+}
+
+/* Unselected Source Buttons in Dialogs */
+html[data-theme="ronin"] [role="dialog"] button[class*="border-theme"].bg-white,
+html[data-theme="ronin"] [role="dialog"] button[class*="border-zinc-200"].bg-white {
+  background-color: #10131A !important;
+  border-color: #242A36 !important;
+  color: #8C96A2 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] [role="dialog"] button[class*="border-theme"].bg-white:hover,
+html[data-theme="ronin"] [role="dialog"] button[class*="border-zinc-200"].bg-white:hover {
+  background-color: #181C26 !important;
+  border-color: #E52535 !important;
+}
+
+/* 11. NumericTouchpad in Ronin */
+html[data-theme="ronin"] .grid button[class*="bg-white"] {
+  background-color: #0E1117 !important;
+  border-color: #1F242E !important;
+  color: #F0F3F6 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] .grid button[class*="bg-white"]:hover {
+  background-color: #181C26 !important;
+  border-color: #E52535 !important;
+}
+
+html[data-theme="ronin"] .grid button[class*="bg-zinc-100"] {
+  background-color: #121620 !important;
+  border-color: #262D3A !important;
+  color: #F0F3F6 !important;
+  border-radius: 0px !important;
+}
+
+/* Period Switcher in ExpenseList */
+html[data-theme="ronin"] .period-switcher-container {
+  background-color: #07090C !important;
+  border: 1px solid #1E232E !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] .period-tab-btn {
+  color: #8C96A2 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] .period-tab-active {
+  background: linear-gradient(135deg, #E52535 0%, #7F0910 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #FF263B !important;
+  box-shadow: 0 0 12px rgba(229, 37, 53, 0.5) !important;
+  font-weight: 700 !important;
+  border-radius: 0px !important;
+}
+
+/* Timeline filter active pill */
+html[data-theme="ronin"] .timeline-filter-active {
+  background: linear-gradient(135deg, #E52535 0%, #7F0910 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #FF263B !important;
+  box-shadow: 0 0 12px rgba(229, 37, 53, 0.5) !important;
+  font-weight: 700 !important;
+  border-radius: 0px !important;
+}
+
+/* Dividers across lists */
+html[data-theme="ronin"] .divide-zinc-100 > * + *,
+html[data-theme="ronin"] .divide-zinc-200 > * + * {
+  border-color: #1A1F29 !important;
+}
+
+/* Navigation Dock & FAB (Pentagonal / Katana Cut) */
+html[data-theme="ronin"] nav[aria-label="Mobile Navigation"] {
+  background-color: rgba(6, 8, 11, 0.98) !important;
+  border-color: #1F242E !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] nav[aria-label="Mobile Navigation"] > div {
+  background-color: #11141C !important;
+  border-color: #E52535 !important;
+  border-radius: 0px !important;
+}
+
+html[data-theme="ronin"] .bubble-fab-mobile {
+  background: linear-gradient(135deg, #E52535 0%, #7F0910 100%) !important;
+  box-shadow: 0 0 24px rgba(229, 37, 53, 0.6), 0 10px 30px rgba(0, 0, 0, 0.9) !important;
+  border: 1.5px solid #FF263B !important;
+  border-radius: 0px !important;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)) !important;
+}
+
+/* Katana Blade Divider Class */
+.katana-blade-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(229, 37, 53, 0.4) 15%, #E52535 50%, rgba(229, 37, 53, 0.4) 85%, transparent 100%);
+  box-shadow: 0 0 8px rgba(229, 37, 53, 0.6);
+}
+
+/* Hanko Seal Badge Utility */
+.hanko-seal-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #E52535;
+  background: rgba(229, 37, 53, 0.16);
+  color: #FF3B4E;
+  font-family: var(--font-ronin), 'Chakra Petch', sans-serif;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+  border-radius: 0px;
+  box-shadow: 0 0 8px rgba(229, 37, 53, 0.35);
+}
+
+/* Katana Cut Utilities */
+.katana-cut {
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+.katana-cut-tr {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+}
+
+.katana-cut-bl {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 calc(100% - 12px));
 }

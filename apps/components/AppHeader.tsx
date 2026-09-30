@@ -76,6 +76,9 @@ export function AppHeader({
       {currentTheme === 'fantasy' && (
         <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#E5C992] to-transparent shadow-[0_0_8px_#E5C992]" />
       )}
+      {currentTheme === 'ronin' && (
+        <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#E52535] to-transparent shadow-[0_0_10px_#E52535]" />
+      )}
       <div className="w-full px-2.5 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         {/* Brand & Desktop Navigation */}
         <div className="flex items-center space-x-2 sm:space-x-6 min-w-0">
@@ -89,6 +92,14 @@ export function AppHeader({
                   <div className="bg-[#ffff00]" />
                 </div>
                 <span>Start</span>
+              </div>
+            ) : currentTheme === 'ronin' ? (
+              <div className="w-8 h-8 rounded-full overflow-hidden shadow-[0_0_14px_rgba(229,37,53,0.6)] shrink-0 border border-[#FF3B4E]/80 flex items-center justify-center bg-[#07090C]">
+                <img
+                  src="/autistic_logo.png"
+                  alt="Autistic Logo"
+                  className="w-full h-full object-cover rounded-full"
+                />
               </div>
             ) : currentTheme === 'cozy' ? (
               <div className="w-7 h-7 rounded-xl bg-amber-100 border border-amber-300/80 flex items-center justify-center text-sm shadow-xs transition-transform active:scale-90 shrink-0">
@@ -105,7 +116,7 @@ export function AppHeader({
             ) : (
               <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full btn-theme-gradient ring-2 ring-theme" />
             )}
-            <span className="font-bold tracking-tight text-xs sm:text-base text-theme-gradient truncate">
+            <span className={`font-bold tracking-tight text-xs sm:text-base truncate ${currentTheme === 'ronin' ? 'text-white tracking-wider' : 'text-theme-gradient'}`}>
               {t.app_title}
             </span>
           </div>
@@ -118,7 +129,9 @@ export function AppHeader({
                 onRefresh()
               }}
               disabled={isRefreshing}
-              className="p-1 sm:p-1.5 rounded-md border border-theme bg-white hover:bg-theme-surface text-theme-muted hover:text-theme-main transition-all cursor-pointer shadow-2xs disabled:opacity-50 flex items-center justify-center shrink-0"
+              className={`p-1 sm:p-1.5 rounded-md border border-theme bg-white hover:bg-theme-surface text-theme-muted hover:text-theme-main transition-all cursor-pointer shadow-2xs disabled:opacity-50 flex items-center justify-center shrink-0 ${
+                currentTheme === 'ronin' ? 'katana-cut-tr !border-[#262C38] hover:!border-[#E52535]' : ''
+              }`}
               title={currentLang === 'vi' ? 'Làm mới toàn bộ ứng dụng' : 'Refresh entire app'}
               aria-label="Refresh app"
             >
@@ -131,13 +144,17 @@ export function AppHeader({
           <span className="text-zinc-300 hidden sm:inline">|</span>
 
           {/* Tab Navigation (Desktop) */}
-          <nav className="hidden sm:flex items-center space-x-1">
+          <nav className="hidden sm:flex items-center space-x-1.5">
             <button
               onClick={() => onTabChange('moments')}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center space-x-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer ${
                 currentTab === 'moments'
-                  ? 'bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold'
-                  : 'text-zinc-500 hover:text-theme-main hover:bg-theme-surface'
+                  ? currentTheme === 'ronin'
+                    ? 'bg-[#151922] text-white border border-[#242A36] border-b-2 !border-b-[#E52535] shadow-[0_0_12px_rgba(229,37,53,0.3)] katana-cut-tr font-bold'
+                    : 'bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold rounded-md'
+                  : currentTheme === 'ronin'
+                  ? 'text-zinc-400 hover:text-white hover:bg-[#10131B]'
+                  : 'text-zinc-500 hover:text-theme-main hover:bg-theme-surface rounded-md'
               }`}
             >
               <Clock className="w-3.5 h-3.5 text-theme-accent" />
@@ -145,10 +162,14 @@ export function AppHeader({
             </button>
             <button
               onClick={() => onTabChange('expenses')}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center space-x-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer ${
                 currentTab === 'expenses'
-                  ? 'bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold'
-                  : 'text-zinc-500 hover:text-theme-main hover:bg-theme-surface'
+                  ? currentTheme === 'ronin'
+                    ? 'bg-[#151922] text-white border border-[#242A36] border-b-2 !border-b-[#E52535] shadow-[0_0_12px_rgba(229,37,53,0.3)] katana-cut-tr font-bold'
+                    : 'bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold rounded-md'
+                  : currentTheme === 'ronin'
+                  ? 'text-zinc-400 hover:text-white hover:bg-[#10131B]'
+                  : 'text-zinc-500 hover:text-theme-main hover:bg-theme-surface rounded-md'
               }`}
             >
               <Wallet className="w-3.5 h-3.5 text-theme-accent" />
@@ -156,10 +177,14 @@ export function AppHeader({
             </button>
             <button
               onClick={() => onTabChange('users')}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center space-x-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer ${
                 currentTab === 'users'
-                  ? 'bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold'
-                  : 'text-zinc-500 hover:text-theme-main hover:bg-theme-surface'
+                  ? currentTheme === 'ronin'
+                    ? 'bg-[#151922] text-white border border-[#242A36] border-b-2 !border-b-[#E52535] shadow-[0_0_12px_rgba(229,37,53,0.3)] katana-cut-tr font-bold'
+                    : 'bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold rounded-md'
+                  : currentTheme === 'ronin'
+                  ? 'text-zinc-400 hover:text-white hover:bg-[#10131B]'
+                  : 'text-zinc-500 hover:text-theme-main hover:bg-theme-surface rounded-md'
               }`}
             >
               <User className="w-3.5 h-3.5 text-theme-accent" />
@@ -211,7 +236,7 @@ export function AppHeader({
           {/* Theme Switcher via react-select */}
           <div className="w-24 sm:w-40 md:w-44 shrink-0">
             {!mounted ? (
-              <div className="h-8 rounded-md border border-theme flex items-center px-2 space-x-1.5 text-xs text-theme-main bg-white">
+              <div className="h-8 rounded-md border border-theme flex items-center px-2 space-x-1.5 text-xs text-theme-main bg-theme-surface">
                 <div
                   className="w-2.5 h-2.5 rounded-full ring-1 ring-black/10 shrink-0"
                   style={{ backgroundColor: themeMetadata[currentTheme].color }}
@@ -256,7 +281,7 @@ export function AppHeader({
                     minHeight: '32px',
                     height: '32px',
                     fontSize: '12px',
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--card)',
                     borderColor: 'var(--theme-border)',
                     boxShadow: state.isFocused ? '0 0 0 1px var(--theme-border)' : 'none',
                     '&:hover': {
@@ -299,10 +324,10 @@ export function AppHeader({
                   }),
                   menu: (base) => ({
                     ...base,
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--card)',
                     border: '1px solid var(--theme-border)',
                     borderRadius: '0.5rem',
-                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04)',
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
                     zIndex: 9999,
                     width: '150px',
                     right: 0,
@@ -323,9 +348,9 @@ export function AppHeader({
                     backgroundColor: state.isSelected
                       ? 'var(--theme-surface)'
                       : state.isFocused
-                      ? '#f4f4f5'
+                      ? 'var(--accent)'
                       : 'transparent',
-                    color: state.isSelected ? 'var(--theme-main)' : '#3f3f46',
+                    color: state.isSelected ? 'var(--theme-main)' : 'var(--theme-muted)',
                     fontWeight: state.isSelected ? 600 : 400,
                     cursor: 'pointer',
                     touchAction: 'manipulation',
@@ -344,7 +369,7 @@ export function AppHeader({
           <button
             type="button"
             onClick={() => onLangChange(currentLang === 'vi' ? 'en' : 'vi')}
-            className="sm:hidden h-8 px-2 rounded-md text-[11px] font-mono font-bold border border-theme bg-white hover:bg-theme-surface text-theme-main flex items-center space-x-1 cursor-pointer active:opacity-60 shrink-0 shadow-xs"
+            className="sm:hidden h-8 px-2 rounded-md text-[11px] font-mono font-bold border border-theme bg-theme-surface hover:bg-theme-surface text-theme-main flex items-center space-x-1 cursor-pointer active:opacity-60 shrink-0 shadow-xs"
             title={currentLang === 'vi' ? 'Chuyển sang Tiếng Anh' : 'Switch to Vietnamese'}
           >
             <Globe className="w-3.5 h-3.5 text-theme-accent shrink-0 pointer-events-none" />
@@ -352,14 +377,14 @@ export function AppHeader({
           </button>
 
           {/* Desktop version: Clean segmented toggle */}
-          <div className="hidden sm:flex items-center bg-zinc-100 p-0.5 rounded-md text-xs font-mono border border-zinc-200">
+          <div className="hidden sm:flex items-center bg-theme-surface p-0.5 rounded-md text-xs font-mono border border-theme">
             <button
               type="button"
               onClick={() => onLangChange('vi')}
               className={`px-2 py-0.5 rounded text-xs transition-all cursor-pointer active:opacity-60 ${
                 currentLang === 'vi'
-                  ? 'bg-white text-theme-main font-semibold shadow-xs'
-                  : 'text-zinc-500 hover:text-theme-main'
+                  ? 'btn-theme-gradient text-white font-semibold shadow-xs'
+                  : 'text-theme-muted hover:text-theme-main'
               }`}
             >
               VI
@@ -369,8 +394,8 @@ export function AppHeader({
               onClick={() => onLangChange('en')}
               className={`px-2 py-0.5 rounded text-xs transition-all cursor-pointer active:opacity-60 ${
                 currentLang === 'en'
-                  ? 'bg-white text-theme-main font-semibold shadow-xs'
-                  : 'text-zinc-500 hover:text-theme-main'
+                  ? 'btn-theme-gradient text-white font-semibold shadow-xs'
+                  : 'text-theme-muted hover:text-theme-main'
               }`}
             >
               EN

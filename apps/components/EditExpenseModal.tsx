@@ -175,9 +175,9 @@ export function EditExpenseModal({
       ...base,
       minHeight: '38px',
       fontSize: '13px',
-      backgroundColor: '#ffffff',
+      backgroundColor: 'var(--card)',
       borderColor: state.isFocused ? 'var(--theme-accent)' : 'var(--theme-border)',
-      boxShadow: state.isFocused ? '0 0 0 2px rgba(63, 97, 65, 0.1)' : 'none',
+      boxShadow: state.isFocused ? '0 0 0 2px var(--theme-surface)' : 'none',
       '&:hover': {
         borderColor: 'var(--theme-border)',
       },
@@ -192,7 +192,7 @@ export function EditExpenseModal({
     }),
     singleValue: (base: any) => ({
       ...base,
-      color: '#18181b',
+      color: 'var(--theme-main)',
       margin: 0,
     }),
     indicatorsContainer: (base: any) => ({
@@ -214,10 +214,10 @@ export function EditExpenseModal({
     }),
     menu: (base: any) => ({
       ...base,
-      backgroundColor: '#ffffff',
+      backgroundColor: 'var(--card)',
       border: '1px solid var(--theme-border)',
       borderRadius: '0.5rem',
-      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05)',
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
       zIndex: 9999,
       touchAction: 'manipulation',
     }),
@@ -236,9 +236,9 @@ export function EditExpenseModal({
       backgroundColor: state.isSelected
         ? 'var(--theme-surface)'
         : state.isFocused
-        ? '#f4f4f5'
+        ? 'var(--accent)'
         : 'transparent',
-      color: state.isSelected ? 'var(--theme-main)' : '#27272a',
+      color: state.isSelected ? 'var(--theme-accent)' : 'var(--theme-main)',
       fontWeight: state.isSelected ? 600 : 400,
       cursor: 'pointer',
       touchAction: 'manipulation',
@@ -337,12 +337,12 @@ export function EditExpenseModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div
-        className="bg-white rounded-2xl shadow-2xl border border-theme max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
+        className="bg-theme-card rounded-2xl shadow-2xl border border-theme max-w-lg w-full max-h-[92vh] md:max-h-[88vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
         role="dialog"
         aria-modal="true"
       >
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-theme flex items-center justify-between bg-zinc-50/70 shrink-0">
+        <div className="p-3.5 sm:p-5 border-b border-theme/60 flex items-center justify-between bg-theme-surface/70 shrink-0">
           <div className="flex items-center space-x-3">
             <div className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-xs shrink-0 ${
               txType === 'income' ? 'bg-emerald-600 text-white' : 'bg-theme-main text-white'
@@ -361,7 +361,7 @@ export function EditExpenseModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-700 p-1.5 rounded-lg hover:bg-zinc-100 transition-colors cursor-pointer"
+            className="text-theme-muted hover:text-theme-main p-1.5 rounded-lg hover:bg-theme-surface transition-colors cursor-pointer"
             title={t.btn_cancel}
           >
             <X className="w-5 h-5" />
@@ -369,16 +369,17 @@ export function EditExpenseModal({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+          <div className="p-3.5 sm:p-5 space-y-3 sm:space-y-4 overflow-y-auto flex-1">
           {/* Reconciled Lock Notice Banner */}
           {isLocked && (
-            <div className="p-3 rounded-xl bg-amber-50/90 border border-amber-200/90 text-amber-900 text-xs flex items-start gap-2.5 shadow-xs">
-              <Lock className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+            <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-500/40 text-amber-200 text-xs flex items-start gap-2.5 shadow-xs">
+              <Lock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
               <div className="space-y-0.5">
-                <div className="font-semibold">
+                <div className="font-semibold text-amber-300">
                   {lang === 'vi' ? 'Giao dịch thuộc kỳ đã chốt kiểm kê' : 'Reconciled Period Transaction'}
                 </div>
-                <div className="text-[11px] text-amber-800 leading-relaxed">
+                <div className="text-[11px] text-amber-400/90 leading-relaxed">
                   {t.reconciled_lock_modal_notice}
                 </div>
               </div>
@@ -389,31 +390,31 @@ export function EditExpenseModal({
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-theme-main flex items-center justify-between">
               <span>{t.source_label}</span>
-              <span className="text-[11px] text-zinc-500 font-normal">
+              <span className="text-[11px] text-theme-muted font-normal">
                 {source === 'cash' ? t.source_cash_short : t.source_account_short} {isLocked && (lang === 'vi' ? '(Đã khóa)' : '(Locked)')}
               </span>
             </label>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
               <button
                 type="button"
                 disabled={isLocked}
                 onClick={() => setSource('cash')}
-                className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
+                className={`flex items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-xl border text-left transition-all ${
                   isLocked ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'
                 } ${
                   source === 'cash'
-                    ? 'bg-emerald-50/90 border-emerald-500 text-emerald-900 ring-2 ring-emerald-500/20 shadow-xs'
-                    : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50 hover:border-zinc-300'
+                    ? 'bg-emerald-950/40 border-emerald-500 text-emerald-300 ring-2 ring-emerald-500/20 shadow-xs'
+                    : 'bg-theme-surface border-theme/60 text-theme-muted hover:border-theme'
                 }`}
               >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                  source === 'cash' ? 'bg-emerald-100 text-emerald-700' : 'bg-zinc-100 text-zinc-500'
+                <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                  source === 'cash' ? 'bg-emerald-900/60 text-emerald-400' : 'bg-theme-card text-theme-muted'
                 }`}>
                   <Banknote className="w-4 h-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-xs font-semibold">{t.source_cash_short}</div>
-                  <div className="text-[11px] font-mono font-medium text-emerald-700 truncate">
+                  <div className="text-[11px] font-mono font-medium text-emerald-400 truncate">
                     {formatMoney(effectiveCashBalance, lang)}
                   </div>
                 </div>
@@ -423,22 +424,22 @@ export function EditExpenseModal({
                 type="button"
                 disabled={isLocked}
                 onClick={() => setSource('account')}
-                className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
+                className={`flex items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-xl border text-left transition-all ${
                   isLocked ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'
                 } ${
                   source === 'account'
-                    ? 'bg-blue-50/90 border-blue-500 text-blue-900 ring-2 ring-blue-500/20 shadow-xs'
-                    : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50 hover:border-zinc-300'
+                    ? 'bg-blue-950/40 border-blue-500 text-blue-300 ring-2 ring-blue-500/20 shadow-xs'
+                    : 'bg-theme-surface border-theme/60 text-theme-muted hover:border-theme'
                 }`}
               >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                  source === 'account' ? 'bg-blue-100 text-blue-700' : 'bg-zinc-100 text-zinc-500'
+                <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                  source === 'account' ? 'bg-blue-900/60 text-blue-400' : 'bg-theme-card text-theme-muted'
                 }`}>
                   <Building2 className="w-4 h-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-xs font-semibold">{t.source_account_short}</div>
-                  <div className="text-[11px] font-mono font-medium text-blue-700 truncate">
+                  <div className="text-[11px] font-mono font-medium text-blue-400 truncate">
                     {formatMoney(effectiveBankBalance, lang)}
                   </div>
                 </div>
@@ -480,42 +481,42 @@ export function EditExpenseModal({
                 <button
                   type="button"
                   onClick={() => handlePreset(20000)}
-                  className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border border-zinc-200 transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-theme-surface hover:bg-theme-card text-theme-main border border-theme/60 transition-colors cursor-pointer"
                 >
                   +20k
                 </button>
                 <button
                   type="button"
                   onClick={() => handlePreset(50000)}
-                  className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border border-zinc-200 transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-theme-surface hover:bg-theme-card text-theme-main border border-theme/60 transition-colors cursor-pointer"
                 >
                   +50k
                 </button>
                 <button
                   type="button"
                   onClick={() => handlePreset(100000)}
-                  className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border border-zinc-200 transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-theme-surface hover:bg-theme-card text-theme-main border border-theme/60 transition-colors cursor-pointer"
                 >
                   +100k
                 </button>
                 <button
                   type="button"
                   onClick={() => handlePreset(200000)}
-                  className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border border-zinc-200 transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-theme-surface hover:bg-theme-card text-theme-main border border-theme/60 transition-colors cursor-pointer"
                 >
                   +200k
                 </button>
                 <button
                   type="button"
                   onClick={() => handlePreset(500000)}
-                  className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border border-zinc-200 transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-theme-surface hover:bg-theme-card text-theme-main border border-theme/60 transition-colors cursor-pointer"
                 >
                   +500k
                 </button>
                 <button
                   type="button"
                   onClick={() => handlePreset(1000000)}
-                  className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border border-zinc-200 transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-theme-surface hover:bg-theme-card text-theme-main border border-theme/60 transition-colors cursor-pointer"
                 >
                   +1M
                 </button>
@@ -525,29 +526,29 @@ export function EditExpenseModal({
 
           {/* Balance Impact Preview Banner */}
           {isLocked ? (
-            <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 text-xs flex items-center justify-between text-zinc-500">
+            <div className="p-3 rounded-xl bg-theme-surface/80 border border-theme/60 text-xs flex items-center justify-between text-theme-muted">
               <div className="flex items-center gap-1.5 font-medium">
-                <Lock className="w-3.5 h-3.5 text-zinc-400" />
+                <Lock className="w-3.5 h-3.5 text-theme-muted" />
                 <span>{t.balance_impact_preview}</span>
               </div>
-              <span className="font-mono text-[11px] text-zinc-400 italic">
+              <span className="font-mono text-[11px] text-theme-muted italic">
                 {lang === 'vi' ? '0 đ (Đã khóa số tiền & nguồn)' : '0 VND (Amount & source locked)'}
               </span>
             </div>
           ) : (
-            <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 text-xs space-y-2">
-              <div className="font-semibold text-zinc-700 flex items-center justify-between">
+            <div className="p-3 rounded-xl bg-theme-surface/80 border border-theme/60 text-xs space-y-2">
+              <div className="font-semibold text-theme-main flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
-                  <ArrowRightLeft className="w-3.5 h-3.5 text-zinc-500" />
+                  <ArrowRightLeft className="w-3.5 h-3.5 text-theme-muted" />
                   <span>{t.balance_impact_preview}</span>
                 </div>
-                <span className="text-[10px] text-zinc-400 font-mono">SSOT Ledger</span>
+                <span className="text-[10px] text-theme-muted font-mono">SSOT Ledger</span>
               </div>
 
               {/* Negative Balance Danger Warning */}
               {editImpact?.hasNegative && (
-                <div className="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px] flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                <div className="p-2 rounded-lg bg-rose-950/40 border border-rose-500/50 text-rose-300 text-[11px] flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
                   <span className="font-medium">{t.edit_warning_negative}</span>
                 </div>
               )}
@@ -557,20 +558,20 @@ export function EditExpenseModal({
                 <div className="space-y-1.5 pt-0.5">
                   {editImpact.deltas.cash !== 0 && (
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-zinc-600 font-medium flex items-center gap-1.5 shrink-0 whitespace-nowrap text-xs">
-                        <Wallet className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span className="text-theme-muted font-medium flex items-center gap-1.5 shrink-0 whitespace-nowrap text-xs">
+                        <Wallet className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                         {t.source_cash_short}:
                       </span>
                       <div className="text-right font-mono">
                         <div className="flex items-center justify-end gap-1.5 text-[11px] sm:text-xs">
-                          <span className="text-zinc-400">{formatMoney(editImpact.currentBalances.cash, lang)}</span>
-                          <ArrowRight className="w-2.5 h-2.5 text-zinc-400 shrink-0" />
-                          <span className={`font-bold ${editImpact.nextBalances.cash < 0 ? 'text-rose-600' : 'text-zinc-900'}`}>
+                          <span className="text-theme-muted">{formatMoney(editImpact.currentBalances.cash, lang)}</span>
+                          <ArrowRight className="w-2.5 h-2.5 text-theme-muted shrink-0" />
+                          <span className={`font-bold ${editImpact.nextBalances.cash < 0 ? 'text-rose-400' : 'text-theme-main'}`}>
                             {formatMoney(editImpact.nextBalances.cash, lang)}
                           </span>
                         </div>
                         <div className={`text-[10px] font-semibold ${
-                          editImpact.deltas.cash > 0 ? 'text-emerald-600' : 'text-rose-600'
+                          editImpact.deltas.cash > 0 ? 'text-emerald-400' : 'text-rose-400'
                         }`}>
                           {editImpact.deltas.cash > 0 ? `+${formatMoney(editImpact.deltas.cash, lang)}` : formatMoney(editImpact.deltas.cash, lang)}
                         </div>
@@ -580,20 +581,20 @@ export function EditExpenseModal({
 
                   {editImpact.deltas.bankAccount !== 0 && (
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-zinc-600 font-medium flex items-center gap-1.5 shrink-0 whitespace-nowrap text-xs">
-                        <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                      <span className="text-theme-muted font-medium flex items-center gap-1.5 shrink-0 whitespace-nowrap text-xs">
+                        <Building2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                         {t.source_account_short}:
                       </span>
                       <div className="text-right font-mono">
                         <div className="flex items-center justify-end gap-1.5 text-[11px] sm:text-xs">
-                          <span className="text-zinc-400">{formatMoney(editImpact.currentBalances.bankAccount, lang)}</span>
-                          <ArrowRight className="w-2.5 h-2.5 text-zinc-400 shrink-0" />
-                          <span className={`font-bold ${editImpact.nextBalances.bankAccount < 0 ? 'text-rose-600' : 'text-zinc-900'}`}>
+                          <span className="text-theme-muted">{formatMoney(editImpact.currentBalances.bankAccount, lang)}</span>
+                          <ArrowRight className="w-2.5 h-2.5 text-theme-muted shrink-0" />
+                          <span className={`font-bold ${editImpact.nextBalances.bankAccount < 0 ? 'text-rose-400' : 'text-theme-main'}`}>
                             {formatMoney(editImpact.nextBalances.bankAccount, lang)}
                           </span>
                         </div>
                         <div className={`text-[10px] font-semibold ${
-                          editImpact.deltas.bankAccount > 0 ? 'text-emerald-600' : 'text-rose-600'
+                          editImpact.deltas.bankAccount > 0 ? 'text-emerald-400' : 'text-rose-400'
                         }`}>
                           {editImpact.deltas.bankAccount > 0 ? `+${formatMoney(editImpact.deltas.bankAccount, lang)}` : formatMoney(editImpact.deltas.bankAccount, lang)}
                         </div>
@@ -602,21 +603,21 @@ export function EditExpenseModal({
                   )}
 
                   {editImpact.monthlySpentDelta !== 0 && (
-                    <div className="flex items-center justify-between text-[11px] pt-1 border-t border-zinc-200/60 text-zinc-600">
+                    <div className="flex items-center justify-between text-[11px] pt-1 border-t border-theme/60 text-theme-muted">
                       <span className="flex items-center gap-1">
-                        <TrendingDown className="w-3 h-3 text-blue-600" />
+                        <TrendingDown className="w-3 h-3 text-blue-400" />
                         {t.edit_impact_current_spent}:
                       </span>
-                      <span className="font-mono font-medium text-blue-700">
+                      <span className="font-mono font-medium text-blue-400">
                         {formatMoney(editImpact.monthlySpentBefore, lang)} → {formatMoney(editImpact.monthlySpentAfter, lang)} ({editImpact.monthlySpentDelta > 0 ? `+${formatMoney(editImpact.monthlySpentDelta, lang)}` : formatMoney(editImpact.monthlySpentDelta, lang)})
                       </span>
                     </div>
                   )}
 
                   {editImpact.debtImpact && (
-                    <div className="flex items-center justify-between text-[11px] pt-1 border-t border-zinc-200/60 text-amber-800">
+                    <div className="flex items-center justify-between text-[11px] pt-1 border-t border-theme/60 text-amber-300">
                       <span className="flex items-center gap-1">
-                        <CreditCard className="w-3 h-3 text-amber-600" />
+                        <CreditCard className="w-3 h-3 text-amber-400" />
                         {editImpact.debtImpact.debtTitle || t.cat_debt}:
                       </span>
                       <span className="font-mono font-bold">
@@ -628,25 +629,25 @@ export function EditExpenseModal({
                   )}
                 </div>
               ) : isSameSource ? (
-                <div className="text-[11px] text-zinc-600 flex items-center justify-between">
+                <div className="text-[11px] text-theme-muted flex items-center justify-between">
                   <span>
                     {source === 'cash' ? t.source_cash_short : t.source_account_short} ({formatMoney(oldAmount, lang)} → {formatMoney(numAmount, lang)})
                   </span>
                   <span className={`font-mono font-bold ${
-                    delta > 0 ? 'text-rose-600' : delta < 0 ? 'text-emerald-600' : 'text-zinc-500'
+                    delta > 0 ? 'text-rose-400' : delta < 0 ? 'text-emerald-400' : 'text-theme-muted'
                   }`}>
                     {delta > 0 ? `- ${formatMoney(delta, lang)}` : delta < 0 ? `+ ${formatMoney(Math.abs(delta), lang)} (hoàn)` : '0 đ'}
                   </span>
                 </div>
               ) : (
-                <div className="text-[11px] text-zinc-600 space-y-0.5">
+                <div className="text-[11px] text-theme-muted space-y-0.5">
                   <div className="flex items-center justify-between">
                     <span>{t.balance_refund_label} ({oldSource === 'cash' ? t.source_cash_short : t.source_account_short}):</span>
-                    <span className="font-mono font-bold text-emerald-600">+ {formatMoney(oldAmount, lang)}</span>
+                    <span className="font-mono font-bold text-emerald-400">+ {formatMoney(oldAmount, lang)}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>{t.balance_deduct_label} ({source === 'cash' ? t.source_cash_short : t.source_account_short}):</span>
-                    <span className="font-mono font-bold text-rose-600">- {formatMoney(numAmount, lang)}</span>
+                    <span className="font-mono font-bold text-rose-400">- {formatMoney(numAmount, lang)}</span>
                   </div>
                 </div>
               )}
@@ -738,33 +739,36 @@ export function EditExpenseModal({
             </div>
           )}
 
-          {/* Date Input */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-semibold text-theme-main flex items-center gap-1">
-              <Calendar className="w-3 h-3 text-theme-accent" />
-              <span>{t.date_label}</span>
-            </label>
-            <Input
-              type="date"
-              required
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="text-base sm:text-sm font-mono-nums border-theme focus-visible:ring-theme/30 h-9"
-            />
-          </div>
+          {/* Date & Note Grid */}
+          <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+            {/* Date Input */}
+            <div className="space-y-1">
+              <label className="text-[11px] font-semibold text-theme-main flex items-center gap-1">
+                <Calendar className="w-3 h-3 text-theme-accent" />
+                <span>{t.date_label}</span>
+              </label>
+              <Input
+                type="date"
+                required
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="text-base sm:text-sm font-mono-nums border-theme focus-visible:ring-theme/30 h-9 bg-theme-surface text-theme-main"
+              />
+            </div>
 
-          {/* Note Input */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-semibold text-theme-main">
-              {t.note_label}
-            </label>
-            <Input
-              type="text"
-              placeholder={lang === 'vi' ? 'Nhập mô tả / ghi chú giao dịch...' : 'Enter note or description...'}
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              className="text-base sm:text-sm border-theme focus-visible:ring-theme/30 h-9"
-            />
+            {/* Note Input */}
+            <div className="space-y-1">
+              <label className="text-[11px] font-semibold text-theme-main">
+                {t.note_label}
+              </label>
+              <Input
+                type="text"
+                placeholder={lang === 'vi' ? 'Nhập mô tả / ghi chú...' : 'Enter note or description...'}
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="text-base sm:text-sm border-theme focus-visible:ring-theme/30 h-9 bg-theme-surface text-theme-main placeholder:text-theme-muted"
+              />
+            </div>
           </div>
 
           {/* Receipt / Image Attachment */}
@@ -773,17 +777,17 @@ export function EditExpenseModal({
               {t.attach_receipt}
             </label>
             {receiptImage ? (
-              <div className="flex items-center space-x-3 p-2 bg-zinc-50 border border-theme rounded-md">
+              <div className="flex items-center space-x-3 p-2 bg-theme-surface border border-theme/60 rounded-md">
                 <img
                   src={receiptImage}
                   alt="Receipt preview"
-                  className="w-12 h-12 object-cover rounded-md border border-zinc-200"
+                  className="w-12 h-12 object-cover rounded-md border border-theme/60"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-zinc-700 truncate font-mono">
+                  <p className="text-xs text-theme-main truncate font-mono">
                     {lang === 'vi' ? 'Hóa đơn đính kèm' : 'Attached receipt'}
                   </p>
-                  <span className="text-[10px] text-emerald-600 flex items-center gap-1 font-medium">
+                  <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-medium">
                     <CheckCircle2 className="w-3 h-3" />
                     {t.has_receipt_badge}
                   </span>
@@ -791,7 +795,7 @@ export function EditExpenseModal({
                 <button
                   type="button"
                   onClick={handleRemoveImage}
-                  className="p-1 text-zinc-400 hover:text-rose-500 hover:bg-rose-50 rounded transition-colors cursor-pointer"
+                  className="p-1 text-theme-muted hover:text-rose-400 hover:bg-rose-950/40 rounded transition-colors cursor-pointer"
                   title={t.btn_remove_image}
                 >
                   <X className="w-4 h-4" />
@@ -800,10 +804,10 @@ export function EditExpenseModal({
             ) : (
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border border-dashed border-zinc-300 rounded-lg p-2.5 text-center cursor-pointer hover:border-theme-accent hover:bg-theme-surface/30 transition-all flex items-center justify-center space-x-2 group"
+                className="border border-dashed border-theme/60 rounded-lg p-2.5 text-center cursor-pointer hover:border-theme-accent hover:bg-theme-surface/50 transition-all flex items-center justify-center space-x-2 group"
               >
-                <Receipt className="w-4 h-4 text-zinc-400 group-hover:text-theme-accent transition-colors" />
-                <span className="text-xs text-zinc-500 group-hover:text-theme-main transition-colors">
+                <Receipt className="w-4 h-4 text-theme-muted group-hover:text-theme-accent transition-colors" />
+                <span className="text-xs text-theme-muted group-hover:text-theme-main transition-colors">
                   {t.attach_receipt_hint}
                 </span>
                 <input
@@ -819,19 +823,20 @@ export function EditExpenseModal({
 
           {/* Error Message */}
           {error && (
-            <div className="flex items-center gap-2 p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs animate-in shake duration-200">
+            <div className="flex items-center gap-2 p-2.5 rounded-lg bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs animate-in shake duration-200">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
+          </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2 pt-2">
+          {/* Pinned Action Footer */}
+          <div className="p-3 sm:p-4 border-t border-theme/60 bg-theme-surface/60 shrink-0 flex items-center gap-2">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
-              className="flex-1 h-10 text-xs font-semibold text-zinc-700 border-zinc-200 hover:bg-zinc-100 cursor-pointer"
+              className="flex-1 h-10 text-xs font-semibold text-theme-muted hover:text-theme-main hover:bg-theme-surface border-theme/60 bg-theme-surface/40 cursor-pointer"
             >
               {t.btn_cancel}
             </Button>
@@ -840,7 +845,7 @@ export function EditExpenseModal({
               disabled={!numAmount || numAmount <= 0 || isOverBalance}
               className={`flex-1 h-10 text-white text-xs font-semibold shadow-xs cursor-pointer active:opacity-75 transition-opacity ${
                 !numAmount || numAmount <= 0 || isOverBalance
-                  ? 'opacity-50 cursor-not-allowed bg-zinc-200 text-zinc-500'
+                  ? 'opacity-50 cursor-not-allowed bg-theme-surface text-theme-muted border border-theme/60'
                   : 'btn-theme-gradient'
               }`}
             >

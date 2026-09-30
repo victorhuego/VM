@@ -190,7 +190,7 @@ export function QuickExpenseModal({
   const selectCustomStyles = {
     control: (base: any, state: any) => ({
       ...base,
-      backgroundColor: '#ffffff',
+      backgroundColor: 'var(--card)',
       borderColor: state.isFocused ? 'var(--theme-accent)' : 'var(--theme-border)',
       boxShadow: state.isFocused ? '0 0 0 2px var(--theme-surface)' : 'none',
       '&:hover': {
@@ -209,7 +209,7 @@ export function QuickExpenseModal({
     }),
     singleValue: (base: any) => ({
       ...base,
-      color: '#18181b',
+      color: 'var(--theme-main)',
       margin: 0,
     }),
     indicatorsContainer: (base: any) => ({
@@ -231,10 +231,10 @@ export function QuickExpenseModal({
     }),
     menu: (base: any) => ({
       ...base,
-      backgroundColor: '#ffffff',
+      backgroundColor: 'var(--card)',
       border: '1px solid var(--theme-border)',
       borderRadius: '0.5rem',
-      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05)',
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
       zIndex: 9999,
       touchAction: 'manipulation',
     }),
@@ -253,9 +253,9 @@ export function QuickExpenseModal({
       backgroundColor: state.isSelected
         ? 'var(--theme-surface)'
         : state.isFocused
-        ? '#f4f4f5'
+        ? 'var(--accent)'
         : 'transparent',
-      color: state.isSelected ? 'var(--theme-main)' : '#27272a',
+      color: state.isSelected ? 'var(--theme-accent)' : 'var(--theme-main)',
       fontWeight: state.isSelected ? 600 : 400,
       cursor: 'pointer',
       touchAction: 'manipulation',
@@ -390,7 +390,7 @@ export function QuickExpenseModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-200">
       <div
-        className="bg-white border border-theme w-full max-w-lg sm:max-w-xl md:max-w-2xl rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
+        className="bg-theme-card border border-theme w-full max-w-lg sm:max-w-xl md:max-w-2xl rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
         role="dialog"
         aria-modal="true"
       >
@@ -400,7 +400,7 @@ export function QuickExpenseModal({
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-theme/70 bg-theme-surface/60 shrink-0">
+        <div className="flex items-center justify-between p-3.5 sm:p-4 border-b border-theme/70 bg-theme-surface/60 shrink-0">
           <div className="flex items-center space-x-2.5 min-w-0">
             <div
               className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-xs shrink-0 ${
@@ -456,23 +456,24 @@ export function QuickExpenseModal({
           </button>
         </div>
 
-        {/* Scrollable Form Body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4 overflow-y-auto overflow-x-hidden flex-1 w-full max-w-full min-w-0">
-          {/* Tabs for General modal: Ghi chú chi tiêu */}
-          {isGeneral && (
-            <div className="p-1 bg-zinc-100/90 rounded-xl flex items-center gap-1 border border-zinc-200/80">
-              <button
-                type="button"
-                onClick={() => {
-                  setTxType('expense')
-                  setError(null)
-                }}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  txType === 'expense'
-                    ? 'bg-white text-rose-600 shadow-sm border border-zinc-200/80 font-bold'
-                    : 'text-zinc-500 hover:text-zinc-800 bg-transparent'
-                }`}
-              >
+        {/* Scrollable Form Body with Pinned Footer */}
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden min-h-0 w-full max-w-full">
+          <div className="p-3.5 sm:p-5 space-y-3 sm:space-y-3.5 overflow-y-auto overflow-x-hidden flex-1 expense-scroll-container">
+            {/* Tabs for General modal: Ghi chú chi tiêu */}
+            {isGeneral && (
+              <div className="p-1 bg-theme-surface rounded-xl flex items-center gap-1 border border-theme">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTxType('expense')
+                    setError(null)
+                  }}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    txType === 'expense'
+                      ? 'bg-theme-card text-rose-500 shadow-sm border border-theme font-bold'
+                      : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
+                  }`}
+                >
                 <ArrowDownCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'expense' ? 'text-rose-600' : 'text-zinc-400'}`} />
                 <span className="whitespace-nowrap">{t.tab_expense_type || 'Chi tiêu'}</span>
               </button>
@@ -485,11 +486,11 @@ export function QuickExpenseModal({
                 }}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   txType === 'income'
-                    ? 'bg-white text-emerald-600 shadow-sm border border-zinc-200/80 font-bold'
-                    : 'text-zinc-500 hover:text-zinc-800 bg-transparent'
+                    ? 'bg-theme-card text-emerald-500 shadow-sm border border-theme font-bold'
+                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
                 }`}
               >
-                <ArrowUpCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'income' ? 'text-emerald-600' : 'text-zinc-400'}`} />
+                <ArrowUpCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'income' ? 'text-emerald-500' : 'text-zinc-400'}`} />
                 <span className="whitespace-nowrap">{t.tab_income_type || 'Thu nhập'}</span>
               </button>
 
@@ -501,11 +502,11 @@ export function QuickExpenseModal({
                 }}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   txType === 'transfer'
-                    ? 'bg-white text-blue-600 shadow-sm border border-zinc-200/80 font-bold'
-                    : 'text-zinc-500 hover:text-zinc-800 bg-transparent'
+                    ? 'bg-theme-card text-blue-400 shadow-sm border border-theme font-bold'
+                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
                 }`}
               >
-                <ArrowLeftRight className={`w-3.5 h-3.5 shrink-0 ${txType === 'transfer' ? 'text-blue-600' : 'text-zinc-400'}`} />
+                <ArrowLeftRight className={`w-3.5 h-3.5 shrink-0 ${txType === 'transfer' ? 'text-blue-400' : 'text-zinc-400'}`} />
                 <span className="whitespace-nowrap">{t.tab_transfer_type || 'Chuyển tiền'}</span>
               </button>
             </div>
@@ -513,17 +514,17 @@ export function QuickExpenseModal({
 
           {/* Tabs for Cash card */}
           {isCashCard && (
-            <div className="p-1 bg-zinc-100/90 rounded-xl flex items-center gap-1 border border-zinc-200/80">
+            <div className="p-1 bg-theme-surface rounded-xl flex items-center gap-1 border border-theme">
               <button
                 type="button"
                 onClick={() => setTxType('expense')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   txType === 'expense'
-                    ? 'bg-white text-emerald-700 shadow-sm border border-zinc-200/80 font-bold'
-                    : 'text-zinc-500 hover:text-zinc-800 bg-transparent'
+                    ? 'bg-theme-card text-emerald-500 shadow-sm border border-theme font-bold'
+                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
                 }`}
               >
-                <ArrowDownCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'expense' ? 'text-emerald-600' : 'text-zinc-400'}`} />
+                <ArrowDownCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'expense' ? 'text-emerald-500' : 'text-zinc-400'}`} />
                 <span className="whitespace-nowrap">{t.tab_cash_spend}</span>
               </button>
               <button
@@ -531,11 +532,11 @@ export function QuickExpenseModal({
                 onClick={() => setTxType('transfer')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   txType === 'transfer'
-                    ? 'bg-white text-blue-600 shadow-sm border border-zinc-200/80 font-bold'
-                    : 'text-zinc-500 hover:text-zinc-800 bg-transparent'
+                    ? 'bg-theme-card text-blue-400 shadow-sm border border-theme font-bold'
+                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
                 }`}
               >
-                <ArrowLeftRight className={`w-3.5 h-3.5 shrink-0 ${txType === 'transfer' ? 'text-blue-600' : 'text-zinc-400'}`} />
+                <ArrowLeftRight className={`w-3.5 h-3.5 shrink-0 ${txType === 'transfer' ? 'text-blue-400' : 'text-zinc-400'}`} />
                 <span className="whitespace-nowrap">{t.tab_cash_deposit_to_bank}</span>
               </button>
               <button
@@ -543,11 +544,11 @@ export function QuickExpenseModal({
                 onClick={() => setTxType('income')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   txType === 'income'
-                    ? 'bg-white text-emerald-700 shadow-sm border border-zinc-200/80 font-bold'
-                    : 'text-zinc-500 hover:text-zinc-800 bg-transparent'
+                    ? 'bg-theme-card text-emerald-500 shadow-sm border border-theme font-bold'
+                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
                 }`}
               >
-                <ArrowUpCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'income' ? 'text-emerald-600' : 'text-zinc-400'}`} />
+                <ArrowUpCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'income' ? 'text-emerald-500' : 'text-zinc-400'}`} />
                 <span className="whitespace-nowrap">{t.tab_cash_income}</span>
               </button>
             </div>
@@ -555,17 +556,17 @@ export function QuickExpenseModal({
 
           {/* Tabs for Bank card */}
           {isBankCard && (
-            <div className="p-1 bg-zinc-100/90 rounded-xl flex items-center gap-1 border border-zinc-200/80">
+            <div className="p-1 bg-theme-surface rounded-xl flex items-center gap-1 border border-theme">
               <button
                 type="button"
                 onClick={() => setTxType('expense')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   txType === 'expense'
-                    ? 'bg-white text-rose-600 shadow-sm border border-zinc-200/80 font-bold'
-                    : 'text-zinc-500 hover:text-zinc-800 bg-transparent'
+                    ? 'bg-theme-card text-rose-500 shadow-sm border border-theme font-bold'
+                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
                 }`}
               >
-                <ArrowDownCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'expense' ? 'text-rose-600' : 'text-zinc-400'}`} />
+                <ArrowDownCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'expense' ? 'text-rose-500' : 'text-zinc-400'}`} />
                 <span className="whitespace-nowrap">{t.tab_bank_spend}</span>
               </button>
               <button
@@ -573,11 +574,11 @@ export function QuickExpenseModal({
                 onClick={() => setTxType('transfer')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   txType === 'transfer'
-                    ? 'bg-white text-blue-600 shadow-sm border border-zinc-200/80 font-bold'
-                    : 'text-zinc-500 hover:text-zinc-800 bg-transparent'
+                    ? 'bg-theme-card text-blue-400 shadow-sm border border-theme font-bold'
+                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
                 }`}
               >
-                <ArrowLeftRight className={`w-3.5 h-3.5 shrink-0 ${txType === 'transfer' ? 'text-blue-600' : 'text-zinc-400'}`} />
+                <ArrowLeftRight className={`w-3.5 h-3.5 shrink-0 ${txType === 'transfer' ? 'text-blue-400' : 'text-zinc-400'}`} />
                 <span className="whitespace-nowrap">{t.tab_bank_withdraw_cash}</span>
               </button>
               <button
@@ -585,11 +586,11 @@ export function QuickExpenseModal({
                 onClick={() => setTxType('income')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   txType === 'income'
-                    ? 'bg-white text-emerald-600 shadow-sm border border-zinc-200/80 font-bold'
-                    : 'text-zinc-500 hover:text-zinc-800 bg-transparent'
+                    ? 'bg-theme-card text-emerald-500 shadow-sm border border-theme font-bold'
+                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
                 }`}
               >
-                <ArrowUpCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'income' ? 'text-emerald-600' : 'text-zinc-400'}`} />
+                <ArrowUpCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'income' ? 'text-emerald-500' : 'text-zinc-400'}`} />
                 <span className="whitespace-nowrap">{t.tab_bank_income}</span>
               </button>
             </div>
@@ -607,14 +608,14 @@ export function QuickExpenseModal({
                   onClick={() => setTransferDir('bank_to_cash')}
                   className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
                     transferDir === 'bank_to_cash'
-                      ? 'bg-blue-50 border-blue-500 text-blue-900 ring-2 ring-blue-500/20 font-semibold'
-                      : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50'
+                      ? 'bg-blue-500/15 border-blue-500 text-blue-400 ring-2 ring-blue-500/20 font-semibold'
+                      : 'bg-theme-surface border-theme text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
                   <div className="flex items-center gap-1.5 font-medium">
-                    <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                    <Building2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                     <span>→</span>
-                    <Banknote className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <Banknote className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                   </div>
                   <div className="mt-1 font-semibold">{t.transfer_bank_to_cash}</div>
                 </button>
@@ -623,14 +624,14 @@ export function QuickExpenseModal({
                   onClick={() => setTransferDir('cash_to_bank')}
                   className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
                     transferDir === 'cash_to_bank'
-                      ? 'bg-blue-50 border-blue-500 text-blue-900 ring-2 ring-blue-500/20 font-semibold'
-                      : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50'
+                      ? 'bg-blue-500/15 border-blue-500 text-blue-400 ring-2 ring-blue-500/20 font-semibold'
+                      : 'bg-theme-surface border-theme text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
                   <div className="flex items-center gap-1.5 font-medium">
-                    <Banknote className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <Banknote className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                     <span>→</span>
-                    <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                    <Building2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                   </div>
                   <div className="mt-1 font-semibold">{t.transfer_cash_to_bank}</div>
                 </button>
@@ -640,16 +641,16 @@ export function QuickExpenseModal({
 
           {/* Transfer Info Banner (for Cash or Bank card transfer) */}
           {(isCashCard || isBankCard) && txType === 'transfer' && (
-            <div className="p-3 rounded-xl bg-blue-50/80 border border-blue-200/80 flex items-center justify-between">
+            <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-between">
               <div className="flex items-center space-x-2.5 text-xs">
                 <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
                   {isCashCard ? <Banknote className="w-4 h-4" /> : <Building2 className="w-4 h-4" />}
                 </div>
                 <div>
-                  <div className="font-semibold text-blue-950">
+                  <div className="font-semibold text-blue-400">
                     {isCashCard ? t.transfer_cash_to_bank : t.transfer_bank_to_cash}
                   </div>
-                  <div className="text-[11px] text-blue-700">
+                  <div className="text-[11px] text-zinc-400">
                     {isCashCard
                       ? (lang === 'vi' ? 'Chuyển tiền mặt nạp vào số dư tài khoản' : 'Deposit cash into bank account balance')
                       : (lang === 'vi' ? 'Rút tiền từ tài khoản ra tiền mặt' : 'Withdraw cash from bank account balance')}
@@ -657,10 +658,10 @@ export function QuickExpenseModal({
                 </div>
               </div>
               <div className="text-right font-mono shrink-0 pl-2">
-                <div className="text-[10px] text-blue-600 font-medium">
+                <div className="text-[10px] text-blue-400 font-medium">
                   {isCashCard ? (lang === 'vi' ? 'Tiền mặt có' : 'Cash bal') : (lang === 'vi' ? 'Số dư TK' : 'Bank bal')}
                 </div>
-                <div className="text-xs font-bold text-blue-900">
+                <div className="text-xs font-bold text-blue-300">
                   {formatMoney(availableBalance, lang)}
                 </div>
               </div>
@@ -673,7 +674,7 @@ export function QuickExpenseModal({
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-theme-main flex items-center justify-between">
                 <span>{txType === 'income' ? (lang === 'vi' ? 'Nguồn nhận tiền' : 'Destination') : t.source_label}</span>
-                <span className="text-[11px] text-zinc-500 font-normal">
+                <span className="text-[11px] text-zinc-400 font-normal">
                   {txType === 'income'
                     ? source === 'account'
                       ? (lang === 'vi' ? 'Cộng vào Tiền tài khoản' : 'Added to Bank')
@@ -689,16 +690,16 @@ export function QuickExpenseModal({
                   onClick={() => setSource('cash')}
                   className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                     source === 'cash'
-                      ? 'bg-emerald-50/90 border-emerald-500 text-emerald-900 ring-2 ring-emerald-500/20 shadow-xs'
-                      : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50 hover:border-zinc-300'
+                      ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400 ring-2 ring-emerald-500/20 shadow-xs'
+                      : 'bg-theme-surface border-theme text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${source === 'cash' ? 'bg-emerald-100 text-emerald-700' : 'bg-zinc-100 text-zinc-500'}`}>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${source === 'cash' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-theme-card text-zinc-400'}`}>
                     <Banknote className="w-4 h-4" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-xs font-semibold">{t.source_cash_short}</div>
-                    <div className="text-[11px] font-mono font-medium text-emerald-700 truncate">{formatMoney(finances.cash, lang)}</div>
+                    <div className="text-[11px] font-mono font-medium text-emerald-400 truncate">{formatMoney(finances.cash, lang)}</div>
                   </div>
                 </button>
                 <button
@@ -706,16 +707,16 @@ export function QuickExpenseModal({
                   onClick={() => setSource('account')}
                   className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                     source === 'account'
-                      ? 'bg-blue-50/90 border-blue-500 text-blue-900 ring-2 ring-blue-500/20 shadow-xs'
-                      : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50 hover:border-zinc-300'
+                      ? 'bg-blue-500/15 border-blue-500 text-blue-400 ring-2 ring-blue-500/20 shadow-xs'
+                      : 'bg-theme-surface border-theme text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${source === 'account' ? 'bg-blue-100 text-blue-700' : 'bg-zinc-100 text-zinc-500'}`}>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${source === 'account' ? 'bg-blue-500/20 text-blue-400' : 'bg-theme-card text-zinc-400'}`}>
                     <Building2 className="w-4 h-4" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-xs font-semibold">{t.source_account_short}</div>
-                    <div className="text-[11px] font-mono font-medium text-blue-700 truncate">{formatMoney(finances.bankAccount, lang)}</div>
+                    <div className="text-[11px] font-mono font-medium text-blue-400 truncate">{formatMoney(finances.bankAccount, lang)}</div>
                   </div>
                 </button>
               </div>
@@ -987,37 +988,40 @@ export function QuickExpenseModal({
             </div>
           )}
 
-          {/* Date Input */}
-          <div className="space-y-1 w-full min-w-0 max-w-full">
-            <label className="text-[11px] font-medium text-theme-main">{t.date_label}</label>
-            <Input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="text-base sm:text-sm font-mono-nums border-theme focus-visible:ring-theme/30 h-9 w-full min-w-0 max-w-full block"
-            />
-          </div>
+          {/* Date & Note Inputs in 2 columns */}
+          <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+            {/* Date Input */}
+            <div className="space-y-1 w-full min-w-0 max-w-full">
+              <label className="text-[11px] font-medium text-theme-main">{t.date_label}</label>
+              <Input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="text-xs sm:text-sm font-mono-nums border-theme focus-visible:ring-theme/30 h-9 w-full min-w-0 max-w-full block bg-theme-surface text-theme-main"
+              />
+            </div>
 
-          {/* Note Input */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-medium text-theme-main">{t.note_label}</label>
-            <Input
-              type="text"
-              placeholder={
-                txType === 'transfer'
-                  ? t.transfer_note_placeholder
-                  : isDebtCard
-                  ? (lang === 'vi' ? 'VD: Trả nợ thẻ tín dụng Techcombank' : 'E.g., Credit card debt payment')
-                  : txType === 'expense'
-                  ? (isCashCard
-                      ? (lang === 'vi' ? 'VD: Cà phê sáng, ăn trưa...' : 'E.g., Morning coffee, lunch...')
-                      : (lang === 'vi' ? 'VD: Quẹt thẻ siêu thị, thanh toán hóa đơn...' : 'E.g., Supermarket, bill payment...'))
-                  : (lang === 'vi' ? 'VD: Tiền lương, thưởng...' : 'E.g., Salary, bonus...')
-              }
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              className="text-base sm:text-sm border-theme focus-visible:ring-theme/30 h-9"
-            />
+            {/* Note Input */}
+            <div className="space-y-1 min-w-0">
+              <label className="text-[11px] font-medium text-theme-main">{t.note_label}</label>
+              <Input
+                type="text"
+                placeholder={
+                  txType === 'transfer'
+                    ? t.transfer_note_placeholder
+                    : isDebtCard
+                    ? (lang === 'vi' ? 'VD: Trả nợ thẻ...' : 'E.g., Debt payment')
+                    : txType === 'expense'
+                    ? (isCashCard
+                        ? (lang === 'vi' ? 'VD: Cà phê sáng...' : 'E.g., Coffee...')
+                        : (lang === 'vi' ? 'VD: Quẹt thẻ...' : 'E.g., Shopping...'))
+                    : (lang === 'vi' ? 'VD: Tiền lương...' : 'E.g., Salary...')
+                }
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9 bg-theme-surface text-theme-main"
+              />
+            </div>
           </div>
 
           {/* Receipt / Image Attachment (Only for Expense/Income) */}
@@ -1025,17 +1029,17 @@ export function QuickExpenseModal({
             <div className="space-y-1 pt-0.5">
               <label className="text-[11px] font-medium text-theme-main">{t.attach_receipt}</label>
               {receiptImage ? (
-                <div className="flex items-center space-x-3 p-2 bg-zinc-50 border border-theme rounded-md">
+                <div className="flex items-center space-x-3 p-2 bg-theme-surface border border-theme rounded-md">
                   <img
                     src={receiptImage}
                     alt="Receipt preview"
-                    className="w-12 h-12 object-cover rounded-md border border-zinc-200"
+                    className="w-12 h-12 object-cover rounded-md border border-zinc-700"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-zinc-700 truncate font-mono">
+                    <p className="text-xs text-zinc-300 truncate font-mono">
                       {lang === 'vi' ? 'Đã tải lên 1 hóa đơn' : '1 receipt uploaded'}
                     </p>
-                    <span className="text-[10px] text-emerald-600 flex items-center gap-1 font-medium">
+                    <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-medium">
                       <CheckCircle2 className="w-3 h-3" />
                       {t.has_receipt_badge}
                     </span>
@@ -1043,7 +1047,7 @@ export function QuickExpenseModal({
                   <button
                     type="button"
                     onClick={handleRemoveImage}
-                    className="p-1 text-zinc-400 hover:text-rose-500 hover:bg-rose-50 rounded transition-colors cursor-pointer"
+                    className="p-1 text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10 rounded transition-colors cursor-pointer"
                     title={t.btn_remove_image}
                   >
                     <X className="w-4 h-4" />
@@ -1052,10 +1056,10 @@ export function QuickExpenseModal({
               ) : (
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border border-dashed border-zinc-300 rounded-lg p-2.5 text-center cursor-pointer hover:border-theme-accent hover:bg-theme-surface/30 transition-all flex items-center justify-center space-x-2 group"
+                  className="border border-dashed border-theme rounded-lg p-2 text-center cursor-pointer hover:border-theme-accent hover:bg-theme-surface/30 transition-all flex items-center justify-center space-x-2 group"
                 >
-                  <Receipt className="w-4 h-4 text-zinc-400 group-hover:text-theme-accent transition-colors" />
-                  <span className="text-xs text-zinc-500 group-hover:text-theme-main transition-colors">
+                  <Receipt className="w-3.5 h-3.5 text-zinc-400 group-hover:text-theme-accent transition-colors" />
+                  <span className="text-xs text-zinc-400 group-hover:text-theme-main transition-colors">
                     {t.attach_receipt_hint}
                   </span>
                   <input
@@ -1072,50 +1076,53 @@ export function QuickExpenseModal({
 
           {/* Error Message */}
           {error && (
-            <div className="flex items-center gap-2 p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs animate-in shake duration-200">
+            <div className="flex items-center gap-2 p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs animate-in shake duration-200">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
+          </div>
 
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            disabled={!numAmount || numAmount <= 0 || isOverBalance}
-            className={`w-full text-white text-xs sm:text-sm font-semibold py-2.5 h-11 shadow-xs cursor-pointer active:opacity-75 transition-opacity ${
-              !numAmount || numAmount <= 0 || isOverBalance
-                ? 'opacity-50 cursor-not-allowed bg-zinc-200 text-zinc-500'
-                : txType === 'transfer'
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
-                : isDebtCard || (txType === 'expense' && expenseCategory === 'debt')
-                ? 'bg-rose-600 hover:bg-rose-700'
-                : isCashCard
-                ? 'bg-emerald-600 hover:bg-emerald-700'
-                : 'btn-theme-gradient'
-            }`}
-          >
-            {txType === 'transfer' ? (
-              <>
-                <ArrowLeftRight className="w-4 h-4 mr-1.5" />
-                <span>{isCashCard ? t.transfer_btn : t.transfer_btn}</span>
-              </>
-            ) : isDebtCard || (txType === 'expense' && expenseCategory === 'debt') ? (
-              <>
-                <CornerDownLeft className="w-4 h-4 mr-1.5" />
-                <span>{lang === 'vi' ? 'Ghi nhận trả nợ' : 'Record Debt Repayment'}</span>
-              </>
-            ) : txType === 'income' ? (
-              <>
-                <ArrowUpCircle className="w-4 h-4 mr-1.5" />
-                <span>{isCashCard ? (lang === 'vi' ? 'Cộng vào tiền mặt (+)' : 'Add to Cash (+)') : t.btn_record_income}</span>
-              </>
-            ) : (
-              <>
-                <CornerDownLeft className="w-4 h-4 mr-1.5" />
-                <span>{isCashCard ? (lang === 'vi' ? 'Ghi nhận chi tiền mặt' : 'Record Cash Expense') : isBankCard ? (lang === 'vi' ? 'Ghi nhận chi tài khoản' : 'Record Bank Expense') : t.btn_record}</span>
-              </>
-            )}
-          </Button>
+          {/* Pinned Submit Action Bar */}
+          <div className="p-3 sm:p-4 border-t border-theme/60 bg-theme-surface/60 shrink-0">
+            <Button
+              type="submit"
+              disabled={!numAmount || numAmount <= 0 || isOverBalance}
+              className={`w-full text-white text-xs sm:text-sm font-semibold py-2.5 h-10 sm:h-11 shadow-xs cursor-pointer active:opacity-75 transition-opacity ${
+                !numAmount || numAmount <= 0 || isOverBalance
+                  ? 'opacity-50 cursor-not-allowed bg-zinc-800 text-zinc-500'
+                  : txType === 'transfer'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
+                  : isDebtCard || (txType === 'expense' && expenseCategory === 'debt')
+                  ? 'bg-rose-600 hover:bg-rose-700'
+                  : isCashCard
+                  ? 'bg-emerald-600 hover:bg-emerald-700'
+                  : 'btn-theme-gradient'
+              }`}
+            >
+              {txType === 'transfer' ? (
+                <>
+                  <ArrowLeftRight className="w-4 h-4 mr-1.5" />
+                  <span>{isCashCard ? t.transfer_btn : t.transfer_btn}</span>
+                </>
+              ) : isDebtCard || (txType === 'expense' && expenseCategory === 'debt') ? (
+                <>
+                  <CornerDownLeft className="w-4 h-4 mr-1.5" />
+                  <span>{lang === 'vi' ? 'Ghi nhận trả nợ' : 'Record Debt Repayment'}</span>
+                </>
+              ) : txType === 'income' ? (
+                <>
+                  <ArrowUpCircle className="w-4 h-4 mr-1.5" />
+                  <span>{isCashCard ? (lang === 'vi' ? 'Cộng vào tiền mặt (+)' : 'Add to Cash (+)') : t.btn_record_income}</span>
+                </>
+              ) : (
+                <>
+                  <CornerDownLeft className="w-4 h-4 mr-1.5" />
+                  <span>{isCashCard ? (lang === 'vi' ? 'Ghi nhận chi tiền mặt' : 'Record Cash Expense') : isBankCard ? (lang === 'vi' ? 'Ghi nhận chi tài khoản' : 'Record Bank Expense') : t.btn_record}</span>
+                </>
+              )}
+            </Button>
+          </div>
         </form>
       </div>
     </div>

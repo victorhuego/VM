@@ -144,7 +144,8 @@ export default function Home() {
   // Synchronize client local theme & auth session
   useEffect(() => {
     const savedTheme = localStorage.getItem('app_theme')
-    const activeTheme: ThemeType = (savedTheme === 'cozy' || savedTheme === 'fantasy' || savedTheme === 'retro') ? savedTheme : 'classic'
+    const validThemes: ThemeType[] = ['classic', 'cozy', 'fantasy', 'retro', 'ronin']
+    const activeTheme: ThemeType = validThemes.includes(savedTheme as any) ? (savedTheme as ThemeType) : 'classic'
     setTheme(activeTheme)
     applyTheme(activeTheme)
 
@@ -820,6 +821,7 @@ export default function Home() {
                 onOpenSavingsModal={() => setIsSavingsModalOpen(true)}
                 onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
                 onOpenDebtModal={() => setIsDebtModalOpen(true)}
+                theme={theme}
               />
 
               <BudgetAlert lang={lang} finances={computedFinances} expenses={expenses} />
@@ -846,6 +848,8 @@ export default function Home() {
                   className={`fixed bottom-[calc(max(0.75rem,env(safe-area-inset-bottom))+4.25rem)] sm:bottom-8 right-4 sm:right-8 z-40 bubble-fab-mobile btn-theme-gradient w-14 h-14 sm:w-auto sm:h-auto p-0 sm:px-5 sm:py-3 rounded-full flex items-center justify-center gap-2 font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
                     theme === 'retro'
                       ? '!rounded-none !bg-[#C0C0C0] !text-black !border-none !shadow-[inset_-1px_-1px_#0a0a0a,inset_1px_1px_#fff,inset_-2px_-2px_#808080,inset_2px_2px_#dfdfdf]'
+                      : theme === 'ronin'
+                      ? '!rounded-none !bg-gradient-to-br !from-[#E52535] !to-[#7F0910] hover:!from-[#FF1E38] hover:!to-[#9E0B15] !text-white !border !border-[#FF3B4E] shadow-[0_0_24px_rgba(229,37,53,0.7)] katana-cut'
                       : theme === 'fantasy'
                       ? 'text-[#1E2533] border-2 border-[#FFF2D1] shadow-[0_0_20px_rgba(229,201,146,0.5)]'
                       : theme === 'cozy'
@@ -878,6 +882,7 @@ export default function Home() {
             lang={lang}
             onOpenZenStory={() => setIsZenStoryOpen(true)}
             onSelectMoment={handleSelectMoment}
+            theme={theme}
           />
 
           <MomentComposer

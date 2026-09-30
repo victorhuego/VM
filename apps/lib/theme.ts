@@ -27,6 +27,11 @@ export const themeTopBarConfig: Record<ThemeType, ThemeColorConfig> = {
     rootBg: '#008080',
     statusBarStyle: 'default',
   },
+  ronin: {
+    topColor: '#070809',
+    rootBg: '#070809',
+    statusBarStyle: 'black',
+  },
 }
 
 /**

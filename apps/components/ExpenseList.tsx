@@ -284,7 +284,7 @@ export function ExpenseList({
     selectedYear === new Date().getFullYear() && selectedMonth === new Date().getMonth() + 1
 
   return (
-    <Card className="border-theme rounded-xl expense-list-card p-4 sm:p-5 bg-white shadow-xs space-y-4">
+    <Card className="border-theme rounded-xl expense-list-card p-4 sm:p-5 bg-theme-card shadow-xs space-y-4">
       {/* 1. Header & Time Period Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-theme pb-3.5">
         <div className="flex items-center space-x-2">
@@ -295,14 +295,14 @@ export function ExpenseList({
         </div>
 
         {/* Period Switcher: Theo Tháng (Mặc định) | Theo Ngày | Theo Năm */}
-        <div className="flex items-center bg-zinc-100/90 period-switcher-container p-1 rounded-xl border border-zinc-200/70 gap-1 self-start sm:self-auto shrink-0">
+        <div className="flex items-center bg-theme-surface period-switcher-container p-1 rounded-xl border border-theme gap-1 self-start sm:self-auto shrink-0">
           <button
             type="button"
             onClick={() => setPeriod('month')}
             className={`px-3 sm:px-3.5 py-1.5 rounded-lg period-tab-btn text-xs font-semibold transition-all cursor-pointer ${
               period === 'month'
-                ? 'bg-white text-theme-main shadow-xs ring-1 ring-black/5 font-bold period-tab-active'
-                : 'text-zinc-500 hover:text-zinc-900 hover:bg-white/60'
+                ? 'bg-theme-card text-theme-main shadow-xs ring-1 ring-theme/10 font-bold period-tab-active'
+                : 'text-theme-muted hover:text-theme-main hover:bg-theme-surface/60'
             }`}
           >
             {t.filter_by_month}
@@ -312,8 +312,8 @@ export function ExpenseList({
             onClick={() => setPeriod('day')}
             className={`px-3 sm:px-3.5 py-1.5 rounded-lg period-tab-btn text-xs font-semibold transition-all cursor-pointer ${
               period === 'day'
-                ? 'bg-white text-theme-main shadow-xs ring-1 ring-black/5 font-bold period-tab-active'
-                : 'text-zinc-500 hover:text-zinc-900 hover:bg-white/60'
+                ? 'bg-theme-card text-theme-main shadow-xs ring-1 ring-theme/10 font-bold period-tab-active'
+                : 'text-theme-muted hover:text-theme-main hover:bg-theme-surface/60'
             }`}
           >
             {t.filter_by_day}
@@ -323,8 +323,8 @@ export function ExpenseList({
             onClick={() => setPeriod('year')}
             className={`px-3 sm:px-3.5 py-1.5 rounded-lg period-tab-btn text-xs font-semibold transition-all cursor-pointer ${
               period === 'year'
-                ? 'bg-white text-theme-main shadow-xs ring-1 ring-black/5 font-bold period-tab-active'
-                : 'text-zinc-500 hover:text-zinc-900 hover:bg-white/60'
+                ? 'bg-theme-card text-theme-main shadow-xs ring-1 ring-theme/10 font-bold period-tab-active'
+                : 'text-theme-muted hover:text-theme-main hover:bg-theme-surface/60'
             }`}
           >
             {t.filter_by_year}
@@ -341,19 +341,19 @@ export function ExpenseList({
               <button
                 type="button"
                 onClick={prevMonth}
-                className="w-7 h-7 rounded-md bg-white border border-theme flex items-center justify-center text-theme-main hover:bg-theme-surface cursor-pointer shadow-2xs"
+                className="w-7 h-7 rounded-md bg-theme-surface border border-theme flex items-center justify-center text-theme-main hover:bg-theme-surface/80 cursor-pointer shadow-2xs"
                 title={t.period_prev_month}
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
 
-              <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-white rounded-md border border-theme font-mono text-xs font-bold text-theme-main shadow-2xs">
+              <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-theme-surface rounded-md border border-theme font-mono text-xs font-bold text-theme-main shadow-2xs">
                 <Calendar className="w-3.5 h-3.5 text-theme-accent" />
                 <span>
                   {t.month_name_prefix} {selectedMonth.toString().padStart(2, '0')}/{selectedYear}
                 </span>
                 {isCurrentMonth && (
-                  <span className="ml-1 text-[9px] font-sans font-medium px-1.5 py-0.2 bg-emerald-50 text-emerald-700 rounded border border-emerald-200">
+                  <span className="ml-1 text-[9px] font-sans font-medium px-1.5 py-0.2 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded border border-emerald-400/30">
                     {t.period_this_month}
                   </span>
                 )}
@@ -362,7 +362,7 @@ export function ExpenseList({
               <button
                 type="button"
                 onClick={nextMonth}
-                className="w-7 h-7 rounded-md bg-white border border-theme flex items-center justify-center text-theme-main hover:bg-theme-surface cursor-pointer shadow-2xs"
+                className="w-7 h-7 rounded-md bg-theme-surface border border-theme flex items-center justify-center text-theme-main hover:bg-theme-surface/80 cursor-pointer shadow-2xs"
                 title={t.period_next_month}
               >
                 <ChevronRight className="w-4 h-4" />
@@ -377,7 +377,7 @@ export function ExpenseList({
                 onClick={() => setSelectedDay(todayStr)}
                 className={`px-2.5 py-1 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
                   selectedDay === todayStr
-                    ? 'bg-white border-theme font-semibold text-theme-main shadow-2xs'
+                    ? 'bg-theme-card border-theme font-semibold text-theme-main shadow-2xs'
                     : 'bg-transparent border-transparent text-theme-muted hover:text-theme-main'
                 }`}
               >
@@ -388,7 +388,7 @@ export function ExpenseList({
                 onClick={() => setSelectedDay(yesterdayStr)}
                 className={`px-2.5 py-1 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
                   selectedDay === yesterdayStr
-                    ? 'bg-white border-theme font-semibold text-theme-main shadow-2xs'
+                    ? 'bg-theme-card border-theme font-semibold text-theme-main shadow-2xs'
                     : 'bg-transparent border-transparent text-theme-muted hover:text-theme-main'
                 }`}
               >
@@ -398,7 +398,7 @@ export function ExpenseList({
                 type="date"
                 value={selectedDay}
                 onChange={(e) => setSelectedDay(e.target.value)}
-                className="h-7 px-2 bg-white rounded-md border border-theme text-xs font-mono font-medium text-theme-main cursor-pointer min-w-0 max-w-[145px] sm:max-w-none"
+                className="h-7 px-2 bg-theme-surface rounded-md border border-theme text-xs font-mono font-medium text-theme-main cursor-pointer min-w-0 max-w-[145px] sm:max-w-none"
               />
             </div>
           )}
@@ -408,12 +408,12 @@ export function ExpenseList({
               <button
                 type="button"
                 onClick={() => setSelectedYear((y) => y - 1)}
-                className="w-7 h-7 rounded-md bg-white border border-theme flex items-center justify-center text-theme-main hover:bg-theme-surface cursor-pointer shadow-2xs"
+                className="w-7 h-7 rounded-md bg-theme-surface border border-theme flex items-center justify-center text-theme-main hover:bg-theme-surface/80 cursor-pointer shadow-2xs"
                 title={lang === 'vi' ? 'Năm trước' : 'Previous year'}
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <div className="flex items-center space-x-1.5 px-3 py-1 bg-white rounded-md border border-theme font-mono text-xs font-bold text-theme-main shadow-2xs">
+              <div className="flex items-center space-x-1.5 px-3 py-1 bg-theme-surface rounded-md border border-theme font-mono text-xs font-bold text-theme-main shadow-2xs">
                 <span>
                   {t.year_name_prefix} {selectedYear}
                 </span>
@@ -421,7 +421,7 @@ export function ExpenseList({
               <button
                 type="button"
                 onClick={() => setSelectedYear((y) => y + 1)}
-                className="w-7 h-7 rounded-md bg-white border border-theme flex items-center justify-center text-theme-main hover:bg-theme-surface cursor-pointer shadow-2xs"
+                className="w-7 h-7 rounded-md bg-theme-surface border border-theme flex items-center justify-center text-theme-main hover:bg-theme-surface/80 cursor-pointer shadow-2xs"
                 title={lang === 'vi' ? 'Năm sau' : 'Next year'}
               >
                 <ChevronRight className="w-4 h-4" />
@@ -540,7 +540,7 @@ export function ExpenseList({
                 </div>
 
                 {/* Group Item Cards */}
-                <div className="divide-y divide-zinc-100 border border-theme rounded-lg overflow-hidden bg-white">
+                <div className="divide-y divide-theme/40 border border-theme rounded-lg overflow-hidden bg-theme-card">
                   {group.items.map((item) => {
                     const isIncome = item.type === 'income'
                     const isTransfer = item.type === 'transfer'

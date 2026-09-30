@@ -177,7 +177,7 @@ export function NetWorthModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl bg-white border-theme shadow-modal p-3.5 sm:p-6 md:p-7 rounded-2xl md:rounded-3xl max-h-[82vh] md:max-h-[88vh] flex flex-col overflow-hidden">
+      <DialogContent className="w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl bg-theme-card border-theme shadow-modal p-3 sm:p-6 md:p-7 rounded-2xl md:rounded-3xl max-h-[92vh] md:max-h-[88vh] flex flex-col overflow-hidden">
         {/* Header & Responsive Tab Switcher */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-theme pb-3.5 shrink-0">
           <div className="flex items-center space-x-3">
@@ -201,7 +201,7 @@ export function NetWorthModal({
               onClick={() => setActiveTab('overview')}
               className={`py-2 px-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 activeTab === 'overview'
-                  ? 'bg-white text-theme-main shadow-xs border border-theme/80 font-bold'
+                  ? 'bg-theme-card text-theme-main shadow-xs border border-theme/80 font-bold'
                   : 'text-zinc-500 hover:text-zinc-800'
               }`}
             >
@@ -213,11 +213,11 @@ export function NetWorthModal({
               onClick={() => setActiveTab('initial')}
               className={`py-2 px-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 activeTab === 'initial'
-                  ? 'bg-white text-emerald-700 shadow-xs border border-emerald-200 font-bold'
+                  ? 'bg-theme-card text-emerald-500 shadow-xs border border-emerald-500/40 font-bold'
                   : 'text-zinc-500 hover:text-zinc-800'
               }`}
             >
-              <Wallet className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <Wallet className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
               <span className="truncate">{t.networth_tab_initial}</span>
             </button>
             <button
@@ -225,7 +225,7 @@ export function NetWorthModal({
               onClick={() => setActiveTab('reconcile')}
               className={`py-2 px-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 activeTab === 'reconcile'
-                  ? 'bg-white text-purple-700 shadow-xs border border-purple-200 font-bold'
+                  ? 'bg-theme-card text-purple-400 shadow-xs border border-purple-500/40 font-bold'
                   : 'text-zinc-500 hover:text-zinc-800'
               }`}
             >
@@ -294,7 +294,7 @@ export function NetWorthModal({
               </div>
 
               {/* Asset Allocation Breakdown */}
-              <div className="p-4 sm:p-5 rounded-2xl border border-theme bg-white space-y-3.5 shadow-2xs">
+              <div className="p-4 sm:p-5 rounded-2xl border border-theme bg-theme-surface space-y-3.5 shadow-2xs">
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
                         <span className="text-xs sm:text-sm font-bold text-zinc-900 block">
@@ -445,9 +445,9 @@ export function NetWorthModal({
                 </div>
           ) : activeTab === 'initial' ? (
             /* TAB 2: INITIAL BALANCES CONFIG */
-            <form onSubmit={handleSaveInit} className="space-y-4">
+            <form onSubmit={handleSaveInit} className="space-y-2.5 sm:space-y-4">
               {/* Description Header */}
-              <div className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 space-y-1.5">
+              <div className="p-2.5 sm:p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 space-y-1 sm:space-y-1.5">
                 <div className="flex items-center justify-between">
                   <span className="text-xs sm:text-sm font-bold text-emerald-950 flex items-center gap-1.5">
                     <Wallet className="w-4 h-4 text-emerald-700" />
@@ -457,24 +457,24 @@ export function NetWorthModal({
                     type="button"
                     onClick={handleResetInitToZero}
                     disabled={isSavingInit}
-                    className="px-2.5 py-1 text-[11px] font-semibold rounded-md border border-rose-200 bg-white text-rose-700 hover:bg-rose-50 cursor-pointer transition-all shadow-2xs flex items-center gap-1 disabled:opacity-50"
+                    className="px-2.5 py-1 text-[11px] font-semibold rounded-md border border-rose-200 bg-theme-surface text-rose-700 hover:bg-rose-50 cursor-pointer transition-all shadow-2xs flex items-center gap-1 disabled:opacity-50"
                   >
                     <RotateCcw className="w-3 h-3" />
                     {t.networth_initial_reset_zero}
                   </button>
                 </div>
-                <p className="text-[11px] text-emerald-800/90 leading-relaxed">
+                <p className="text-[10px] sm:text-[11px] text-emerald-800/90 leading-tight sm:leading-relaxed">
                   {t.networth_initial_desc}
                 </p>
               </div>
 
               {/* 3 Input cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                 {/* Cash */}
-                <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/30 space-y-2">
+                <div className="p-2 sm:p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/30 space-y-1.5 sm:space-y-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
-                      <Wallet className="w-3.5 h-3.5" />
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                      <Wallet className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </div>
                     <span className="text-xs font-bold text-zinc-800">{t.networth_initial_cash}</span>
                   </div>
@@ -489,10 +489,10 @@ export function NetWorthModal({
                 </div>
 
                 {/* Bank Account */}
-                <div className="p-3.5 rounded-xl border border-blue-200 bg-blue-50/30 space-y-2">
+                <div className="p-2 sm:p-3.5 rounded-xl border border-blue-200 bg-blue-50/30 space-y-1.5 sm:space-y-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
-                      <Building2 className="w-3.5 h-3.5" />
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                      <Building2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </div>
                     <span className="text-xs font-bold text-zinc-800">{t.networth_initial_bank}</span>
                   </div>
@@ -507,10 +507,10 @@ export function NetWorthModal({
                 </div>
 
                 {/* Savings */}
-                <div className="p-3.5 rounded-xl border border-amber-200 bg-amber-50/30 space-y-2">
+                <div className="p-2 sm:p-3.5 rounded-xl border border-amber-200 bg-amber-50/30 space-y-1.5 sm:space-y-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
-                      <TrendingUp className="w-3.5 h-3.5" />
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                      <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </div>
                     <span className="text-xs font-bold text-zinc-800">{t.networth_initial_savings}</span>
                   </div>
@@ -526,7 +526,7 @@ export function NetWorthModal({
               </div>
 
               {/* Total Opening Balance Display */}
-              <div className="p-3 rounded-xl bg-theme-surface/70 border border-theme flex items-center justify-between">
+              <div className="p-2.5 sm:p-3 rounded-xl bg-theme-surface/70 border border-theme flex items-center justify-between">
                 <span className="text-xs font-semibold text-zinc-600">
                   {lang === 'vi' ? 'Tổng số dư ban đầu:' : 'Total Opening Balances:'}
                 </span>
@@ -541,7 +541,7 @@ export function NetWorthModal({
               </div>
 
               {/* Actions */}
-              <div className="pt-2 flex justify-end gap-2 border-t border-theme/60">
+              <div className="pt-2 flex justify-end gap-2 border-t border-theme/60 shrink-0">
                 <button
                   type="button"
                   onClick={() => setActiveTab('overview')}
@@ -578,7 +578,7 @@ export function NetWorthModal({
                         className={`p-2 sm:p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-1 sm:gap-1.5 ${
                           reconcileSource === 'cash'
                             ? 'border-emerald-500 bg-emerald-50/80 text-emerald-900 font-bold shadow-xs ring-1 ring-emerald-400/40'
-                            : 'border-theme bg-white text-zinc-600 hover:bg-zinc-50'
+                            : 'border-theme bg-theme-surface text-theme-muted hover:bg-theme-border/30'
                         }`}
                       >
                         <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
@@ -613,7 +613,7 @@ export function NetWorthModal({
                         className={`p-2 sm:p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-1 sm:gap-1.5 ${
                           reconcileSource === 'account'
                             ? 'border-blue-500 bg-blue-50/80 text-blue-900 font-bold shadow-xs ring-1 ring-blue-400/40'
-                            : 'border-theme bg-white text-zinc-600 hover:bg-zinc-50'
+                            : 'border-theme bg-theme-surface text-theme-muted hover:bg-theme-border/30'
                         }`}
                       >
                         <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
@@ -648,7 +648,7 @@ export function NetWorthModal({
                         className={`p-2 sm:p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-1.5 ${
                           reconcileSource === 'savings'
                             ? 'border-amber-500 bg-amber-50/80 text-amber-900 font-bold shadow-xs ring-1 ring-amber-400/40'
-                            : 'border-theme bg-white text-zinc-600 hover:bg-zinc-50'
+                            : 'border-theme bg-theme-surface text-theme-muted hover:bg-theme-border/30'
                         }`}
                       >
                         <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
@@ -681,7 +681,7 @@ export function NetWorthModal({
 
                 {/* Right Column: Reconciliation Audit Form (7 cols on md+) */}
                 <div className="md:col-span-7 space-y-2.5 sm:space-y-3.5">
-                  <div className="p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-theme bg-white space-y-2.5 sm:space-y-4 shadow-2xs">
+                  <div className="p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-theme bg-theme-surface space-y-2.5 sm:space-y-4 shadow-2xs">
                     {/* Active Source Title & Current Recorded Balance */}
                     <div className="p-2.5 sm:p-3.5 rounded-lg sm:rounded-xl bg-theme-surface/70 border border-theme flex items-center justify-between">
                       <div>
@@ -779,7 +779,7 @@ export function NetWorthModal({
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}
                         placeholder={t.networth_reason_placeholder}
-                        className="text-xs sm:text-sm h-8 sm:h-10 border-theme bg-white"
+                        className="text-xs sm:text-sm h-8 sm:h-10 border-theme bg-theme-surface"
                       />
                     </div>
 
@@ -788,7 +788,7 @@ export function NetWorthModal({
                       <button
                         type="button"
                         onClick={() => onOpenChange(false)}
-                        className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl border border-theme text-xs font-medium text-zinc-600 hover:bg-zinc-50 cursor-pointer transition-all"
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl border border-theme text-xs font-medium text-theme-muted hover:bg-theme-surface cursor-pointer transition-all"
                       >
                         {t.btn_cancel}
                       </button>
@@ -813,7 +813,7 @@ export function NetWorthModal({
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="px-4 py-1.5 rounded-lg border border-theme text-xs font-medium text-zinc-700 bg-white hover:bg-zinc-50 cursor-pointer shadow-2xs transition-all"
+            className="px-4 py-1.5 rounded-lg border border-theme text-xs font-medium text-theme-main bg-theme-surface hover:bg-theme-border/30 cursor-pointer shadow-2xs transition-all"
           >
             {lang === 'vi' ? 'Đóng' : 'Close'}
           </button>

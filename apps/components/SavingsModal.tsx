@@ -144,14 +144,14 @@ export function SavingsModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-200">
       <div
-        className="bg-theme-card border border-theme w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="bg-theme-card border border-theme w-full max-w-md max-h-[92vh] flex flex-col rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200"
         role="dialog"
         aria-modal="true"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-theme/60 bg-theme-surface/50">
+        <div className="flex items-center justify-between p-3.5 sm:p-4 border-b border-theme/60 bg-theme-surface/50 shrink-0">
           <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center shadow-xs">
+            <div className="w-8 h-8 rounded-lg bg-amber-950/60 border border-amber-500/40 text-amber-400 flex items-center justify-center shadow-xs">
               <TrendingUp className="w-4 h-4" />
             </div>
             <div>
@@ -172,57 +172,57 @@ export function SavingsModal({
         </div>
 
         {/* Overview Balance Card */}
-        <div className="p-4 bg-theme-surface/30 border-b border-theme/40 space-y-2.5">
+        <div className="p-3.5 sm:p-4 bg-theme-surface/30 border-b border-theme/40 space-y-2.5">
           <div className="grid grid-cols-2 gap-2">
             {/* Savings Box */}
-            <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-300/60">
-              <span className="text-[10px] text-amber-800 font-medium block">
+            <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-300/40">
+              <span className="text-[10px] text-amber-400 font-medium block">
                 {t.savings_current_balance}
               </span>
-              <span className="text-base sm:text-lg font-bold font-mono-nums text-amber-900 block mt-0.5">
+              <span className="text-base sm:text-lg font-bold font-mono-nums text-amber-300 block mt-0.5">
                 {formatMoney(currentSavings, lang)}
               </span>
               <div className="mt-1.5 flex items-center gap-1.5">
-                <div className="flex-1 h-1 bg-amber-200/80 rounded-full overflow-hidden">
+                <div className="flex-1 h-1 bg-amber-950/80 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-amber-600 rounded-full"
+                    className="h-full bg-amber-500 rounded-full"
                     style={{ width: `${savingsPercent}%` }}
                   />
                 </div>
-                <span className="text-[9px] font-mono text-amber-800 font-medium">
+                <span className="text-[9px] font-mono text-amber-400 font-medium">
                   {savingsPercent.toFixed(0)}%
                 </span>
               </div>
             </div>
 
             {/* Bank Box */}
-            <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-300/60">
-              <span className="text-[10px] text-blue-800 font-medium block">
+            <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-300/40">
+              <span className="text-[10px] text-blue-400 font-medium block">
                 {t.savings_bank_balance}
               </span>
-              <span className="text-base sm:text-lg font-bold font-mono-nums text-blue-900 block mt-0.5">
+              <span className="text-base sm:text-lg font-bold font-mono-nums text-blue-300 block mt-0.5">
                 {formatMoney(bankAccount, lang)}
               </span>
-              <span className="text-[9px] text-blue-700 block mt-1.5 font-medium">
+              <span className="text-[9px] text-blue-400/80 block mt-1.5 font-medium">
                 {lang === 'vi' ? 'Sẵn sàng nhận / chuyển' : 'Ready for transfer'}
               </span>
             </div>
           </div>
 
           {/* Goal Progress Banner & Inline Edit */}
-          <div className="p-2.5 rounded-xl bg-white border border-amber-200/80 space-y-1.5">
+          <div className="p-2.5 rounded-xl bg-theme-surface border border-theme/60 space-y-1.5">
             <div className="flex items-center justify-between text-[11px]">
-              <div className="flex items-center gap-1.5 text-amber-950 font-medium">
-                <Target className="w-3.5 h-3.5 text-amber-700" />
+              <div className="flex items-center gap-1.5 text-theme-main font-medium">
+                <Target className="w-3.5 h-3.5 text-amber-400" />
                 <span>
-                  {t.savings_target}: <strong className="font-mono text-amber-900">{formatMoney(savingsGoal, lang)}</strong>
+                  {t.savings_target}: <strong className="font-mono text-amber-400">{formatMoney(savingsGoal, lang)}</strong>
                 </span>
               </div>
               {onSaveSavingsGoal && (
                 <button
                   type="button"
                   onClick={() => setIsEditingGoal((prev) => !prev)}
-                  className="text-[10px] text-amber-800 hover:text-amber-950 font-semibold underline flex items-center gap-0.5 cursor-pointer"
+                  className="text-[10px] text-amber-400 hover:text-amber-300 font-semibold underline flex items-center gap-0.5 cursor-pointer"
                 >
                   <Edit2 className="w-2.5 h-2.5" />
                   <span>{isEditingGoal ? t.btn_cancel : t.savings_goal_edit_btn}</span>
@@ -255,7 +255,7 @@ export function SavingsModal({
         </div>
 
         {/* Action Tabs: Withdraw vs Deposit */}
-        <div className="px-4 pt-3">
+        <div className="px-3.5 sm:px-4 pt-3">
           <div className="grid grid-cols-2 p-1 rounded-xl bg-theme-surface border border-theme/80 gap-1">
             <button
               type="button"
@@ -263,7 +263,7 @@ export function SavingsModal({
               className={`py-1.5 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 activeTab === 'withdraw'
                   ? 'bg-amber-600 text-white shadow-xs'
-                  : 'text-zinc-600 hover:text-zinc-900'
+                  : 'text-theme-muted hover:text-theme-main'
               }`}
             >
               <ArrowDownLeft className="w-3.5 h-3.5" />
@@ -275,7 +275,7 @@ export function SavingsModal({
               className={`py-1.5 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 activeTab === 'deposit'
                   ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-zinc-600 hover:text-zinc-900'
+                  : 'text-theme-muted hover:text-theme-main'
               }`}
             >
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -285,36 +285,37 @@ export function SavingsModal({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-4 space-y-3.5">
-          {/* Amount input with Touchpad */}
-          <TouchpadField
-            label={isWithdraw ? t.savings_withdraw_amount_label : t.savings_deposit_amount_label}
-            badgeText={`${lang === 'vi' ? 'Tối đa: ' : 'Max: '} ${formatMoney(maxAvailable, lang)}`}
-            value={amountStr}
-            onChange={(val) => {
-              setAmountStr(val)
-              setError(null)
-            }}
-            lang={lang}
-            placeholder="VD: 5000000"
-            max={maxAvailable}
-            isOverBalance={isOverMax}
-            title={isWithdraw ? t.savings_withdraw_amount_label : t.savings_deposit_amount_label}
-            presets={[1000000, 2000000, 5000000, 10000000]}
-          />
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+          <div className="p-3.5 sm:p-4 space-y-3 sm:space-y-3.5 overflow-y-auto flex-1">
+            {/* Amount input with Touchpad */}
+            <TouchpadField
+              label={isWithdraw ? t.savings_withdraw_amount_label : t.savings_deposit_amount_label}
+              badgeText={`${lang === 'vi' ? 'Tối đa: ' : 'Max: '} ${formatMoney(maxAvailable, lang)}`}
+              value={amountStr}
+              onChange={(val) => {
+                setAmountStr(val)
+                setError(null)
+              }}
+              lang={lang}
+              placeholder="VD: 5000000"
+              max={maxAvailable}
+              isOverBalance={isOverMax}
+              title={isWithdraw ? t.savings_withdraw_amount_label : t.savings_deposit_amount_label}
+              presets={[1000000, 2000000, 5000000, 10000000]}
+            />
 
-          {/* Quick Preset Buttons */}
-          <div className="flex items-center gap-1.5 pt-1 flex-wrap">
-            {[1000000, 2000000, 5000000, 10000000].map((preset) => (
-              <button
+            {/* Quick Preset Buttons */}
+            <div className="flex items-center gap-1.5 pt-1 flex-wrap">
+              {[1000000, 2000000, 5000000, 10000000].map((preset) => (
+                <button
                   key={preset}
                   type="button"
                   onClick={() => handlePreset(preset)}
                   disabled={preset > maxAvailable}
                   className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-all cursor-pointer ${
                     preset > maxAvailable
-                      ? 'opacity-40 cursor-not-allowed bg-zinc-100 text-zinc-400 border-zinc-200'
-                      : 'bg-theme-surface text-theme-accent hover:bg-theme-main hover:text-white border-theme'
+                      ? 'opacity-40 cursor-not-allowed bg-theme-surface/40 text-theme-muted border-theme/40'
+                      : 'bg-theme-surface text-theme-accent hover:bg-theme-card hover:text-white border-theme/60'
                   }`}
                 >
                   +{preset >= 1000000 ? `${preset / 1000000}M` : preset.toLocaleString()}
@@ -324,69 +325,70 @@ export function SavingsModal({
                 type="button"
                 onClick={handleMax}
                 disabled={maxAvailable <= 0}
-                className="text-[10px] font-semibold px-2 py-0.5 rounded border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 transition-all cursor-pointer"
+                className="text-[10px] font-semibold px-2 py-0.5 rounded border border-amber-500/50 bg-amber-950/60 text-amber-300 hover:bg-amber-900/80 transition-all cursor-pointer"
               >
                 {t.quick_preset_all} (100%)
               </button>
             </div>
 
-          {/* Live Preview Box */}
-          {numAmount > 0 && !isOverMax && (
-            <div className="p-3 rounded-xl bg-zinc-50/80 border border-zinc-200 space-y-1.5 text-xs font-mono animate-in fade-in duration-150">
-              <div className="flex items-center justify-between text-zinc-700">
-                <span className="flex items-center gap-1">
-                  <TrendingUp className="w-3.5 h-3.5 text-amber-600" />
-                  <span>{t.savings_after_withdraw}:</span>
-                </span>
-                <span className="font-bold text-amber-800">{formatMoney(savingsAfter, lang)}</span>
+            {/* Live Preview Box */}
+            {numAmount > 0 && !isOverMax && (
+              <div className="p-3 rounded-xl bg-theme-surface/80 border border-theme/60 space-y-1.5 text-xs font-mono animate-in fade-in duration-150">
+                <div className="flex items-center justify-between text-theme-main">
+                  <span className="flex items-center gap-1">
+                    <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{t.savings_after_withdraw}:</span>
+                  </span>
+                  <span className="font-bold text-amber-400">{formatMoney(savingsAfter, lang)}</span>
+                </div>
+                <div className="flex items-center justify-between text-theme-main">
+                  <span className="flex items-center gap-1">
+                    <Building2 className="w-3.5 h-3.5 text-blue-400" />
+                    <span>{t.bank_after_receive}:</span>
+                  </span>
+                  <span className="font-bold text-blue-400">{formatMoney(bankAfter, lang)}</span>
+                </div>
               </div>
-              <div className="flex items-center justify-between text-zinc-700">
-                <span className="flex items-center gap-1">
-                  <Building2 className="w-3.5 h-3.5 text-blue-600" />
-                  <span>{t.bank_after_receive}:</span>
+            )}
+
+            {/* Error Message */}
+            {isOverMax && (
+              <div className="text-xs text-rose-300 flex items-center gap-1.5 bg-rose-950/40 p-2 rounded-lg border border-rose-500/50">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                <span>
+                  {isWithdraw
+                    ? (lang === 'vi' ? 'Số tiền rút không thể lớn hơn số dư tiết kiệm' : 'Withdrawal amount cannot exceed savings balance')
+                    : (lang === 'vi' ? 'Số tiền gửi không thể lớn hơn số dư tài khoản ngân hàng' : 'Deposit amount cannot exceed bank balance')}
                 </span>
-                <span className="font-bold text-blue-800">{formatMoney(bankAfter, lang)}</span>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Error Message */}
-          {isOverMax && (
-            <div className="text-xs text-rose-600 flex items-center gap-1.5 bg-rose-50 p-2 rounded-lg border border-rose-200">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>
-                {isWithdraw
-                  ? (lang === 'vi' ? 'Số tiền rút không thể lớn hơn số dư tiết kiệm' : 'Withdrawal amount cannot exceed savings balance')
-                  : (lang === 'vi' ? 'Số tiền gửi không thể lớn hơn số dư tài khoản ngân hàng' : 'Deposit amount cannot exceed bank balance')}
-              </span>
-            </div>
-          )}
+            {error && (
+              <div className="text-xs text-rose-300 flex items-center gap-1.5 bg-rose-950/40 p-2 rounded-lg border border-rose-500/50">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                <span>{error}</span>
+              </div>
+            )}
 
-          {error && (
-            <div className="text-xs text-rose-600 flex items-center gap-1.5 bg-rose-50 p-2 rounded-lg border border-rose-200">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{error}</span>
+            {/* Note Input */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-theme-main">{t.note_label}</label>
+              <input
+                type="text"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder={isWithdraw ? t.savings_note_withdraw_default : t.savings_note_deposit_default}
+                className="w-full px-3 py-1.5 text-xs rounded-lg bg-theme-surface border border-theme/60 text-theme-main placeholder:text-theme-muted focus:outline-hidden focus:ring-1 focus:ring-theme-accent transition-all"
+              />
             </div>
-          )}
-
-          {/* Note Input */}
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-theme-main">{t.note_label}</label>
-            <input
-              type="text"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder={isWithdraw ? t.savings_note_withdraw_default : t.savings_note_deposit_default}
-              className="w-full px-3 py-1.5 text-xs rounded-lg bg-theme-surface border border-theme text-theme-main focus:outline-hidden focus:ring-1 focus:ring-theme-accent transition-all"
-            />
           </div>
 
           {/* Modal Actions */}
-          <div className="flex items-center justify-end space-x-2 pt-2 border-t border-theme/60">
+          <div className="flex items-center justify-end space-x-2 p-3 sm:p-4 border-t border-theme/60 bg-theme-surface/60 shrink-0">
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1.5 text-xs font-medium rounded-lg text-theme-muted hover:text-theme-main hover:bg-theme-surface transition-colors cursor-pointer"
+              className="px-3.5 py-2 text-xs font-medium rounded-lg text-theme-muted hover:text-theme-main hover:bg-theme-card border border-theme/60 bg-theme-surface/40 transition-colors cursor-pointer"
             >
               {t.btn_cancel}
             </button>

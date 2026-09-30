@@ -93,7 +93,7 @@ export function MomentComposer({ lang, onAddMoment, existingMoments = [] }: Mome
   }
 
   return (
-    <Card className="bento-card border border-theme/80 rounded-2xl p-4 sm:p-5 bg-white shadow-xs space-y-3.5">
+    <Card className="bento-card border border-theme/80 rounded-2xl p-4 sm:p-5 bg-theme-card shadow-xs space-y-3.5">
       <div className="flex items-center justify-between mb-1">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-theme-main flex items-center space-x-1.5">
           <span>{t.moment_box_title}</span>
@@ -102,7 +102,7 @@ export function MomentComposer({ lang, onAddMoment, existingMoments = [] }: Mome
           <span className="text-[11px] font-mono text-theme-accent bg-theme-surface px-2 py-0.5 rounded-lg border border-theme">
             {liveTime}
           </span>
-          <span className="text-[10px] font-mono text-theme-muted bg-zinc-50 px-1.5 py-0.5 rounded-lg border border-zinc-200">
+          <span className="text-[10px] font-mono text-theme-muted bg-theme-surface px-1.5 py-0.5 rounded-lg border border-theme">
             {getClientTimeZoneOffset()}
           </span>
         </div>
@@ -115,7 +115,7 @@ export function MomentComposer({ lang, onAddMoment, existingMoments = [] }: Mome
           placeholder={t.moment_placeholder}
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
-          className="w-full bg-white border border-theme rounded-xl p-3 text-base sm:text-sm text-zinc-900 placeholder:text-zinc-400 focus-visible:ring-theme/20 resize-none leading-relaxed transition-all"
+          className="w-full bg-theme-surface/60 border border-theme rounded-xl p-3 text-base sm:text-sm text-theme-main placeholder:text-theme-muted focus-visible:ring-theme/20 resize-none leading-relaxed transition-all"
         />
 
         {/* Micro-Mood Tags Selection */}
@@ -135,13 +135,15 @@ export function MomentComposer({ lang, onAddMoment, existingMoments = [] }: Mome
                   className={`w-full px-2 py-2 min-h-[40px] rounded-xl text-xs font-medium transition-all duration-200 flex items-center justify-center space-x-1.5 cursor-pointer btn-spring ${
                     isSelected
                       ? 'btn-theme-gradient text-white shadow-md font-semibold border border-white/20 ring-2 ring-theme-accent/30 scale-[1.02]'
-                      : 'border border-theme bg-white hover:bg-theme-surface text-theme-main shadow-2xs hover:border-theme-border-hover'
+                      : 'border border-theme bg-theme-surface/50 hover:bg-theme-surface text-theme-main shadow-2xs hover:border-theme-border-hover'
                   }`}
                 >
                   <MoodIcon
                     name={item.icon}
                     className={`w-3.5 h-3.5 shrink-0 pointer-events-none transition-transform duration-200 ${
-                      isSelected ? 'scale-115 rotate-3' : 'text-zinc-500'
+                      isSelected
+                        ? 'scale-115 rotate-3 [html[data-theme="fantasy"]_&]:text-[#1E2533] [html[data-theme="fantasy"]_&]:stroke-[#1E2533] text-white'
+                        : 'text-theme-muted'
                     }`}
                   />
                   <span className="truncate pointer-events-none">{item[lang]}</span>
@@ -155,7 +157,7 @@ export function MomentComposer({ lang, onAddMoment, existingMoments = [] }: Mome
         {filePreview && (
           <div className="p-2.5 border border-dashed border-theme rounded-xl bg-theme-surface flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg overflow-hidden bg-white border border-theme shrink-0">
+              <div className="w-10 h-10 rounded-lg overflow-hidden bg-theme-surface border border-theme shrink-0">
                 <img src={filePreview} alt="Preview" className="w-full h-full object-cover" />
               </div>
               <div>
@@ -193,7 +195,7 @@ export function MomentComposer({ lang, onAddMoment, existingMoments = [] }: Mome
             type="submit"
             className="w-full sm:w-auto btn-theme-gradient text-white font-medium text-xs sm:text-sm py-2.5 px-6 rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 h-11 cursor-pointer btn-spring touch-target border border-white/20"
           >
-            <Send className="w-3.5 h-3.5" />
+            <Send className="w-3.5 h-3.5 [html[data-theme='fantasy']_&]:text-[#1E2533] [html[data-theme='fantasy']_&]:stroke-[#1E2533]" />
             <span>{t.btn_post_moment}</span>
           </Button>
         </div>

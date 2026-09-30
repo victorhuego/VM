@@ -76,7 +76,7 @@ export function BudgetModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-200">
       <div
-        className="bg-white border border-theme w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
+        className="bg-theme-card border border-theme w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
         role="dialog"
         aria-modal="true"
       >
@@ -86,10 +86,10 @@ export function BudgetModal({
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-theme/70 bg-theme-surface/60 shrink-0">
+        <div className="flex items-center justify-between p-3.5 sm:p-4 border-b border-theme/70 bg-theme-surface/60 shrink-0">
           <div className="flex items-center space-x-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center shadow-xs shrink-0">
-              <Target className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center shadow-xs shrink-0">
+              <Target className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div className="min-w-0">
               <h2 className="text-sm sm:text-base font-semibold text-theme-main truncate">
@@ -109,17 +109,17 @@ export function BudgetModal({
         </div>
 
         {/* Current Standing Overview */}
-        <div className="p-4 bg-theme-surface/40 border-b border-theme/50 space-y-2.5">
+        <div className="p-3 sm:p-4 bg-theme-surface/40 border-b border-theme/50 space-y-2.5">
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2.5 rounded-xl bg-white border border-theme shadow-2xs">
+            <div className="p-2.5 rounded-xl bg-theme-surface border border-theme shadow-2xs">
               <span className="text-[10px] text-theme-muted block">{t.budget_current_label}</span>
               <span className="font-mono text-sm sm:text-base font-bold text-theme-main">
                 {formatMoney(monthlyBudget, lang)}
               </span>
             </div>
-            <div className="p-2.5 rounded-xl bg-white border border-theme shadow-2xs">
+            <div className="p-2.5 rounded-xl bg-theme-surface border border-theme shadow-2xs">
               <span className="text-[10px] text-theme-muted block">{t.budget_spent_label}</span>
-              <span className="font-mono text-sm sm:text-base font-bold text-amber-700">
+              <span className="font-mono text-sm sm:text-base font-bold text-amber-500">
                 {formatMoney(monthlySpent, lang)}
               </span>
             </div>
@@ -163,7 +163,7 @@ export function BudgetModal({
                 key={preset}
                 type="button"
                 onClick={() => handlePresetAdd(preset)}
-                className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border border-zinc-200 transition-colors cursor-pointer"
+                className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-theme-surface hover:bg-theme-card text-theme-main border border-theme/60 transition-colors cursor-pointer"
               >
                 +{preset >= 1000000 ? `${preset / 1000000}M` : preset.toLocaleString()}
               </button>
@@ -171,7 +171,7 @@ export function BudgetModal({
             <button
               type="button"
               onClick={() => setBudgetStr(monthlySpent.toString())}
-              className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 transition-colors cursor-pointer"
+              className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-amber-950/60 hover:bg-amber-900/80 text-amber-300 border border-amber-500/50 transition-colors cursor-pointer"
               title={lang === 'vi' ? 'Đặt bằng đúng số tiền đã chi' : 'Set equal to current spent'}
             >
               {lang === 'vi' ? '= Đã chi' : '= Spent'}
@@ -184,10 +184,10 @@ export function BudgetModal({
               {t.budget_preview_title}
             </span>
             <div className="flex items-center justify-between text-xs">
-              <span className="text-zinc-600">
+              <span className="text-theme-muted">
                 {lang === 'vi' ? 'Hạn mức sau điều chỉnh:' : 'Remaining after change:'}
               </span>
-              <span className={`font-mono font-bold ${isOverBudget ? 'text-rose-600' : 'text-emerald-700'}`}>
+              <span className={`font-mono font-bold ${isOverBudget ? 'text-rose-400' : 'text-emerald-400'}`}>
                 {isOverBudget ? '-' : ''}
                 {formatMoney(Math.abs(newBudgetNum - monthlySpent), lang)}
               </span>
@@ -200,15 +200,15 @@ export function BudgetModal({
                 <span className="inline-flex items-center gap-1">
                   {isOverBudget ? (
                     <>
-                      <AlertCircle className="w-3 h-3 text-rose-500" />
-                      <span className="text-rose-600">{lang === 'vi' ? 'Vượt hạn mức' : 'Over budget'}</span>
+                      <AlertCircle className="w-3 h-3 text-rose-400" />
+                      <span className="text-rose-400">{lang === 'vi' ? 'Vượt hạn mức' : 'Over budget'}</span>
                     </>
                   ) : (
                     <span>{lang === 'vi' ? 'An toàn' : 'Safe'}</span>
                   )}
                 </span>
               </div>
-              <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
+              <div className="h-1.5 w-full bg-theme-surface border border-theme/40 rounded-full overflow-hidden">
                 <div
                   className={`h-full transition-all duration-300 ${
                     isOverBudget ? 'bg-rose-500' : percentNew >= 80 ? 'bg-amber-500' : 'bg-emerald-500'
@@ -224,7 +224,7 @@ export function BudgetModal({
             <button
               type="button"
               onClick={onClose}
-              className="w-full py-2.5 px-3 rounded-xl border border-theme text-xs font-semibold text-theme-main bg-white hover:bg-theme-surface transition-colors cursor-pointer"
+              className="w-full py-2.5 px-3 rounded-xl border border-theme text-xs font-semibold text-theme-main bg-theme-surface hover:bg-theme-surface/80 transition-colors cursor-pointer"
             >
               {lang === 'vi' ? 'Hủy' : 'Cancel'}
             </button>

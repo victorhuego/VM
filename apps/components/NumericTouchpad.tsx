@@ -185,7 +185,7 @@ export function NumericTouchpad({
 
       {/* Presets Row */}
       {showPresets && (
-        <div className="p-2 sm:p-2.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar border-b border-theme/40 bg-white">
+        <div className="p-2 sm:p-2.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar border-b border-theme/40 bg-theme-surface/40">
           {presets.map((preset) => (
             <button
               key={preset}
@@ -200,7 +200,7 @@ export function NumericTouchpad({
             <button
               type="button"
               onClick={handleSetMax}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 transition-all shrink-0 active:scale-95 cursor-pointer"
+              className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-400 border border-amber-400/40 transition-all shrink-0 active:scale-95 cursor-pointer"
             >
               {t.touchpad_max || (lang === 'vi' ? 'Tối đa' : 'Max')}
             </button>
@@ -208,7 +208,7 @@ export function NumericTouchpad({
           <button
             type="button"
             onClick={handleClear}
-            className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-all shrink-0 active:scale-95 cursor-pointer ml-auto flex items-center gap-1"
+            className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-rose-500/15 hover:bg-rose-500/25 text-rose-600 border border-rose-300/40 transition-all shrink-0 active:scale-95 cursor-pointer ml-auto flex items-center gap-1"
             title={t.touchpad_clear || (lang === 'vi' ? 'Xoá' : 'Clear')}
           >
             <RotateCcw className="w-3 h-3" />
@@ -218,7 +218,7 @@ export function NumericTouchpad({
       )}
 
       {/* 3x4 Touchpad Keypad Grid */}
-      <div className="p-2 sm:p-3 bg-zinc-50/70">
+      <div className="p-2 sm:p-3 bg-theme-surface/60">
         <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
           {/* Row 1 */}
           {['1', '2', '3'].map((digit) => (
@@ -226,7 +226,7 @@ export function NumericTouchpad({
               key={digit}
               type="button"
               onClick={() => handleDigit(digit)}
-              className="h-12 sm:h-13 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-200/90 shadow-2xs text-lg sm:text-xl font-mono font-semibold text-zinc-800 flex items-center justify-center active:scale-95 transition-all cursor-pointer select-none"
+              className="h-12 sm:h-13 rounded-xl bg-card hover:bg-theme-surface border border-theme/80 shadow-2xs text-lg sm:text-xl font-mono font-semibold text-theme-main flex items-center justify-center active:scale-95 transition-all cursor-pointer select-none"
             >
               {digit}
             </button>
@@ -238,7 +238,7 @@ export function NumericTouchpad({
               key={digit}
               type="button"
               onClick={() => handleDigit(digit)}
-              className="h-12 sm:h-13 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-200/90 shadow-2xs text-lg sm:text-xl font-mono font-semibold text-zinc-800 flex items-center justify-center active:scale-95 transition-all cursor-pointer select-none"
+              className="h-12 sm:h-13 rounded-xl bg-card hover:bg-theme-surface border border-theme/80 shadow-2xs text-lg sm:text-xl font-mono font-semibold text-theme-main flex items-center justify-center active:scale-95 transition-all cursor-pointer select-none"
             >
               {digit}
             </button>
@@ -250,7 +250,7 @@ export function NumericTouchpad({
               key={digit}
               type="button"
               onClick={() => handleDigit(digit)}
-              className="h-12 sm:h-13 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-200/90 shadow-2xs text-lg sm:text-xl font-mono font-semibold text-zinc-800 flex items-center justify-center active:scale-95 transition-all cursor-pointer select-none"
+              className="h-12 sm:h-13 rounded-xl bg-card hover:bg-theme-surface border border-theme/80 shadow-2xs text-lg sm:text-xl font-mono font-semibold text-theme-main flex items-center justify-center active:scale-95 transition-all cursor-pointer select-none"
             >
               {digit}
             </button>
@@ -260,7 +260,7 @@ export function NumericTouchpad({
           <button
             type="button"
             onClick={() => handleDigit('000')}
-            className="h-12 sm:h-13 rounded-xl bg-zinc-100/90 hover:bg-zinc-200/80 border border-zinc-300/80 shadow-2xs text-sm sm:text-base font-mono font-bold text-zinc-700 flex items-center justify-center active:scale-95 transition-all cursor-pointer select-none"
+            className="h-12 sm:h-13 rounded-xl bg-theme-surface hover:bg-theme-surface/80 border border-theme/80 shadow-2xs text-sm sm:text-base font-mono font-bold text-theme-main flex items-center justify-center active:scale-95 transition-all cursor-pointer select-none"
           >
             000
           </button>
@@ -268,7 +268,7 @@ export function NumericTouchpad({
           <button
             type="button"
             onClick={() => handleDigit('0')}
-            className="h-12 sm:h-13 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-200/90 shadow-2xs text-lg sm:text-xl font-mono font-semibold text-zinc-800 flex items-center justify-center active:scale-95 transition-all cursor-pointer select-none"
+            className="h-12 sm:h-13 rounded-xl bg-card hover:bg-theme-surface border border-theme/80 shadow-2xs text-lg sm:text-xl font-mono font-semibold text-theme-main flex items-center justify-center active:scale-95 transition-all cursor-pointer select-none"
           >
             0
           </button>
@@ -276,7 +276,7 @@ export function NumericTouchpad({
           <button
             type="button"
             onClick={handleBackspace}
-            className="h-12 sm:h-13 rounded-xl bg-zinc-100/90 hover:bg-rose-50 hover:border-rose-300 hover:text-rose-600 border border-zinc-300/80 shadow-2xs text-zinc-700 flex items-center justify-center active:scale-95 transition-all cursor-pointer select-none"
+            className="h-12 sm:h-13 rounded-xl bg-theme-surface hover:bg-rose-500/10 hover:border-rose-400 hover:text-rose-500 border border-theme/80 shadow-2xs text-theme-muted flex items-center justify-center active:scale-95 transition-all cursor-pointer select-none"
             title="Backspace"
           >
             <Delete className="w-5 h-5 stroke-[2.2]" />

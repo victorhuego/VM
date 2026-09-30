@@ -267,15 +267,15 @@ export function DebtModal({
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-200">
       <div
-        className="bg-white border border-theme w-full max-w-lg sm:max-w-xl md:max-w-2xl rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
+        className="bg-theme-card border border-theme w-full max-w-lg sm:max-w-xl md:max-w-2xl rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
         role="dialog"
         aria-modal="true"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-theme/70 bg-theme-surface/60 shrink-0">
+        <div className="flex items-center justify-between p-3.5 sm:p-4 border-b border-theme/70 bg-theme-surface/60 shrink-0">
           <div className="flex items-center space-x-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center shadow-xs shrink-0">
-              <CreditCard className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center shadow-xs shrink-0">
+              <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div className="min-w-0">
               <h2 className="text-sm sm:text-base font-semibold text-theme-main truncate">
@@ -295,9 +295,9 @@ export function DebtModal({
         </div>
 
         {/* Dual Total Debt Summary Banner */}
-        <div className="p-3.5 sm:p-4 bg-theme-surface/50 border-b border-theme/70 grid grid-cols-2 gap-2.5 sm:gap-3 shrink-0">
+        <div className="p-2.5 sm:p-4 bg-theme-surface/50 border-b border-theme/70 grid grid-cols-2 gap-2 sm:gap-3 shrink-0">
           {/* Box 1: Tôi nợ người khác */}
-          <div className="p-2.5 sm:p-3 rounded-xl bg-amber-500/10 border border-amber-300/60 space-y-0.5">
+          <div className="p-2 sm:p-3 rounded-xl bg-amber-500/10 border border-amber-300/60 space-y-0.5">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-900 truncate">
                 {t.debt_total_payable_label}
@@ -312,7 +312,7 @@ export function DebtModal({
           </div>
 
           {/* Box 2: Người khác nợ tôi */}
-          <div className="p-2.5 sm:p-3 rounded-xl bg-emerald-500/10 border border-emerald-300/60 space-y-0.5">
+          <div className="p-2 sm:p-3 rounded-xl bg-emerald-500/10 border border-emerald-300/60 space-y-0.5">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-800 truncate">
                 {t.debt_total_receivable_label}
@@ -328,17 +328,17 @@ export function DebtModal({
         </div>
 
         {/* Content Body: Scrollable Debt List + Add Section + Pay/Collect Drawer */}
-        <div className="p-4 space-y-3.5 overflow-y-auto overflow-x-hidden flex-1 expense-scroll-container">
+        <div className="p-3 sm:p-4 space-y-3 sm:space-y-3.5 overflow-y-auto overflow-x-hidden flex-1 expense-scroll-container">
           {/* Filter Tabs & Add Button Row */}
           <div className="flex items-center justify-between gap-2.5 flex-wrap">
             {/* Filter Tabs */}
-            <div className="p-1 bg-zinc-100/90 rounded-xl flex items-center gap-1 border border-zinc-200/80 shrink-0 text-xs">
+            <div className="p-1 bg-theme-surface rounded-xl flex items-center gap-1 border border-theme shrink-0 text-xs">
               <button
                 type="button"
                 onClick={() => setActiveTab('all')}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
                   activeTab === 'all'
-                    ? 'bg-white text-zinc-900 font-bold shadow-xs'
+                    ? 'bg-theme-card text-theme-main font-bold shadow-xs'
                     : 'text-zinc-500 hover:text-zinc-800'
                 }`}
               >
@@ -349,7 +349,7 @@ export function DebtModal({
                 onClick={() => setActiveTab('payable')}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
                   activeTab === 'payable'
-                    ? 'bg-white text-amber-900 font-bold shadow-xs'
+                    ? 'bg-theme-card text-amber-500 font-bold shadow-xs'
                     : 'text-zinc-500 hover:text-zinc-800'
                 }`}
               >
@@ -360,7 +360,7 @@ export function DebtModal({
                 onClick={() => setActiveTab('receivable')}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
                   activeTab === 'receivable'
-                    ? 'bg-white text-emerald-800 font-bold shadow-xs'
+                    ? 'bg-theme-card text-emerald-500 font-bold shadow-xs'
                     : 'text-zinc-500 hover:text-zinc-800'
                 }`}
               >
@@ -422,19 +422,19 @@ export function DebtModal({
                   {t.debt_type_label} <span className="text-rose-500">*</span>
                 </label>
                 <div className="grid grid-cols-2 gap-2">
-                  <button
+                    <button
                     type="button"
                     onClick={() => setAddType('payable')}
                     className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
                       addType === 'payable'
-                        ? 'border-amber-500 bg-amber-50/80 text-amber-950 font-bold shadow-xs ring-1 ring-amber-400'
-                        : 'border-theme bg-white text-zinc-600 hover:bg-zinc-50'
+                        ? 'border-amber-500 bg-amber-500/10 text-amber-500 font-bold shadow-xs ring-1 ring-amber-400'
+                        : 'border-theme bg-theme-surface text-zinc-400 hover:text-zinc-200'
                     }`}
                   >
-                    <ArrowUpRight className="w-4 h-4 text-amber-700 shrink-0" />
+                    <ArrowUpRight className="w-4 h-4 text-amber-500 shrink-0" />
                     <div className="min-w-0">
                       <span className="text-xs block leading-tight">{t.debt_type_payable}</span>
-                      <span className="text-[10px] text-zinc-400 block truncate">{t.debt_type_payable_desc}</span>
+                      <span className="text-[10px] text-zinc-500 block truncate">{t.debt_type_payable_desc}</span>
                     </div>
                   </button>
 
@@ -443,14 +443,14 @@ export function DebtModal({
                     onClick={() => setAddType('receivable')}
                     className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
                       addType === 'receivable'
-                        ? 'border-emerald-500 bg-emerald-50/80 text-emerald-950 font-bold shadow-xs ring-1 ring-emerald-400'
-                        : 'border-theme bg-white text-zinc-600 hover:bg-zinc-50'
+                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold shadow-xs ring-1 ring-emerald-400'
+                        : 'border-theme bg-theme-surface text-zinc-400 hover:text-zinc-200'
                     }`}
                   >
-                    <ArrowDownLeft className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <ArrowDownLeft className="w-4 h-4 text-emerald-500 shrink-0" />
                     <div className="min-w-0">
                       <span className="text-xs block leading-tight">{t.debt_type_receivable}</span>
-                      <span className="text-[10px] text-zinc-400 block truncate">{t.debt_type_receivable_desc}</span>
+                      <span className="text-[10px] text-zinc-500 block truncate">{t.debt_type_receivable_desc}</span>
                     </div>
                   </button>
                 </div>
@@ -476,7 +476,7 @@ export function DebtModal({
                     setTitle(e.target.value)
                     setError(null)
                   }}
-                  className="text-xs h-9 bg-white border-theme"
+                  className="text-xs h-9 bg-theme-surface border-theme"
                 />
               </div>
 
@@ -499,7 +499,7 @@ export function DebtModal({
               </div>
 
               {/* Creditor / Debtor & Date (2 columns) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
                 <div className="space-y-1">
                   <label className="text-[11px] font-medium text-theme-main block">
                     {addType === 'payable' ? t.debt_input_creditor : t.debt_input_debtor}
@@ -509,7 +509,7 @@ export function DebtModal({
                     placeholder={addType === 'payable' ? t.debt_input_creditor_ph : t.debt_input_debtor_ph}
                     value={creditor}
                     onChange={(e) => setCreditor(e.target.value)}
-                    className="text-xs h-9 bg-white border-theme"
+                    className="text-xs h-9 bg-theme-surface border-theme"
                   />
                 </div>
 
@@ -521,7 +521,7 @@ export function DebtModal({
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="text-xs h-9 bg-white border-theme cursor-pointer w-full max-w-full min-w-0"
+                    className="text-xs h-9 bg-theme-surface border-theme cursor-pointer w-full max-w-full min-w-0"
                   />
                 </div>
               </div>
@@ -536,7 +536,7 @@ export function DebtModal({
                   placeholder={lang === 'vi' ? 'VD: Kỳ hạn trả, ghi chú thỏa thuận...' : 'E.g., Due date, terms...'}
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  className="text-xs h-9 bg-white border-theme"
+                  className="text-xs h-9 bg-theme-surface border-theme"
                 />
               </div>
 
@@ -545,7 +545,7 @@ export function DebtModal({
                 <button
                   type="button"
                   onClick={() => setShowAddForm(false)}
-                  className="px-3 py-1.5 rounded-lg border border-theme text-xs font-medium text-zinc-600 bg-white hover:bg-zinc-50 cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg border border-theme text-xs font-medium text-theme-muted bg-theme-surface hover:bg-theme-surface/80 cursor-pointer"
                 >
                   {lang === 'vi' ? 'Hủy' : 'Cancel'}
                 </button>
@@ -598,11 +598,11 @@ export function DebtModal({
                     onClick={() => setPaySource('account')}
                     className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
                       paySource === 'account'
-                        ? 'border-blue-500 bg-white text-blue-900 font-bold shadow-xs'
-                        : 'border-amber-200 bg-amber-100/40 text-zinc-600'
+                        ? 'border-blue-500 bg-blue-500/10 text-blue-400 font-bold shadow-xs'
+                        : 'border-amber-500/30 bg-theme-surface text-zinc-400'
                     }`}
                   >
-                    <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                    <Building2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                     <div className="min-w-0">
                       <span className="text-xs block leading-tight">{lang === 'vi' ? 'Tài khoản' : 'Bank'}</span>
                       {finances && (
@@ -618,11 +618,11 @@ export function DebtModal({
                     onClick={() => setPaySource('cash')}
                     className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
                       paySource === 'cash'
-                        ? 'border-emerald-500 bg-white text-emerald-900 font-bold shadow-xs'
-                        : 'border-amber-200 bg-amber-100/40 text-zinc-600'
+                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold shadow-xs'
+                        : 'border-amber-500/30 bg-theme-surface text-zinc-400'
                     }`}
                   >
-                    <Wallet className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <Wallet className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                     <div className="min-w-0">
                       <span className="text-xs block leading-tight">{lang === 'vi' ? 'Tiền mặt' : 'Cash'}</span>
                       {finances && (
@@ -638,12 +638,12 @@ export function DebtModal({
               {/* Payment Amount Input */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <label className="text-[11px] font-semibold text-amber-900 block">
+                  <label className="text-[11px] font-semibold text-amber-500 block">
                     {t.debt_pay_amount_label} <span className="text-rose-500">*</span>
                   </label>
-                  <span className="text-[10px] text-zinc-500 font-mono">
+                  <span className="text-[10px] text-zinc-400 font-mono">
                     {lang === 'vi' ? 'Nợ hiện tại: ' : 'Current debt: '}
-                    <span className="font-bold text-amber-900">{formatMoney(payingDebt.amount, lang)}</span>
+                    <span className="font-bold text-amber-400">{formatMoney(payingDebt.amount, lang)}</span>
                   </span>
                 </div>
                 <TouchpadField
@@ -671,7 +671,7 @@ export function DebtModal({
                           setPayAmountStr(preset.toString())
                           setPayError(null)
                         }}
-                        className="text-[10px] font-mono px-2 py-0.5 rounded border border-amber-300 bg-white text-amber-900 hover:bg-amber-100 cursor-pointer"
+                        className="text-[10px] font-mono px-2 py-0.5 rounded border border-amber-500/40 bg-theme-surface text-amber-400 hover:bg-theme-surface/80 cursor-pointer"
                       >
                         +{preset >= 1000000 ? `${preset / 1000000}M` : preset.toLocaleString()}
                       </button>
@@ -683,7 +683,7 @@ export function DebtModal({
                       setPayAmountStr(payingDebt.amount.toString())
                       setPayError(null)
                     }}
-                    className="text-[10px] font-semibold px-2 py-0.5 rounded border border-amber-400 bg-amber-200 text-amber-950 hover:bg-amber-300 cursor-pointer"
+                    className="text-[10px] font-semibold px-2 py-0.5 rounded border border-amber-500/60 bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 cursor-pointer"
                   >
                     {lang === 'vi' ? 'Trả hết (100%)' : 'Pay All (100%)'}
                   </button>
@@ -692,9 +692,9 @@ export function DebtModal({
 
               {/* Real-time Remaining Debt Preview */}
               {numPayAmount > 0 && numPayAmount <= payingDebt.amount && (
-                <div className="p-2.5 rounded-lg bg-white/80 border border-amber-200 text-xs font-mono flex items-center justify-between">
-                  <span className="text-zinc-600">{t.debt_pay_remaining_after}:</span>
-                  <span className="font-bold text-amber-900">
+                <div className="p-2.5 rounded-lg bg-theme-surface border border-amber-500/40 text-xs font-mono flex items-center justify-between">
+                  <span className="text-zinc-400">{t.debt_pay_remaining_after}:</span>
+                  <span className="font-bold text-amber-400">
                     {formatMoney(Math.max(0, payingDebt.amount - numPayAmount), lang)}
                   </span>
                 </div>
@@ -702,23 +702,23 @@ export function DebtModal({
 
               {/* Note Input */}
               <div className="space-y-1">
-                <label className="text-[11px] font-medium text-amber-900 block">
+                <label className="text-[11px] font-medium text-amber-500 block">
                   {t.note_label}
                 </label>
                 <Input
                   type="text"
                   value={payNote}
                   onChange={(e) => setPayNote(e.target.value)}
-                  className="text-xs h-8 bg-white border-amber-300"
+                  className="text-xs h-8 bg-theme-surface border-amber-500/40"
                 />
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-1 flex justify-end gap-2 border-t border-amber-200">
+              <div className="pt-1 flex justify-end gap-2 border-t border-amber-500/30">
                 <button
                   type="button"
                   onClick={() => setPayingDebt(null)}
-                  className="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-medium text-zinc-700 bg-white hover:bg-zinc-50 cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg border border-amber-500/40 text-xs font-medium text-zinc-300 bg-theme-surface hover:bg-theme-surface/80 cursor-pointer"
                 >
                   {t.btn_cancel}
                 </button>
@@ -771,11 +771,11 @@ export function DebtModal({
                     onClick={() => setCollectSource('account')}
                     className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
                       collectSource === 'account'
-                        ? 'border-blue-500 bg-white text-blue-900 font-bold shadow-xs ring-1 ring-blue-400'
-                        : 'border-emerald-200 bg-emerald-100/40 text-zinc-600'
+                        ? 'border-blue-500 bg-blue-500/10 text-blue-400 font-bold shadow-xs ring-1 ring-blue-400'
+                        : 'border-emerald-500/30 bg-theme-surface text-zinc-400'
                     }`}
                   >
-                    <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                    <Building2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                     <div className="min-w-0">
                       <span className="text-xs block leading-tight">{lang === 'vi' ? 'Tài khoản' : 'Bank'}</span>
                       {finances && (
@@ -791,11 +791,11 @@ export function DebtModal({
                     onClick={() => setCollectSource('cash')}
                     className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
                       collectSource === 'cash'
-                        ? 'border-emerald-500 bg-white text-emerald-900 font-bold shadow-xs ring-1 ring-emerald-400'
-                        : 'border-emerald-200 bg-emerald-100/40 text-zinc-600'
+                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold shadow-xs ring-1 ring-emerald-400'
+                        : 'border-emerald-500/30 bg-theme-surface text-zinc-400'
                     }`}
                   >
-                    <Wallet className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <Wallet className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                     <div className="min-w-0">
                       <span className="text-xs block leading-tight">{lang === 'vi' ? 'Tiền mặt' : 'Cash'}</span>
                       {finances && (
@@ -811,12 +811,12 @@ export function DebtModal({
               {/* Collection Amount Input */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <label className="text-[11px] font-semibold text-emerald-950 block">
+                  <label className="text-[11px] font-semibold text-emerald-500 block">
                     {t.debt_collect_amount_label} <span className="text-rose-500">*</span>
                   </label>
-                  <span className="text-[10px] text-zinc-500 font-mono">
+                  <span className="text-[10px] text-zinc-400 font-mono">
                     {lang === 'vi' ? 'Cần thu: ' : 'Receivable: '}
-                    <span className="font-bold text-emerald-900">{formatMoney(collectingDebt.amount, lang)}</span>
+                    <span className="font-bold text-emerald-400">{formatMoney(collectingDebt.amount, lang)}</span>
                   </span>
                 </div>
                 <TouchpadField
@@ -844,7 +844,7 @@ export function DebtModal({
                           setCollectAmountStr(preset.toString())
                           setCollectError(null)
                         }}
-                        className="text-[10px] font-mono px-2 py-0.5 rounded border border-emerald-300 bg-white text-emerald-900 hover:bg-emerald-100 cursor-pointer"
+                        className="text-[10px] font-mono px-2 py-0.5 rounded border border-emerald-500/40 bg-theme-surface text-emerald-400 hover:bg-theme-surface/80 cursor-pointer"
                       >
                         +{preset >= 1000000 ? `${preset / 1000000}M` : preset.toLocaleString()}
                       </button>
@@ -856,7 +856,7 @@ export function DebtModal({
                       setCollectAmountStr(collectingDebt.amount.toString())
                       setCollectError(null)
                     }}
-                    className="text-[10px] font-semibold px-2 py-0.5 rounded border border-emerald-400 bg-emerald-200 text-emerald-950 hover:bg-emerald-300 cursor-pointer"
+                    className="text-[10px] font-semibold px-2 py-0.5 rounded border border-emerald-500/60 bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 cursor-pointer"
                   >
                     {lang === 'vi' ? 'Thu hết (100%)' : 'Collect All (100%)'}
                   </button>
@@ -865,9 +865,9 @@ export function DebtModal({
 
               {/* Real-time Remaining Receivable Preview */}
               {numCollectAmount > 0 && numCollectAmount <= collectingDebt.amount && (
-                <div className="p-2.5 rounded-lg bg-white/80 border border-emerald-200 text-xs font-mono flex items-center justify-between">
-                  <span className="text-zinc-600">{t.debt_collect_remaining_after}:</span>
-                  <span className="font-bold text-emerald-900">
+                <div className="p-2.5 rounded-lg bg-theme-surface border border-emerald-500/40 text-xs font-mono flex items-center justify-between">
+                  <span className="text-zinc-400">{t.debt_collect_remaining_after}:</span>
+                  <span className="font-bold text-emerald-400">
                     {formatMoney(Math.max(0, collectingDebt.amount - numCollectAmount), lang)}
                   </span>
                 </div>
@@ -875,23 +875,23 @@ export function DebtModal({
 
               {/* Note Input */}
               <div className="space-y-1">
-                <label className="text-[11px] font-medium text-emerald-950 block">
+                <label className="text-[11px] font-medium text-emerald-500 block">
                   {t.note_label}
                 </label>
                 <Input
                   type="text"
                   value={collectNote}
                   onChange={(e) => setCollectNote(e.target.value)}
-                  className="text-xs h-8 bg-white border-emerald-300"
+                  className="text-xs h-8 bg-theme-surface border-emerald-500/40"
                 />
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-1 flex justify-end gap-2 border-t border-emerald-200">
+              <div className="pt-1 flex justify-end gap-2 border-t border-emerald-500/30">
                 <button
                   type="button"
                   onClick={() => setCollectingDebt(null)}
-                  className="px-3 py-1.5 rounded-lg border border-emerald-300 text-xs font-medium text-zinc-700 bg-white hover:bg-zinc-50 cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg border border-emerald-500/40 text-xs font-medium text-zinc-300 bg-theme-surface hover:bg-theme-surface/80 cursor-pointer"
                 >
                   {t.btn_cancel}
                 </button>
@@ -906,32 +906,33 @@ export function DebtModal({
             </form>
           )}
 
-          {/* Scrollable Debt List Container */}
-          <div className="space-y-2.5 max-h-[340px] overflow-y-auto overscroll-contain pr-1 sm:pr-1.5 expense-scroll-container">
-            {displayedDebts.length === 0 ? (
-              <div className="p-8 text-center bg-theme-surface/40 rounded-xl border border-theme border-dashed space-y-2">
-                <ShieldCheck className="w-8 h-8 text-emerald-600 mx-auto" />
-                <p className="text-xs text-zinc-600 font-medium">
-                  {activeTab === 'all'
-                    ? t.debt_empty
-                    : activeTab === 'payable'
-                    ? (lang === 'vi' ? 'Bạn không có khoản nợ nào cần trả.' : 'No payable debts.')
-                    : (lang === 'vi' ? 'Bạn không có khoản nợ nào cần thu hồi.' : 'No receivable debts.')}
-                </p>
-              </div>
-            ) : (
-              displayedDebts.map((item) => {
-                const isReceivable = item.type === 'receivable'
-                return (
-                  <div
-                    key={item.id}
-                    className={`p-3.5 rounded-xl border bg-white transition-all flex items-start justify-between gap-3 group ${
-                      isReceivable
-                        ? 'border-emerald-200 hover:border-emerald-400 hover:shadow-2xs'
-                        : 'border-theme hover:border-amber-300 hover:shadow-2xs'
-                    }`}
-                  >
-                    <div className="space-y-1 min-w-0 flex-1">
+          {/* Scrollable Debt List Container - shown when not adding or paying/collecting */}
+          {!showAddForm && !payingDebt && !collectingDebt && (
+            <div className="space-y-2.5 max-h-[340px] overflow-y-auto overscroll-contain pr-1 sm:pr-1.5 expense-scroll-container">
+              {displayedDebts.length === 0 ? (
+                <div className="p-8 text-center bg-theme-surface/40 rounded-xl border border-theme border-dashed space-y-2">
+                  <ShieldCheck className="w-8 h-8 text-emerald-600 mx-auto" />
+                  <p className="text-xs text-zinc-600 font-medium">
+                    {activeTab === 'all'
+                      ? t.debt_empty
+                      : activeTab === 'payable'
+                      ? (lang === 'vi' ? 'Bạn không có khoản nợ nào cần trả.' : 'No payable debts.')
+                      : (lang === 'vi' ? 'Bạn không có khoản nợ nào cần thu hồi.' : 'No receivable debts.')}
+                  </p>
+                </div>
+              ) : (
+                displayedDebts.map((item) => {
+                  const isReceivable = item.type === 'receivable'
+                  return (
+                    <div
+                      key={item.id}
+                      className={`p-3.5 rounded-xl border bg-theme-card transition-all flex items-start justify-between gap-3 group ${
+                        isReceivable
+                          ? 'border-emerald-200/60 hover:border-emerald-400 hover:shadow-2xs'
+                          : 'border-theme hover:border-amber-300 hover:shadow-2xs'
+                      }`}
+                    >
+                      <div className="space-y-1 min-w-0 flex-1">
                       {/* Title, Badge & Creditor/Debtor */}
                       <div className="flex items-center space-x-2 flex-wrap gap-y-1">
                         <span
@@ -1029,6 +1030,7 @@ export function DebtModal({
               })
             )}
           </div>
+          )}
         </div>
 
         {/* Footer */}
@@ -1039,7 +1041,7 @@ export function DebtModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-1.5 rounded-xl border border-theme text-xs font-semibold text-theme-main bg-white hover:bg-theme-surface transition-colors cursor-pointer shrink-0"
+            className="px-4 py-1.5 rounded-xl border border-theme text-xs font-semibold text-theme-main bg-theme-surface hover:bg-theme-surface/80 transition-colors cursor-pointer shrink-0"
           >
             {lang === 'vi' ? 'Đóng' : 'Close'}
           </button>
