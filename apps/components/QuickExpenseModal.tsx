@@ -67,6 +67,13 @@ interface QuickExpenseModalProps {
     source: 'cash' | 'account'
     note?: string
   }) => void
+  onCollectDebt?: (params: {
+    debtId: string
+    debtTitle: string
+    amount: number
+    source: 'cash' | 'account'
+    note?: string
+  }) => void
 }
 
 export function QuickExpenseModal({
@@ -79,6 +86,7 @@ export function QuickExpenseModal({
   onAddExpense,
   onTransfer,
   onPayDebt,
+  onCollectDebt,
 }: QuickExpenseModalProps) {
   const t = dictionary[lang]
   const [mounted, setMounted] = useState(false)
@@ -171,6 +179,11 @@ export function QuickExpenseModal({
     { value: 'salary', label: t.cat_salary, icon: Wallet },
     { value: 'bonus', label: t.cat_bonus, icon: Gift },
     { value: 'investment', label: t.cat_investment, icon: TrendingUp },
+    {
+      value: 'debt_collection',
+      label: lang === 'vi' ? 'Thu nợ / Thu hồi' : 'Debt collection',
+      icon: Coins,
+    },
     { value: 'other', label: t.cat_other_income, icon: Coins },
   ]
 
@@ -321,6 +334,22 @@ export function QuickExpenseModal({
       }
     }
 
+    // If specific receivable debt was selected for collection, trigger onCollectDebt
+    if (txType === 'income' && incomeCategory === 'debt_collection' && selectedDebtId && onCollectDebt) {
+      const targetDebt = debts?.find((d) => d.id === selectedDebtId)
+      if (targetDebt) {
+        onCollectDebt({
+          debtId: targetDebt.id,
+          debtTitle: targetDebt.title,
+          amount: numAmount,
+          source: source === 'cash' ? 'cash' : 'account',
+          note: note.trim() || `Thu nợ: ${targetDebt.title}`,
+        })
+        onClose()
+        return
+      }
+    }
+
     const defaultNote = isDebtPayment
       ? t.quick_exp_note_default_debt
       : isExpense
@@ -361,7 +390,7 @@ export function QuickExpenseModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-200">
       <div
-        className="bg-white border border-theme w-full max-w-lg rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
+        className="bg-white border border-theme w-full max-w-lg sm:max-w-xl md:max-w-2xl rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
         role="dialog"
         aria-modal="true"
       >
@@ -428,7 +457,7 @@ export function QuickExpenseModal({
         </div>
 
         {/* Scrollable Form Body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4 overflow-y-auto overflow-x-hidden flex-1 w-full max-w-full min-w-0">
           {/* Tabs for General modal: Ghi chú chi tiêu */}
           {isGeneral && (
             <div className="p-1 bg-zinc-100/90 rounded-xl flex items-center gap-1 border border-zinc-200/80">
@@ -896,8 +925,8 @@ export function QuickExpenseModal({
             </div>
           )}
 
-          {/* If category is debt or debt card, allow picking specific debt from list */}
-          {txType === 'expense' && (isDebtCard || expenseCategory === 'debt') && debts && debts.length > 0 && (
+          {/* If category is debt or debt card, allow picking specific payable debt from list */}
+          {txType === 'expense' && (isDebtCard || expenseCategory === 'debt') && debts && (
             <div className="space-y-1 p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
               <label className="text-[11px] font-semibold text-amber-900 block">
                 {t.quick_exp_select_debt}
@@ -916,23 +945,56 @@ export function QuickExpenseModal({
                 className="w-full h-9 px-2.5 text-xs bg-white border border-amber-300 rounded-lg text-zinc-800 font-medium focus:ring-1 focus:ring-amber-400 cursor-pointer"
               >
                 <option value="">{t.quick_exp_debt_other}</option>
-                {debts.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.title} ({formatMoney(d.amount, lang)})
-                  </option>
-                ))}
+                {debts
+                  .filter((d) => !d.type || d.type === 'payable')
+                  .map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.title} ({formatMoney(d.amount, lang)})
+                    </option>
+                  ))}
+              </select>
+            </div>
+          )}
+
+          {/* If category is debt_collection in Income tab, allow picking specific receivable debt from list */}
+          {txType === 'income' && incomeCategory === 'debt_collection' && debts && (
+            <div className="space-y-1 p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-300/80">
+              <label className="text-[11px] font-semibold text-emerald-950 block">
+                {lang === 'vi' ? 'Chọn khoản nợ cần thu hồi' : 'Select debt to collect'}
+              </label>
+              <select
+                value={selectedDebtId}
+                onChange={(e) => {
+                  const debtId = e.target.value
+                  setSelectedDebtId(debtId)
+                  const item = debts.find((d) => d.id === debtId)
+                  if (item) {
+                    setAmount(item.amount.toString())
+                    setNote(lang === 'vi' ? `Thu nợ: ${item.title}` : `Collect: ${item.title}`)
+                  }
+                }}
+                className="w-full h-9 px-2.5 text-xs bg-white border border-emerald-300 rounded-lg text-zinc-800 font-medium focus:ring-1 focus:ring-emerald-400 cursor-pointer"
+              >
+                <option value="">{lang === 'vi' ? 'Thu nợ chung / Khác' : 'General debt collection'}</option>
+                {debts
+                  .filter((d) => d.type === 'receivable')
+                  .map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.title} ({formatMoney(d.amount, lang)})
+                    </option>
+                  ))}
               </select>
             </div>
           )}
 
           {/* Date Input */}
-          <div className="space-y-1">
+          <div className="space-y-1 w-full min-w-0 max-w-full">
             <label className="text-[11px] font-medium text-theme-main">{t.date_label}</label>
             <Input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="text-base sm:text-sm font-mono-nums border-theme focus-visible:ring-theme/30 h-9"
+              className="text-base sm:text-sm font-mono-nums border-theme focus-visible:ring-theme/30 h-9 w-full min-w-0 max-w-full block"
             />
           </div>
 

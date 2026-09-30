@@ -263,31 +263,69 @@ export function MetricCards({
           </div>
         </Card>
 
-        {/* CARD 6: Khoản nợ còn lại (Bấm vào xem list scrollable, thêm/xoá nợ) */}
+        {/* CARD 6: Khoản nợ còn lại (Bấm vào xem list scrollable, thêm/xoá nợ, người khác nợ) */}
         <Card
           onClick={onOpenDebtModal}
           className={`bento-card border rounded-2xl p-3.5 sm:p-4 !flex-row flex-row items-center gap-3.5 sm:gap-4 cursor-pointer transition-all active:scale-[0.97] hover:shadow-md group ${
             finances.totalDebt > 0
               ? 'bg-amber-50/60 border-amber-200 hover:border-amber-400'
+              : (finances.totalReceivable ?? 0) > 0
+              ? 'bg-emerald-50/60 border-emerald-200 hover:border-emerald-400'
               : 'bg-theme-card border-theme/80 hover:border-emerald-400'
           }`}
           title={lang === 'vi' ? 'Bấm để xem danh sách & quản lý khoản nợ' : 'Click to manage debts'}
         >
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${finances.totalDebt > 0 ? 'bg-amber-100 border border-amber-300' : 'bg-emerald-50 border border-emerald-200'}`}>
-            {finances.totalDebt > 0
-              ? <AlertCircle className="w-5 h-5 text-amber-700 group-hover:scale-110 transition-transform duration-200" />
-              : <ShieldCheck className="w-5 h-5 text-emerald-600 group-hover:scale-110 transition-transform duration-200" />
-            }
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+            finances.totalDebt > 0
+              ? 'bg-amber-100 border border-amber-300'
+              : (finances.totalReceivable ?? 0) > 0
+              ? 'bg-emerald-100 border border-emerald-300'
+              : 'bg-emerald-50 border border-emerald-200'
+          }`}>
+            {finances.totalDebt > 0 ? (
+              <AlertCircle className="w-5 h-5 text-amber-700 group-hover:scale-110 transition-transform duration-200" />
+            ) : (finances.totalReceivable ?? 0) > 0 ? (
+              <Coins className="w-5 h-5 text-emerald-700 group-hover:scale-110 transition-transform duration-200" />
+            ) : (
+              <ShieldCheck className="w-5 h-5 text-emerald-600 group-hover:scale-110 transition-transform duration-200" />
+            )}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
-              <span className={`text-[11px] sm:text-xs font-semibold uppercase tracking-wide ${finances.totalDebt > 0 ? 'text-amber-800' : 'text-theme-main'}`}>
-                {lang === 'vi' ? 'Nợ còn lại' : 'Remaining Debt'}
+              <span className={`text-[11px] sm:text-xs font-semibold uppercase tracking-wide ${
+                finances.totalDebt > 0
+                  ? 'text-amber-800'
+                  : (finances.totalReceivable ?? 0) > 0
+                  ? 'text-emerald-800'
+                  : 'text-theme-main'
+              }`}>
+                {finances.totalDebt > 0
+                  ? (lang === 'vi' ? 'Nợ còn lại' : 'Remaining Debt')
+                  : (finances.totalReceivable ?? 0) > 0
+                  ? (lang === 'vi' ? 'Người khác nợ' : 'Receivables')
+                  : (lang === 'vi' ? 'Nợ còn lại' : 'Remaining Debt')}
               </span>
-              <span className={`text-base sm:text-lg font-bold font-mono-nums whitespace-nowrap ${finances.totalDebt > 0 ? 'text-amber-700' : 'text-emerald-700'}`}>
-                {finances.totalDebt > 0 ? <AnimatedMoney amount={finances.totalDebt} lang={lang} /> : t.no_debt_label}
+              <span className={`text-base sm:text-lg font-bold font-mono-nums whitespace-nowrap ${
+                finances.totalDebt > 0
+                  ? 'text-amber-700'
+                  : (finances.totalReceivable ?? 0) > 0
+                  ? 'text-emerald-700'
+                  : 'text-emerald-700'
+              }`}>
+                {finances.totalDebt > 0 ? (
+                  <AnimatedMoney amount={finances.totalDebt} lang={lang} />
+                ) : (finances.totalReceivable ?? 0) > 0 ? (
+                  <AnimatedMoney amount={finances.totalReceivable!} lang={lang} />
+                ) : (
+                  t.no_debt_label
+                )}
               </span>
             </div>
+            {finances.totalDebt > 0 && (finances.totalReceivable ?? 0) > 0 && (
+              <div className="text-[10px] text-emerald-700 font-mono mt-0.5 text-right truncate">
+                {lang === 'vi' ? 'Cần thu: ' : 'Receivable: '}+{formatMoney(finances.totalReceivable!, lang)}
+              </div>
+            )}
           </div>
         </Card>
       </div>

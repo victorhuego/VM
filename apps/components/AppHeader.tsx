@@ -80,7 +80,17 @@ export function AppHeader({
         {/* Brand & Desktop Navigation */}
         <div className="flex items-center space-x-2 sm:space-x-6 min-w-0">
           <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0 cursor-pointer" onClick={() => onTabChange('moments')}>
-            {currentTheme === 'cozy' ? (
+            {currentTheme === 'retro' ? (
+              <div className="px-2 py-0.5 bg-[#C0C0C0] border-none shadow-[inset_-1px_-1px_#0a0a0a,inset_1px_1px_#fff,inset_-2px_-2px_#808080,inset_2px_2px_#dfdfdf] flex items-center gap-1.5 shrink-0 font-bold text-xs text-black active:translate-x-[1px] active:translate-y-[1px]">
+                <div className="grid grid-cols-2 gap-[1px] w-3 h-3 shrink-0">
+                  <div className="bg-[#ff0000]" />
+                  <div className="bg-[#00aa00]" />
+                  <div className="bg-[#0000ff]" />
+                  <div className="bg-[#ffff00]" />
+                </div>
+                <span>Start</span>
+              </div>
+            ) : currentTheme === 'cozy' ? (
               <div className="w-7 h-7 rounded-xl bg-amber-100 border border-amber-300/80 flex items-center justify-center text-sm shadow-xs transition-transform active:scale-90 shrink-0">
                 🧋
               </div>

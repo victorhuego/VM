@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { LanguageType, DebtItem, FinancialState } from '@/lib/types'
+import { LanguageType, DebtItem, FinancialState, DebtType } from '@/lib/types'
 import { dictionary, formatMoney } from '@/lib/i18n'
 import { getClientLocalDateString } from '@/lib/time'
 import { Input } from '@/components/ui/input'
@@ -19,6 +19,9 @@ import {
   Banknote,
   Wallet,
   ArrowDownLeft,
+  ArrowUpRight,
+  User,
+  Coins,
 } from 'lucide-react'
 
 interface DebtModalProps {
@@ -29,6 +32,13 @@ interface DebtModalProps {
   onAddDebt: (debt: Omit<DebtItem, 'id'>) => void
   onDeleteDebt: (id: string) => void
   onPayDebt?: (params: {
+    debtId: string
+    debtTitle: string
+    amount: number
+    source: 'cash' | 'account'
+    note?: string
+  }) => void
+  onCollectDebt?: (params: {
     debtId: string
     debtTitle: string
     amount: number
@@ -46,12 +56,17 @@ export function DebtModal({
   onAddDebt,
   onDeleteDebt,
   onPayDebt,
+  onCollectDebt,
   finances,
 }: DebtModalProps) {
   const t = dictionary[lang]
 
+  // Tab filter: 'all' | 'payable' | 'receivable'
+  const [activeTab, setActiveTab] = useState<'all' | 'payable' | 'receivable'>('all')
+
   // Add Debt Form State
   const [showAddForm, setShowAddForm] = useState(false)
+  const [addType, setAddType] = useState<DebtType>('payable')
   const [title, setTitle] = useState('')
   const [amount, setAmount] = useState('')
   const [creditor, setCreditor] = useState('')
@@ -59,18 +74,27 @@ export function DebtModal({
   const [date, setDate] = useState(() => getClientLocalDateString())
   const [error, setError] = useState<string | null>(null)
 
-  // Pay Debt Form State
+  // Pay Debt Form State (Tôi nợ người khác -> Chi trả)
   const [payingDebt, setPayingDebt] = useState<DebtItem | null>(null)
   const [payAmountStr, setPayAmountStr] = useState('')
   const [paySource, setPaySource] = useState<'cash' | 'account'>('account')
   const [payNote, setPayNote] = useState('')
   const [payError, setPayError] = useState<string | null>(null)
 
+  // Collect Debt Form State (Người khác nợ tôi -> Thu nợ / Tất toán)
+  const [collectingDebt, setCollectingDebt] = useState<DebtItem | null>(null)
+  const [collectAmountStr, setCollectAmountStr] = useState('')
+  const [collectSource, setCollectSource] = useState<'cash' | 'account'>('account')
+  const [collectNote, setCollectNote] = useState('')
+  const [collectError, setCollectError] = useState<string | null>(null)
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
         if (payingDebt) {
           setPayingDebt(null)
+        } else if (collectingDebt) {
+          setCollectingDebt(null)
         } else if (showAddForm) {
           setShowAddForm(false)
         } else {
@@ -80,7 +104,7 @@ export function DebtModal({
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, onClose, payingDebt, showAddForm])
+  }, [isOpen, onClose, payingDebt, collectingDebt, showAddForm])
 
   useEffect(() => {
     if (isOpen) {
@@ -88,12 +112,25 @@ export function DebtModal({
       setDate(getClientLocalDateString())
       setPayingDebt(null)
       setPayError(null)
+      setCollectingDebt(null)
+      setCollectError(null)
     }
   }, [isOpen])
 
   if (!isOpen) return null
 
-  const totalDebt = debts.reduce((sum, d) => sum + d.amount, 0)
+  // Computations
+  const payableDebts = debts.filter((d) => !d.type || d.type === 'payable')
+  const receivableDebts = debts.filter((d) => d.type === 'receivable')
+  const totalPayable = payableDebts.reduce((sum, d) => sum + d.amount, 0)
+  const totalReceivable = receivableDebts.reduce((sum, d) => sum + d.amount, 0)
+
+  const displayedDebts = debts.filter((d) => {
+    if (activeTab === 'payable') return !d.type || d.type === 'payable'
+    if (activeTab === 'receivable') return d.type === 'receivable'
+    return true
+  })
+
   const numAmount = parseFloat(amount.replace(/,/g, '.')) || 0
 
   const handleAddSubmit = (e: React.FormEvent) => {
@@ -113,6 +150,7 @@ export function DebtModal({
       date: date || getClientLocalDateString(),
       creditor: creditor.trim() || undefined,
       note: note.trim() || undefined,
+      type: addType,
     })
 
     // Reset form
@@ -124,9 +162,10 @@ export function DebtModal({
     setShowAddForm(false)
   }
 
-  // Pay Debt handlers
+  // Pay Debt handlers (Tôi nợ -> Trả)
   const handleOpenPay = (item: DebtItem) => {
     setPayingDebt(item)
+    setCollectingDebt(null)
     setPayAmountStr(item.amount.toString())
     setPaySource('account')
     setPayNote(lang === 'vi' ? `Trả nợ: ${item.title}` : `Repay: ${item.title}`)
@@ -181,10 +220,54 @@ export function DebtModal({
     setPayingDebt(null)
   }
 
+  // Collect Debt handlers (Người khác nợ -> Thu nợ / Tất toán)
+  const handleOpenCollect = (item: DebtItem) => {
+    setCollectingDebt(item)
+    setPayingDebt(null)
+    setCollectAmountStr(item.amount.toString())
+    setCollectSource('account')
+    setCollectNote(lang === 'vi' ? `Thu nợ: ${item.title}` : `Collect: ${item.title}`)
+    setCollectError(null)
+    setShowAddForm(false)
+  }
+
+  const numCollectAmount = parseFloat(collectAmountStr.replace(/,/g, '.')) || 0
+
+  const handleCollectSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!collectingDebt) return
+
+    if (!numCollectAmount || numCollectAmount <= 0) {
+      setCollectError(lang === 'vi' ? 'Vui lòng nhập số tiền thu nợ hợp lệ' : 'Please enter a valid collection amount')
+      return
+    }
+
+    if (numCollectAmount > collectingDebt.amount) {
+      setCollectError(
+        lang === 'vi'
+          ? `Số tiền thu (${formatMoney(numCollectAmount, lang)}) vượt quá số nợ cần thu (${formatMoney(collectingDebt.amount, lang)})`
+          : 'Collection amount exceeds receivable balance'
+      )
+      return
+    }
+
+    if (onCollectDebt) {
+      onCollectDebt({
+        debtId: collectingDebt.id,
+        debtTitle: collectingDebt.title,
+        amount: numCollectAmount,
+        source: collectSource,
+        note: collectNote.trim(),
+      })
+    }
+
+    setCollectingDebt(null)
+  }
+
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-200">
       <div
-        className="bg-white border border-theme w-full max-w-lg rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
+        className="bg-white border border-theme w-full max-w-lg sm:max-w-xl md:max-w-2xl rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
         role="dialog"
         aria-modal="true"
       >
@@ -211,37 +294,89 @@ export function DebtModal({
           </button>
         </div>
 
-        {/* Total Debt Summary Banner */}
-        <div className="p-4 bg-amber-500/10 border-b border-amber-200/80 flex items-center justify-between shrink-0">
-          <div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-900/70 block">
-              {t.debt_total_label}
-            </span>
-            <span className="font-mono text-xl sm:text-2xl font-bold text-amber-900">
-              {formatMoney(totalDebt, lang)}
+        {/* Dual Total Debt Summary Banner */}
+        <div className="p-3.5 sm:p-4 bg-theme-surface/50 border-b border-theme/70 grid grid-cols-2 gap-2.5 sm:gap-3 shrink-0">
+          {/* Box 1: Tôi nợ người khác */}
+          <div className="p-2.5 sm:p-3 rounded-xl bg-amber-500/10 border border-amber-300/60 space-y-0.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-900 truncate">
+                {t.debt_total_payable_label}
+              </span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-200 text-amber-950 border border-amber-300 shrink-0">
+                {payableDebts.length}
+              </span>
+            </div>
+            <span className="font-mono text-base sm:text-lg font-bold text-amber-900 block truncate">
+              {formatMoney(totalPayable, lang)}
             </span>
           </div>
-          <div className="text-right">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-200/80 text-amber-900 border border-amber-300">
-              {debts.length} {t.debt_count_label}
+
+          {/* Box 2: Người khác nợ tôi */}
+          <div className="p-2.5 sm:p-3 rounded-xl bg-emerald-500/10 border border-emerald-300/60 space-y-0.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-800 truncate">
+                {t.debt_total_receivable_label}
+              </span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-950 border border-emerald-300 shrink-0">
+                {receivableDebts.length}
+              </span>
+            </div>
+            <span className="font-mono text-base sm:text-lg font-bold text-emerald-700 block truncate">
+              {formatMoney(totalReceivable, lang)}
             </span>
           </div>
         </div>
 
-        {/* Content Body: Scrollable Debt List + Add Section + Pay Drawer */}
-        <div className="p-4 space-y-4 overflow-y-auto flex-1 expense-scroll-container">
-          {/* Action Row: Toggle Add Form */}
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-zinc-800 uppercase tracking-wider">
-              {lang === 'vi' ? 'Các khoản nợ hiện tại' : 'Active Debt Records'}
-            </span>
+        {/* Content Body: Scrollable Debt List + Add Section + Pay/Collect Drawer */}
+        <div className="p-4 space-y-3.5 overflow-y-auto overflow-x-hidden flex-1 expense-scroll-container">
+          {/* Filter Tabs & Add Button Row */}
+          <div className="flex items-center justify-between gap-2.5 flex-wrap">
+            {/* Filter Tabs */}
+            <div className="p-1 bg-zinc-100/90 rounded-xl flex items-center gap-1 border border-zinc-200/80 shrink-0 text-xs">
+              <button
+                type="button"
+                onClick={() => setActiveTab('all')}
+                className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
+                  activeTab === 'all'
+                    ? 'bg-white text-zinc-900 font-bold shadow-xs'
+                    : 'text-zinc-500 hover:text-zinc-800'
+                }`}
+              >
+                {t.debt_tab_all} ({debts.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('payable')}
+                className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
+                  activeTab === 'payable'
+                    ? 'bg-white text-amber-900 font-bold shadow-xs'
+                    : 'text-zinc-500 hover:text-zinc-800'
+                }`}
+              >
+                {t.debt_tab_payable} ({payableDebts.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('receivable')}
+                className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
+                  activeTab === 'receivable'
+                    ? 'bg-white text-emerald-800 font-bold shadow-xs'
+                    : 'text-zinc-500 hover:text-zinc-800'
+                }`}
+              >
+                {t.debt_tab_receivable} ({receivableDebts.length})
+              </button>
+            </div>
+
+            {/* Toggle Add Form Button */}
             <button
               type="button"
               onClick={() => {
                 setShowAddForm((prev) => !prev)
                 setPayingDebt(null)
+                setCollectingDebt(null)
               }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs ${
+              className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs shrink-0 whitespace-nowrap ${
                 showAddForm
                   ? 'bg-zinc-200 text-zinc-800 hover:bg-zinc-300'
                   : 'btn-theme-gradient text-white hover:opacity-95'
@@ -281,6 +416,46 @@ export function DebtModal({
                 </div>
               )}
 
+              {/* Debt Type Switcher: Tôi nợ vs Người khác nợ */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold text-theme-main block">
+                  {t.debt_type_label} <span className="text-rose-500">*</span>
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setAddType('payable')}
+                    className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
+                      addType === 'payable'
+                        ? 'border-amber-500 bg-amber-50/80 text-amber-950 font-bold shadow-xs ring-1 ring-amber-400'
+                        : 'border-theme bg-white text-zinc-600 hover:bg-zinc-50'
+                    }`}
+                  >
+                    <ArrowUpRight className="w-4 h-4 text-amber-700 shrink-0" />
+                    <div className="min-w-0">
+                      <span className="text-xs block leading-tight">{t.debt_type_payable}</span>
+                      <span className="text-[10px] text-zinc-400 block truncate">{t.debt_type_payable_desc}</span>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setAddType('receivable')}
+                    className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
+                      addType === 'receivable'
+                        ? 'border-emerald-500 bg-emerald-50/80 text-emerald-950 font-bold shadow-xs ring-1 ring-emerald-400'
+                        : 'border-theme bg-white text-zinc-600 hover:bg-zinc-50'
+                    }`}
+                  >
+                    <ArrowDownLeft className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <div className="min-w-0">
+                      <span className="text-xs block leading-tight">{t.debt_type_receivable}</span>
+                      <span className="text-[10px] text-zinc-400 block truncate">{t.debt_type_receivable_desc}</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
               {/* Debt Description */}
               <div className="space-y-1">
                 <label className="text-[11px] font-semibold text-theme-main block">
@@ -289,7 +464,13 @@ export function DebtModal({
                 <Input
                   type="text"
                   required
-                  placeholder={t.debt_input_desc_ph}
+                  placeholder={
+                    addType === 'payable'
+                      ? t.debt_input_desc_ph
+                      : lang === 'vi'
+                      ? 'VD: Cho bạn vay tiền, Tiền đặt cọc, Ứng tiền công việc...'
+                      : 'E.g., Lent to friend, Rental deposit, Work advance...'
+                  }
                   value={title}
                   onChange={(e) => {
                     setTitle(e.target.value)
@@ -317,15 +498,15 @@ export function DebtModal({
                 />
               </div>
 
-              {/* Creditor & Date (2 columns) */}
+              {/* Creditor / Debtor & Date (2 columns) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div className="space-y-1">
                   <label className="text-[11px] font-medium text-theme-main block">
-                    {t.debt_input_creditor}
+                    {addType === 'payable' ? t.debt_input_creditor : t.debt_input_debtor}
                   </label>
                   <Input
                     type="text"
-                    placeholder={t.debt_input_creditor_ph}
+                    placeholder={addType === 'payable' ? t.debt_input_creditor_ph : t.debt_input_debtor_ph}
                     value={creditor}
                     onChange={(e) => setCreditor(e.target.value)}
                     className="text-xs h-9 bg-white border-theme"
@@ -340,7 +521,7 @@ export function DebtModal({
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="text-xs h-9 bg-white border-theme cursor-pointer"
+                    className="text-xs h-9 bg-white border-theme cursor-pointer w-full max-w-full min-w-0"
                   />
                 </div>
               </div>
@@ -379,7 +560,7 @@ export function DebtModal({
             </form>
           )}
 
-          {/* Inline Pay Debt Form */}
+          {/* Inline Pay Debt Form (Trả nợ khoản mình nợ) */}
           {payingDebt && (
             <form
               onSubmit={handlePaySubmit}
@@ -406,7 +587,7 @@ export function DebtModal({
                 </div>
               )}
 
-              {/* 1. Payment Source */}
+              {/* Payment Source */}
               <div className="space-y-1">
                 <label className="text-[11px] font-semibold text-amber-900 block">
                   {t.debt_pay_source_label}
@@ -454,7 +635,7 @@ export function DebtModal({
                 </div>
               </div>
 
-              {/* 2. Payment Amount Input */}
+              {/* Payment Amount Input */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <label className="text-[11px] font-semibold text-amber-900 block">
@@ -509,7 +690,7 @@ export function DebtModal({
                 </div>
               </div>
 
-              {/* 3. Real-time Remaining Debt Preview */}
+              {/* Real-time Remaining Debt Preview */}
               {numPayAmount > 0 && numPayAmount <= payingDebt.amount && (
                 <div className="p-2.5 rounded-lg bg-white/80 border border-amber-200 text-xs font-mono flex items-center justify-between">
                   <span className="text-zinc-600">{t.debt_pay_remaining_after}:</span>
@@ -519,7 +700,7 @@ export function DebtModal({
                 </div>
               )}
 
-              {/* 4. Note Input */}
+              {/* Note Input */}
               <div className="space-y-1">
                 <label className="text-[11px] font-medium text-amber-900 block">
                   {t.note_label}
@@ -552,90 +733,313 @@ export function DebtModal({
             </form>
           )}
 
-          {/* Scrollable Debt List Container */}
-          <div className="space-y-2.5 max-h-[340px] overflow-y-auto overscroll-contain pr-1 sm:pr-1.5 expense-scroll-container">
-            {debts.length === 0 ? (
-              <div className="p-8 text-center bg-theme-surface/40 rounded-xl border border-theme border-dashed space-y-2">
-                <ShieldCheck className="w-8 h-8 text-emerald-600 mx-auto" />
-                <p className="text-xs text-zinc-600 font-medium">{t.debt_empty}</p>
-              </div>
-            ) : (
-              debts.map((item) => (
-                <div
-                  key={item.id}
-                  className="p-3.5 rounded-xl border border-theme bg-white hover:border-amber-300 hover:shadow-2xs transition-all flex items-start justify-between gap-3 group"
+          {/* Inline Collect Debt Form (Người khác nợ -> Thu nợ / Tất toán cộng vào Thu nhập) */}
+          {collectingDebt && (
+            <form
+              onSubmit={handleCollectSubmit}
+              className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-300/80 space-y-3 animate-in fade-in duration-200"
+            >
+              <div className="flex items-center justify-between border-b border-emerald-200 pb-2">
+                <span className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
+                  <Coins className="w-4 h-4 text-emerald-700" />
+                  {t.debt_collect_title}: <span className="underline">{collectingDebt.title}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setCollectingDebt(null)}
+                  className="text-zinc-400 hover:text-zinc-700 p-0.5 rounded cursor-pointer"
                 >
-                  <div className="space-y-1 min-w-0 flex-1">
-                    {/* Title & Creditor */}
-                    <div className="flex items-center space-x-2 flex-wrap gap-y-1">
-                      <span className="text-xs sm:text-sm font-semibold text-zinc-900">
-                        {item.title}
-                      </span>
-                      {item.creditor && (
-                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 inline-flex items-center gap-1">
-                          <Building2 className="w-2.5 h-2.5" />
-                          <span>{item.creditor}</span>
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {collectError && (
+                <div className="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-1.5">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{collectError}</span>
+                </div>
+              )}
+
+              {/* Destination Wallet */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold text-emerald-950 block">
+                  {t.debt_collect_source_label} ({lang === 'vi' ? 'Cộng vào số dư' : 'Added to balance'})
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCollectSource('account')}
+                    className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
+                      collectSource === 'account'
+                        ? 'border-blue-500 bg-white text-blue-900 font-bold shadow-xs ring-1 ring-blue-400'
+                        : 'border-emerald-200 bg-emerald-100/40 text-zinc-600'
+                    }`}
+                  >
+                    <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                    <div className="min-w-0">
+                      <span className="text-xs block leading-tight">{lang === 'vi' ? 'Tài khoản' : 'Bank'}</span>
+                      {finances && (
+                        <span className="text-[10px] text-zinc-400 font-mono block">
+                          {formatMoney(finances.bankAccount, lang)}
                         </span>
                       )}
                     </div>
+                  </button>
 
-                    {/* Date and Note */}
-                    <div className="flex items-center space-x-2 text-[10px] sm:text-[11px] text-zinc-400 font-mono flex-wrap">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-2.5 h-2.5 text-theme-accent" />
-                        <span>{item.date}</span>
-                      </span>
-                      {item.note && (
-                        <>
-                          <span>•</span>
-                          <span className="text-zinc-600 font-sans italic">{item.note}</span>
-                        </>
+                  <button
+                    type="button"
+                    onClick={() => setCollectSource('cash')}
+                    className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
+                      collectSource === 'cash'
+                        ? 'border-emerald-500 bg-white text-emerald-900 font-bold shadow-xs ring-1 ring-emerald-400'
+                        : 'border-emerald-200 bg-emerald-100/40 text-zinc-600'
+                    }`}
+                  >
+                    <Wallet className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <div className="min-w-0">
+                      <span className="text-xs block leading-tight">{lang === 'vi' ? 'Tiền mặt' : 'Cash'}</span>
+                      {finances && (
+                        <span className="text-[10px] text-zinc-400 font-mono block">
+                          {formatMoney(finances.cash, lang)}
+                        </span>
                       )}
                     </div>
-                  </div>
-
-                  {/* Right side: Amount, Pay Action and Delete Action */}
-                  <div className="flex items-center space-x-2 shrink-0 ml-2">
-                    <span className="font-mono text-xs sm:text-sm font-bold text-amber-900">
-                      {formatMoney(item.amount, lang)}
-                    </span>
-
-                    {/* Pay button */}
-                    <button
-                      type="button"
-                      onClick={() => handleOpenPay(item)}
-                      title={lang === 'vi' ? 'Thanh toán khoản nợ này' : 'Pay off this debt'}
-                      className="px-2 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer active:opacity-60"
-                    >
-                      <Banknote className="w-3 h-3 text-amber-700" />
-                      <span>{t.debt_btn_pay}</span>
-                    </button>
-
-                    {/* Delete button */}
-                    <button
-                      type="button"
-                      onClick={() => onDeleteDebt(item.id)}
-                      title={t.debt_delete_tooltip}
-                      className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-all cursor-pointer touch-target active:opacity-60"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+                  </button>
                 </div>
-              ))
+              </div>
+
+              {/* Collection Amount Input */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-semibold text-emerald-950 block">
+                    {t.debt_collect_amount_label} <span className="text-rose-500">*</span>
+                  </label>
+                  <span className="text-[10px] text-zinc-500 font-mono">
+                    {lang === 'vi' ? 'Cần thu: ' : 'Receivable: '}
+                    <span className="font-bold text-emerald-900">{formatMoney(collectingDebt.amount, lang)}</span>
+                  </span>
+                </div>
+                <TouchpadField
+                  value={collectAmountStr}
+                  onChange={(val) => {
+                    setCollectAmountStr(val)
+                    setCollectError(null)
+                  }}
+                  lang={lang}
+                  placeholder="VD: 500000"
+                  title={t.debt_collect_amount_label}
+                  max={collectingDebt.amount}
+                  presets={[500000, 1000000, 2000000]}
+                />
+
+                {/* Quick Presets */}
+                <div className="flex items-center gap-1.5 pt-1 flex-wrap">
+                  {[500000, 1000000, 2000000].map((preset) => {
+                    if (preset > collectingDebt.amount) return null
+                    return (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => {
+                          setCollectAmountStr(preset.toString())
+                          setCollectError(null)
+                        }}
+                        className="text-[10px] font-mono px-2 py-0.5 rounded border border-emerald-300 bg-white text-emerald-900 hover:bg-emerald-100 cursor-pointer"
+                      >
+                        +{preset >= 1000000 ? `${preset / 1000000}M` : preset.toLocaleString()}
+                      </button>
+                    )
+                  })}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCollectAmountStr(collectingDebt.amount.toString())
+                      setCollectError(null)
+                    }}
+                    className="text-[10px] font-semibold px-2 py-0.5 rounded border border-emerald-400 bg-emerald-200 text-emerald-950 hover:bg-emerald-300 cursor-pointer"
+                  >
+                    {lang === 'vi' ? 'Thu hết (100%)' : 'Collect All (100%)'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Real-time Remaining Receivable Preview */}
+              {numCollectAmount > 0 && numCollectAmount <= collectingDebt.amount && (
+                <div className="p-2.5 rounded-lg bg-white/80 border border-emerald-200 text-xs font-mono flex items-center justify-between">
+                  <span className="text-zinc-600">{t.debt_collect_remaining_after}:</span>
+                  <span className="font-bold text-emerald-900">
+                    {formatMoney(Math.max(0, collectingDebt.amount - numCollectAmount), lang)}
+                  </span>
+                </div>
+              )}
+
+              {/* Note Input */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-medium text-emerald-950 block">
+                  {t.note_label}
+                </label>
+                <Input
+                  type="text"
+                  value={collectNote}
+                  onChange={(e) => setCollectNote(e.target.value)}
+                  className="text-xs h-8 bg-white border-emerald-300"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-1 flex justify-end gap-2 border-t border-emerald-200">
+                <button
+                  type="button"
+                  onClick={() => setCollectingDebt(null)}
+                  className="px-3 py-1.5 rounded-lg border border-emerald-300 text-xs font-medium text-zinc-700 bg-white hover:bg-zinc-50 cursor-pointer"
+                >
+                  {t.btn_cancel}
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>{t.debt_collect_confirm_btn}</span>
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* Scrollable Debt List Container */}
+          <div className="space-y-2.5 max-h-[340px] overflow-y-auto overscroll-contain pr-1 sm:pr-1.5 expense-scroll-container">
+            {displayedDebts.length === 0 ? (
+              <div className="p-8 text-center bg-theme-surface/40 rounded-xl border border-theme border-dashed space-y-2">
+                <ShieldCheck className="w-8 h-8 text-emerald-600 mx-auto" />
+                <p className="text-xs text-zinc-600 font-medium">
+                  {activeTab === 'all'
+                    ? t.debt_empty
+                    : activeTab === 'payable'
+                    ? (lang === 'vi' ? 'Bạn không có khoản nợ nào cần trả.' : 'No payable debts.')
+                    : (lang === 'vi' ? 'Bạn không có khoản nợ nào cần thu hồi.' : 'No receivable debts.')}
+                </p>
+              </div>
+            ) : (
+              displayedDebts.map((item) => {
+                const isReceivable = item.type === 'receivable'
+                return (
+                  <div
+                    key={item.id}
+                    className={`p-3.5 rounded-xl border bg-white transition-all flex items-start justify-between gap-3 group ${
+                      isReceivable
+                        ? 'border-emerald-200 hover:border-emerald-400 hover:shadow-2xs'
+                        : 'border-theme hover:border-amber-300 hover:shadow-2xs'
+                    }`}
+                  >
+                    <div className="space-y-1 min-w-0 flex-1">
+                      {/* Title, Badge & Creditor/Debtor */}
+                      <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                        <span
+                          className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border inline-flex items-center gap-1 ${
+                            isReceivable
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
+                          }`}
+                        >
+                          {isReceivable ? (
+                            <>
+                              <ArrowDownLeft className="w-2.5 h-2.5 text-emerald-600" />
+                              <span>{t.debt_type_receivable_short}</span>
+                            </>
+                          ) : (
+                            <>
+                              <ArrowUpRight className="w-2.5 h-2.5 text-amber-600" />
+                              <span>{t.debt_type_payable_short}</span>
+                            </>
+                          )}
+                        </span>
+
+                        <span className="text-xs sm:text-sm font-semibold text-zinc-900">
+                          {item.title}
+                        </span>
+
+                        {item.creditor && (
+                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200 inline-flex items-center gap-1">
+                            {isReceivable ? <User className="w-2.5 h-2.5" /> : <Building2 className="w-2.5 h-2.5" />}
+                            <span>{item.creditor}</span>
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Date and Note */}
+                      <div className="flex items-center space-x-2 text-[10px] sm:text-[11px] text-zinc-400 font-mono flex-wrap">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-2.5 h-2.5 text-theme-accent" />
+                          <span>{item.date}</span>
+                        </span>
+                        {item.note && (
+                          <>
+                            <span>•</span>
+                            <span className="text-zinc-600 font-sans italic">{item.note}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Right side: Amount, Pay/Collect Action and Delete Action */}
+                    <div className="flex items-center space-x-2 shrink-0 ml-2">
+                      <span
+                        className={`font-mono text-xs sm:text-sm font-bold ${
+                          isReceivable ? 'text-emerald-700' : 'text-amber-900'
+                        }`}
+                      >
+                        {formatMoney(item.amount, lang)}
+                      </span>
+
+                      {/* Pay or Collect Button */}
+                      {isReceivable ? (
+                        <button
+                          type="button"
+                          onClick={() => handleOpenCollect(item)}
+                          title={lang === 'vi' ? 'Thu nợ / Tất toán khoản này' : 'Collect / Settle this debt'}
+                          className="px-2.5 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer active:opacity-60"
+                        >
+                          <Coins className="w-3 h-3 text-emerald-700" />
+                          <span>{t.debt_btn_collect}</span>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleOpenPay(item)}
+                          title={lang === 'vi' ? 'Thanh toán khoản nợ này' : 'Pay off this debt'}
+                          className="px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer active:opacity-60"
+                        >
+                          <Banknote className="w-3 h-3 text-amber-700" />
+                          <span>{t.debt_btn_pay}</span>
+                        </button>
+                      )}
+
+                      {/* Delete button */}
+                      <button
+                        type="button"
+                        onClick={() => onDeleteDebt(item.id)}
+                        title={t.debt_delete_tooltip}
+                        className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-all cursor-pointer touch-target active:opacity-60"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                )
+              })
             )}
           </div>
         </div>
 
         {/* Footer */}
         <div className="p-3 bg-theme-surface/50 border-t border-theme/60 flex items-center justify-between shrink-0">
-          <span className="text-[11px] text-theme-muted font-mono">
+          <span className="text-[11px] text-theme-muted font-mono truncate mr-2">
             {lang === 'vi' ? 'Đồng bộ tự động cùng Sổ cái & Chi tiêu' : 'Synchronized with Ledger & Expenses'}
           </span>
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-1.5 rounded-xl border border-theme text-xs font-semibold text-theme-main bg-white hover:bg-theme-surface transition-colors cursor-pointer"
+            className="px-4 py-1.5 rounded-xl border border-theme text-xs font-semibold text-theme-main bg-white hover:bg-theme-surface transition-colors cursor-pointer shrink-0"
           >
             {lang === 'vi' ? 'Đóng' : 'Close'}
           </button>

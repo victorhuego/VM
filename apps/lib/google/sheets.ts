@@ -1,5 +1,5 @@
 import { getGoogleSheets, getSpreadsheetId } from './client'
-import { ExpenseItem, DebtItem, MomentItem, InitialBalances, FinancialState, CurrencyType } from '@/lib/types'
+import { ExpenseItem, DebtItem, DebtType, MomentItem, InitialBalances, FinancialState, CurrencyType } from '@/lib/types'
 import {
   normalizeDateString,
   normalizeTimeString,
@@ -66,6 +66,7 @@ export const DEBTS_HEADERS = [
   'status',
   'createdAt',
   'user',
+  'type',
 ]
 
 export const MOMENTS_HEADERS = [
@@ -479,7 +480,7 @@ export async function getDebts(user?: string): Promise<DebtItem[]> {
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Debts!A2:I',
+    range: 'Debts!A2:J',
   })
 
   const rows = res.data.values || []
@@ -493,6 +494,7 @@ export async function getDebts(user?: string): Promise<DebtItem[]> {
       creditor: r[4] ? String(r[4]) : undefined,
       note: r[5] ? String(r[5]) : undefined,
       user: String(r[8] || 'jeandev'),
+      type: (r[9] as DebtType) || 'payable',
     }))
 
   const filtered = cleanUser
@@ -518,11 +520,12 @@ export async function addDebt(item: DebtItem, user: string = 'jeandev'): Promise
     'active',
     new Date().toISOString(),
     owner,
+    item.type || 'payable',
   ]
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
-    range: 'Debts!A:I',
+    range: 'Debts!A:J',
     valueInputOption: 'USER_ENTERED',
     insertDataOption: 'INSERT_ROWS',
     requestBody: {
@@ -540,7 +543,7 @@ export async function updateDebt(id: string, updated: Partial<DebtItem>): Promis
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Debts!A:I',
+    range: 'Debts!A:J',
   })
 
   const rows = res.data.values || []
@@ -556,6 +559,7 @@ export async function updateDebt(id: string, updated: Partial<DebtItem>): Promis
     creditor: existingRow[4] ? String(existingRow[4]) : undefined,
     note: existingRow[5] ? String(existingRow[5]) : undefined,
     user: existingRow[8] ? String(existingRow[8]) : 'jeandev',
+    type: (existingRow[9] as DebtType) || 'payable',
   }
 
   const merged: DebtItem = {
@@ -574,9 +578,10 @@ export async function updateDebt(id: string, updated: Partial<DebtItem>): Promis
     merged.amount <= 0 ? 'paid' : 'active',
     new Date().toISOString(),
     merged.user || 'jeandev',
+    merged.type || 'payable',
   ]
 
-  const targetRange = `Debts!A${rowIndex + 1}:I${rowIndex + 1}`
+  const targetRange = `Debts!A${rowIndex + 1}:J${rowIndex + 1}`
   await sheets.spreadsheets.values.update({
     spreadsheetId,
     range: targetRange,
@@ -891,7 +896,7 @@ export async function getUsers(): Promise<UserRecord[]> {
 
         return {
           username,
-          password: String(r[1] || '123456'),
+          password: r[1] !== undefined && r[1] !== null ? String(r[1]).trim() : '',
           displayName: String(r[2] || r[0]),
           createdAt: String(r[3] || new Date().toISOString()),
           avatar: r[4] ? String(r[4]).trim() : undefined,
@@ -1004,50 +1009,53 @@ export async function updateUserCurrency(username: string, currency: CurrencyTyp
   }
 }
 
-export async function authenticateOrRegisterUser(username: string, password: string): Promise<UserRecord | null> {
-  const cleanUser = username.trim().toLowerCase()
-  if (!cleanUser) return null
+export interface AuthResult {
+  success: boolean
+  user?: UserRecord
+  error?: string
+}
 
-  // Password requirement: must match 123456
-  if (password !== '123456') {
-    return null
+export async function authenticateUser(username: string, password: string): Promise<AuthResult> {
+  const cleanUser = username.trim().toLowerCase()
+  const cleanPass = password.trim()
+
+  if (!cleanUser) {
+    return { success: false, error: 'Vui lòng nhập tên đăng nhập' }
   }
 
+  if (!cleanPass) {
+    return { success: false, error: 'Vui lòng nhập mật khẩu' }
+  }
+
+  // Clear memory cache for users to ensure validating against the latest Google Sheet data
+  delete memoryCache['users_list']
   const users = await getUsers()
   const existing = users.find((u) => u.username.toLowerCase() === cleanUser)
-  if (existing) {
-    return existing
+
+  if (!existing) {
+    return {
+      success: false,
+      error: 'Tài khoản không tồn tại trên hệ thống. Vui lòng liên hệ quản trị viên.',
+    }
   }
 
-  // Auto-register new user into Users sheet
-  const sheets = getGoogleSheets()
-  const spreadsheetId = getSpreadsheetId()
-  const now = new Date().toISOString()
-  const defaultCurrency: CurrencyType | undefined = cleanUser === 'jeandev' ? 'VND' : undefined
-  const newUser: UserRecord = {
-    username: cleanUser,
-    password: '123456',
-    displayName: cleanUser,
-    createdAt: now,
-    currency: defaultCurrency,
+  const expectedPassword = String(existing.password ?? '').trim()
+  if (expectedPassword !== cleanPass) {
+    return {
+      success: false,
+      error: 'Mật khẩu không chính xác',
+    }
   }
 
-  try {
-    await sheets.spreadsheets.values.append({
-      spreadsheetId,
-      range: 'Users!A2:F',
-      valueInputOption: 'USER_ENTERED',
-      insertDataOption: 'INSERT_ROWS',
-      requestBody: {
-        values: [[newUser.username, newUser.password, newUser.displayName, newUser.createdAt, '', newUser.currency || '']],
-      },
-    })
-  } catch (e) {
-    console.error('Error auto-registering user to Users sheet:', e)
+  return {
+    success: true,
+    user: existing,
   }
+}
 
-  clearSheetCache()
-  return newUser
+export async function authenticateOrRegisterUser(username: string, password: string): Promise<UserRecord | null> {
+  const res = await authenticateUser(username, password)
+  return res.success && res.user ? res.user : null
 }
 
 export interface StoredOAuthToken {

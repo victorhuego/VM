@@ -270,6 +270,11 @@ export function NetWorthModal({
                   <span className="text-[10px] text-amber-700/80 font-mono hidden md:block">
                     {lang === 'vi' ? 'Các khoản nợ đang theo dõi' : 'Active tracked liabilities'}
                   </span>
+                  {(finances.totalReceivable ?? 0) > 0 && (
+                    <span className="text-[10px] text-emerald-700 font-mono block truncate">
+                      {lang === 'vi' ? 'Người khác nợ: +' : 'Receivable: +'}{formatMoney(finances.totalReceivable!, lang)}
+                    </span>
+                  )}
                 </div>
 
                 <div className="p-3 sm:p-4 rounded-xl md:rounded-2xl bg-emerald-50/80 border border-emerald-200/90 space-y-1.5 hover:shadow-2xs transition-all">

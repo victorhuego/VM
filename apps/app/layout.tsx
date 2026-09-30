@@ -22,7 +22,6 @@ const quicksand = Quicksand({
 const cinzel = Cinzel({
   variable: '--font-fantasy-serif',
   subsets: ['latin'],
-  weight: ['600', '700', '900'],
 })
 
 const beVietnamPro = Be_Vietnam_Pro({

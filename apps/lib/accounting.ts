@@ -153,7 +153,14 @@ export function previewDeleteTransactionImpact({
     const matchedDebt = debts.find((d) => d.id === deleteItem.debtId)
     restoredDebt = {
       id: deleteItem.debtId,
-      title: matchedDebt?.title || deleteItem.note.replace(/^Trả nợ:\s*/i, '').replace(/^Repay:\s*/i, '') || 'Khoản nợ',
+      title:
+        matchedDebt?.title ||
+        deleteItem.note
+          .replace(/^Trả nợ:\s*/i, '')
+          .replace(/^Repay:\s*/i, '')
+          .replace(/^Thu nợ:\s*/i, '')
+          .replace(/^Collect:\s*/i, '') ||
+        'Khoản nợ',
       amount: deleteItem.amount,
     }
   }

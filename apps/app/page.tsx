@@ -143,7 +143,7 @@ export default function Home() {
   // Synchronize client local theme & auth session
   useEffect(() => {
     const savedTheme = localStorage.getItem('app_theme')
-    const activeTheme: ThemeType = (savedTheme === 'cozy' || savedTheme === 'fantasy') ? savedTheme : 'classic'
+    const activeTheme: ThemeType = (savedTheme === 'cozy' || savedTheme === 'fantasy' || savedTheme === 'retro') ? savedTheme : 'classic'
     setTheme(activeTheme)
     document.documentElement.setAttribute('data-theme', activeTheme)
 
@@ -485,9 +485,17 @@ export default function Home() {
     }
   }
 
-  // Dynamic Total Debt
+  // Dynamic Total Debt (Payable) & Total Receivable
   const computedTotalDebt = useMemo(() => {
-    return debts.reduce((sum, d) => sum + d.amount, 0)
+    return debts
+      .filter((d) => !d.type || d.type === 'payable')
+      .reduce((sum, d) => sum + d.amount, 0)
+  }, [debts])
+
+  const computedTotalReceivable = useMemo(() => {
+    return debts
+      .filter((d) => d.type === 'receivable')
+      .reduce((sum, d) => sum + d.amount, 0)
   }, [debts])
 
   // Pure Accounting Ledger Replay (SSOT)
@@ -514,12 +522,13 @@ export default function Home() {
     bankAccount: ledgerBalances.bankAccount,
     currentSavings: ledgerBalances.savings,
     totalDebt: computedTotalDebt,
+    totalReceivable: computedTotalReceivable,
     totalMonthlySpent: currentMonthSpent,
     todaySpent: computedTodaySpent,
     yesterdaySpent: computedYesterdaySpent,
     monthlyBudget: finances.monthlyBudget,
     savingsGoal: finances.savingsGoal,
-  }), [ledgerBalances, computedTotalDebt, currentMonthSpent, computedTodaySpent, computedYesterdaySpent, finances.monthlyBudget, finances.savingsGoal])
+  }), [ledgerBalances, computedTotalDebt, computedTotalReceivable, currentMonthSpent, computedTodaySpent, computedYesterdaySpent, finances.monthlyBudget, finances.savingsGoal])
 
   // Today's Moments (Strictly filtered for 24H Circadian Ribbon and Zen Story)
   const todayStr = getClientLocalDateString()
@@ -627,6 +636,58 @@ export default function Home() {
     })
 
     showToast(dictionary[lang].toast_debt_paid)
+  }
+
+  const handleCollectSpecificDebt = ({
+    debtId,
+    debtTitle,
+    amount,
+    source,
+    note,
+  }: {
+    debtId: string
+    debtTitle: string
+    amount: number
+    source: 'cash' | 'account'
+    note?: string
+  }) => {
+    const today = getClientLocalDateString()
+    const user = currentUser?.username || 'jeandev'
+    const collectItem: ExpenseItem = {
+      id: `debt-collect-${Date.now()}`,
+      type: 'income',
+      category: 'debt_collection',
+      amount: amount,
+      note: note || (lang === 'vi' ? `Thu nợ: ${debtTitle}` : `Collect: ${debtTitle}`),
+      date: today,
+      timeAgo: lang === 'vi' ? 'Vừa xong' : 'Just now',
+      source: source,
+      debtId: debtId,
+      user,
+    }
+
+    setExpenses((prev) => [collectItem, ...prev].sort(compareExpensesDescending))
+    apiCreateExpense(collectItem)
+
+    setDebts((prevDebts) => {
+      return prevDebts
+        .map((d) => {
+          if (d.id === debtId) {
+            const rem = d.amount - amount
+            if (rem > 0) {
+              apiUpdateDebt(debtId, { amount: rem })
+              return { ...d, amount: rem }
+            } else {
+              apiDeleteDebt(debtId)
+              return null
+            }
+          }
+          return d
+        })
+        .filter(Boolean) as DebtItem[]
+    })
+
+    showToast(dictionary[lang].toast_debt_collected)
   }
 
   // Moments Handlers
@@ -782,7 +843,9 @@ export default function Home() {
                   type="button"
                   onClick={() => handleOpenExpenseModal('general')}
                   className={`fixed bottom-[calc(max(0.75rem,env(safe-area-inset-bottom))+4.25rem)] sm:bottom-8 right-4 sm:right-8 z-40 bubble-fab-mobile btn-theme-gradient w-14 h-14 sm:w-auto sm:h-auto p-0 sm:px-5 sm:py-3 rounded-full flex items-center justify-center gap-2 font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
-                    theme === 'fantasy'
+                    theme === 'retro'
+                      ? '!rounded-none !bg-[#C0C0C0] !text-black !border-none !shadow-[inset_-1px_-1px_#0a0a0a,inset_1px_1px_#fff,inset_-2px_-2px_#808080,inset_2px_2px_#dfdfdf]'
+                      : theme === 'fantasy'
                       ? 'text-[#1E2533] border-2 border-[#FFF2D1] shadow-[0_0_20px_rgba(229,201,146,0.5)]'
                       : theme === 'cozy'
                       ? 'text-white border-2 border-white shadow-xl'
@@ -791,7 +854,9 @@ export default function Home() {
                   title={t.btn_note_expense}
                   aria-label={t.btn_note_expense}
                 >
-                  {theme === 'fantasy' ? (
+                  {theme === 'retro' ? (
+                    <span className="text-base sm:text-sm font-black font-mono">💾</span>
+                  ) : theme === 'fantasy' ? (
                     <span className="text-xl sm:text-lg font-black leading-none">✦</span>
                   ) : (
                     <Plus className="w-7 h-7 sm:w-5 sm:h-5 stroke-[2.5]" />
@@ -887,6 +952,7 @@ export default function Home() {
         onAddExpense={handleAddExpense}
         onTransfer={handleTransfer}
         onPayDebt={handlePaySpecificDebt}
+        onCollectDebt={handleCollectSpecificDebt}
       />
 
       <BudgetModal
@@ -906,6 +972,7 @@ export default function Home() {
         onAddDebt={handleAddDebt}
         onDeleteDebt={handleDeleteDebt}
         onPayDebt={handlePaySpecificDebt}
+        onCollectDebt={handleCollectSpecificDebt}
         finances={computedFinances}
       />
 

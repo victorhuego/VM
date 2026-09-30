@@ -1,4 +1,4 @@
-export type ThemeType = 'classic' | 'cozy' | 'fantasy'
+export type ThemeType = 'classic' | 'cozy' | 'fantasy' | 'retro'
 export type LanguageType = 'vi' | 'en'
 export type TabType = 'expenses' | 'moments' | 'users'
 export type MoodType = 'serene' | 'bored' | 'flow' | 'focus' | 'spark' | 'cozy' | 'wander'
@@ -99,12 +99,15 @@ export interface FinancialState {
   bankAccount: number
   currentSavings: number
   totalDebt: number
+  totalReceivable?: number
   savingsGoal: number
   monthlyBudget: number
   totalMonthlySpent: number
   todaySpent: number
   yesterdaySpent: number
 }
+
+export type DebtType = 'payable' | 'receivable'
 
 export interface DebtItem {
   id: string
@@ -114,4 +117,5 @@ export interface DebtItem {
   creditor?: string
   note?: string
   user?: string
+  type?: DebtType
 }

@@ -14,7 +14,7 @@ interface LoginModalProps {
 
 export function LoginModal({ open, lang, onLoginSuccess }: LoginModalProps) {
   const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('123456')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -28,10 +28,15 @@ export function LoginModal({ open, lang, onLoginSuccess }: LoginModalProps) {
       setError(lang === 'vi' ? 'Vui lòng nhập tên đăng nhập' : 'Please enter a username')
       return
     }
+    const cleanPass = password.trim()
+    if (!cleanPass) {
+      setError(lang === 'vi' ? 'Vui lòng nhập mật khẩu' : 'Please enter a password')
+      return
+    }
 
     setLoading(true)
     try {
-      const res = await apiLogin(cleanUser, password)
+      const res = await apiLogin(cleanUser, cleanPass)
       if (res.success && res.user) {
         onLoginSuccess(res.user)
       } else {
@@ -97,7 +102,7 @@ export function LoginModal({ open, lang, onLoginSuccess }: LoginModalProps) {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="123456"
+              placeholder={lang === 'vi' ? 'Nhập mật khẩu...' : 'Enter password...'}
               className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-theme rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-theme-accent/40 font-mono transition-all"
             />
           </div>

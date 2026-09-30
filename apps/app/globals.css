@@ -10,6 +10,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Pixelated MS Sans Serif';
+  src: url('/fonts/win95/ms_sans_serif.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pixelated MS Sans Serif';
+  src: url('/fonts/win95/ms_sans_serif_bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -152,6 +168,44 @@ html[data-theme="fantasy"] {
   --input: #243044;
   --ring: #D3BC8E;
   --radius: 1rem;
+}
+
+/* 4. RETRO THEME (Authentic Windows 95 - 100% Faithful Classic Gray Scheme) */
+html[data-theme="retro"] {
+  --theme-id: "retro";
+  --theme-text-gradient: none;
+  --theme-card-bg: #C0C0C0;
+  --theme-surface: #C0C0C0;
+  --theme-border: #808080;
+  --theme-border-hover: #000000;
+  --theme-text-main: #000000;
+  --theme-text-accent: #000080;
+  --theme-text-muted: #555555;
+  --theme-btn-gradient: #C0C0C0;
+  --theme-btn-hover: #D4D0C8;
+  --theme-progress: #000080;
+  --theme-active-tag: #000080;
+  --theme-ring: #000080;
+  --theme-shadow: none;
+
+  --background: #008080; /* Windows 95 Iconic Desktop Teal */
+  --foreground: #000000;
+  --card: #C0C0C0;
+  --card-foreground: #000000;
+  --popover: #C0C0C0;
+  --popover-foreground: #000000;
+  --primary: #000080;
+  --primary-foreground: #FFFFFF;
+  --secondary: #C0C0C0;
+  --secondary-foreground: #000000;
+  --muted: #DFDFDF;
+  --muted-foreground: #555555;
+  --accent: #000080;
+  --accent-foreground: #FFFFFF;
+  --border: #808080;
+  --input: #FFFFFF;
+  --ring: #000080;
+  --radius: 0px;
 }
 
 /* ================= UTILITY CLASSES ================= */
@@ -888,9 +942,510 @@ html[data-theme="fantasy"] [class*="-singleValue"] {
   color: #F5EAD4 !important;
 }
 
+/* Fantasy High-Contrast Text & Modal Elements Overrides */
+html[data-theme="fantasy"] .text-zinc-900,
+html[data-theme="fantasy"] .text-zinc-800,
+html[data-theme="fantasy"] .text-zinc-700,
+html[data-theme="fantasy"] [role="dialog"] .text-zinc-900,
+html[data-theme="fantasy"] [role="dialog"] .text-zinc-800,
+html[data-theme="fantasy"] [role="dialog"] .text-zinc-700 {
+  color: #F5EAD4 !important;
+}
+
+html[data-theme="fantasy"] .text-zinc-600,
+html[data-theme="fantasy"] .text-zinc-500,
+html[data-theme="fantasy"] .text-zinc-400,
+html[data-theme="fantasy"] [role="dialog"] .text-zinc-600,
+html[data-theme="fantasy"] [role="dialog"] .text-zinc-500,
+html[data-theme="fantasy"] [role="dialog"] .text-zinc-400 {
+  color: #8E9FAC !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] .bg-zinc-100,
+html[data-theme="fantasy"] [role="dialog"] .bg-zinc-100\/90,
+html[data-theme="fantasy"] [role="dialog"] .bg-zinc-200 {
+  background-color: #111827 !important;
+  border-color: rgba(211, 188, 142, 0.35) !important;
+  color: #F5EAD4 !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] button.bg-white,
+html[data-theme="fantasy"] [role="dialog"] div.bg-white {
+  background-color: #1A2537 !important;
+  border-color: rgba(211, 188, 142, 0.35) !important;
+  color: #F5EAD4 !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] button.bg-zinc-200 {
+  background-color: #24334C !important;
+  color: #F5EAD4 !important;
+}
+
+html[data-theme="fantasy"] [role="button"] .font-mono-nums {
+  color: #FFE5A3 !important;
+}
+
+/* Fantasy Theme Debt Modal & Amber/Emerald Contrast Overrides */
+html[data-theme="fantasy"] [role="dialog"] .bg-amber-500\/10,
+html[data-theme="fantasy"] [role="dialog"] .bg-amber-50,
+html[data-theme="fantasy"] [role="dialog"] .bg-amber-50\/70,
+html[data-theme="fantasy"] [role="dialog"] .bg-amber-50\/80,
+html[data-theme="fantasy"] [role="dialog"] .bg-amber-100 {
+  background-color: rgba(229, 201, 146, 0.12) !important;
+  border-color: rgba(229, 201, 146, 0.45) !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] .text-amber-900,
+html[data-theme="fantasy"] [role="dialog"] .text-amber-900\/80,
+html[data-theme="fantasy"] [role="dialog"] .text-amber-950,
+html[data-theme="fantasy"] [role="dialog"] .text-amber-800,
+html[data-theme="fantasy"] [role="dialog"] .text-amber-700 {
+  color: #FFE5A3 !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] .bg-amber-200,
+html[data-theme="fantasy"] [role="dialog"] .bg-amber-200\/80 {
+  background-color: rgba(229, 201, 146, 0.25) !important;
+  border-color: rgba(229, 201, 146, 0.6) !important;
+  color: #FFE5A3 !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] .bg-emerald-500\/10,
+html[data-theme="fantasy"] [role="dialog"] .bg-emerald-50,
+html[data-theme="fantasy"] [role="dialog"] .bg-emerald-50\/70,
+html[data-theme="fantasy"] [role="dialog"] .bg-emerald-50\/80,
+html[data-theme="fantasy"] [role="dialog"] .bg-emerald-100 {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] .text-emerald-950,
+html[data-theme="fantasy"] [role="dialog"] .text-emerald-900,
+html[data-theme="fantasy"] [role="dialog"] .text-emerald-900\/80,
+html[data-theme="fantasy"] [role="dialog"] .text-emerald-800,
+html[data-theme="fantasy"] [role="dialog"] .text-emerald-700,
+html[data-theme="fantasy"] [role="dialog"] .text-emerald-600 {
+  color: #6EE7B7 !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] .bg-emerald-200,
+html[data-theme="fantasy"] [role="dialog"] .bg-emerald-200\/80 {
+  background-color: rgba(16, 185, 129, 0.25) !important;
+  border-color: rgba(16, 185, 129, 0.6) !important;
+  color: #A7F3D0 !important;
+}
+
+/* Fantasy Dialog Active Filter Tabs: Stand out vividly with golden/mint aura */
+html[data-theme="fantasy"] [role="dialog"] button.bg-white {
+  background: #D3BC8E !important;
+  color: #1A2232 !important;
+  border: 1px solid #FFE5A3 !important;
+  box-shadow: 0 0 12px rgba(211, 188, 142, 0.35) !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] button.bg-white.text-amber-900 {
+  background: linear-gradient(135deg, #E5C992 0%, #D3BC8E 100%) !important;
+  color: #1A2232 !important;
+  border: 1px solid #FFE5A3 !important;
+  box-shadow: 0 0 12px rgba(229, 201, 146, 0.4) !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] button.bg-white.text-emerald-800 {
+  background: linear-gradient(135deg, #6EE7B7 0%, #34D399 100%) !important;
+  color: #0A261E !important;
+  border: 1px solid #A7F3D0 !important;
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.4) !important;
+  font-weight: 700 !important;
+}
+
+/* Fantasy Empty State Dashed Container */
+html[data-theme="fantasy"] [role="dialog"] .border-dashed {
+  border-color: rgba(211, 188, 142, 0.4) !important;
+  background-color: rgba(14, 22, 36, 0.7) !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] .border-dashed svg {
+  color: #FFE5A3 !important;
+}
+
+html[data-theme="fantasy"] [role="dialog"] .border-dashed p {
+  color: #F5EAD4 !important;
+}
+
+/* Fantasy Bento Cards (MetricCards) Debt & Receivables contrast */
+html[data-theme="fantasy"] .bento-card .text-amber-800,
+html[data-theme="fantasy"] .bento-card .text-amber-700 {
+  color: #FFE5A3 !important;
+}
+
+html[data-theme="fantasy"] .bento-card .text-emerald-800,
+html[data-theme="fantasy"] .bento-card .text-emerald-700 {
+  color: #6EE7B7 !important;
+}
+
+/* Global Mobile Date Picker & WebKit Normalization */
+input[type="date"] {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+html[data-theme="fantasy"] input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8) sepia(1) saturate(5) hue-rotate(5deg);
+}
+
 /* Hide mobile bubble button whenever any modal/dialog is active */
 body:has([role="dialog"]) .bubble-fab-mobile,
 body:has([data-slot="dialog-content"]) .bubble-fab-mobile,
 body:has([data-state="open"]) .bubble-fab-mobile {
   display: none !important;
+}
+
+/* ==========================================================================
+   RETRO THEME (WINDOWS 95 COMPLETE & FAITHFUL 100% RETRO DESIGN SYSTEM)
+   Iconic Dull Grey (#C0C0C0) + Desktop Teal (#008080) + 3D Bevels
+   ========================================================================== */
+
+/* 1. Global Font & Sharp Geometry */
+html[data-theme="retro"],
+html[data-theme="retro"] body,
+html[data-theme="retro"] button,
+html[data-theme="retro"] input,
+html[data-theme="retro"] select,
+html[data-theme="retro"] textarea,
+html[data-theme="retro"] label,
+html[data-theme="retro"] span,
+html[data-theme="retro"] p,
+html[data-theme="retro"] div,
+html[data-theme="retro"] h1,
+html[data-theme="retro"] h2,
+html[data-theme="retro"] h3,
+html[data-theme="retro"] h4,
+html[data-theme="retro"] table {
+  font-family: "Pixelated MS Sans Serif", Tahoma, "MS Sans Serif", Arial, sans-serif !important;
+  -webkit-font-smoothing: none !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  font-smooth: never !important;
+  letter-spacing: 0 !important;
+}
+
+/* Desktop Canvas: Authentic Windows 95 Teal */
+html[data-theme="retro"] body {
+  background-color: #008080 !important;
+  color: #000000 !important;
+}
+
+/* Strict Zero Border Radius everywhere */
+html[data-theme="retro"] *,
+html[data-theme="retro"] *::before,
+html[data-theme="retro"] *::after {
+  border-radius: 0px !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 2. Windows 95 3D Raised Bevel System (Classic Grey #C0C0C0) */
+html[data-theme="retro"] button,
+html[data-theme="retro"] .btn-theme-gradient,
+html[data-theme="retro"] input[type="button"],
+html[data-theme="retro"] input[type="submit"] {
+  background: #C0C0C0 !important;
+  color: #000000 !important;
+  border: none !important;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf !important;
+  font-weight: bold !important;
+  text-shadow: none !important;
+  cursor: pointer !important;
+  outline: none !important;
+}
+
+html[data-theme="retro"] button:focus-visible {
+  outline: 1px dotted #000000 !important;
+  outline-offset: -4px !important;
+}
+
+html[data-theme="retro"] button:active,
+html[data-theme="retro"] .btn-theme-gradient:active,
+html[data-theme="retro"] input[type="button"]:active,
+html[data-theme="retro"] input[type="submit"]:active {
+  box-shadow: inset 1px 1px #0a0a0a, inset -1px -1px #ffffff, inset 2px 2px #808080, inset -2px -2px #dfdfdf !important;
+  transform: translate(1px, 1px) !important;
+}
+
+/* 3. Inputs, Selects, Textareas: Windows 95 3D Sunken Fields */
+html[data-theme="retro"] input[type="text"],
+html[data-theme="retro"] input[type="password"],
+html[data-theme="retro"] input[type="number"],
+html[data-theme="retro"] input[type="date"],
+html[data-theme="retro"] textarea,
+html[data-theme="retro"] select {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+  border: none !important;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080 !important;
+  padding: 3px 6px !important;
+  outline: none !important;
+}
+
+/* 4. Windows 95 Modals & Dialogs (The Quintessential Window Frame) */
+html[data-theme="retro"] [role="dialog"],
+html[data-theme="retro"] [data-slot="dialog-content"] {
+  background-color: #C0C0C0 !important;
+  border: 3px solid #C0C0C0 !important;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf, 0 10px 40px rgba(0, 0, 0, 0.7) !important;
+  color: #000000 !important;
+  padding: 2px !important;
+}
+
+/* Window Title Bar */
+html[data-theme="retro"] [role="dialog"] > div:first-child,
+html[data-theme="retro"] [role="dialog"] .border-b:first-child {
+  background: linear-gradient(90deg, #000080 0%, #1084d0 100%) !important;
+  color: #FFFFFF !important;
+  padding: 3px 4px 3px 6px !important;
+  border-bottom: 2px solid #C0C0C0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+html[data-theme="retro"] [role="dialog"] > div:first-child *,
+html[data-theme="retro"] [role="dialog"] .border-b:first-child h2,
+html[data-theme="retro"] [role="dialog"] .border-b:first-child p,
+html[data-theme="retro"] [role="dialog"] .border-b:first-child span {
+  color: #FFFFFF !important;
+  text-shadow: none !important;
+}
+
+/* Title Bar Close [ ✕ ] Button */
+html[data-theme="retro"] [role="dialog"] button[aria-label="Close"],
+html[data-theme="retro"] [role="dialog"] .border-b:first-child button {
+  width: 16px !important;
+  height: 14px !important;
+  min-width: 16px !important;
+  min-height: 14px !important;
+  background: #C0C0C0 !important;
+  color: #000000 !important;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+html[data-theme="retro"] [role="dialog"] button[aria-label="Close"]:active,
+html[data-theme="retro"] [role="dialog"] .border-b:first-child button:active {
+  box-shadow: inset 1px 1px #0a0a0a, inset -1px -1px #ffffff, inset 2px 2px #808080, inset -2px -2px #dfdfdf !important;
+  transform: translate(1px, 1px) !important;
+}
+
+html[data-theme="retro"] [role="dialog"] button[aria-label="Close"] svg,
+html[data-theme="retro"] [role="dialog"] .border-b:first-child button svg {
+  width: 9px !important;
+  height: 9px !important;
+  stroke-width: 3.5 !important;
+  color: #000000 !important;
+}
+
+/* Dialog footer */
+html[data-theme="retro"] [role="dialog"] .border-t {
+  background-color: #C0C0C0 !important;
+  border-top: 1px solid #808080 !important;
+  box-shadow: inset 0 1px 0 #FFFFFF !important;
+}
+
+/* 5. Bento Cards & Net Worth Card (Windows 95 Group Boxes / Sunken Status Panels) */
+html[data-theme="retro"] .bento-card,
+html[data-theme="retro"] [data-slot="card"],
+html[data-theme="retro"] .net-worth-card {
+  background-color: #C0C0C0 !important;
+  color: #000000 !important;
+  border: none !important;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf !important;
+}
+
+html[data-theme="retro"] .bento-card:hover,
+html[data-theme="retro"] [data-slot="card"]:hover,
+html[data-theme="retro"] .net-worth-card:hover {
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf !important;
+}
+
+/* Number / Money wells inside cards -> Sunken White Box with dark navy text */
+html[data-theme="retro"] .bento-card .font-mono,
+html[data-theme="retro"] .bento-card .font-mono-nums,
+html[data-theme="retro"] .net-worth-card .font-mono-nums {
+  color: #000080 !important;
+  font-weight: bold !important;
+}
+
+html[data-theme="retro"] .text-theme-main {
+  color: #000000 !important;
+}
+html[data-theme="retro"] .text-theme-muted {
+  color: #404040 !important;
+}
+html[data-theme="retro"] .text-theme-accent {
+  color: #000080 !important;
+}
+html[data-theme="retro"] .text-theme-gradient {
+  background: none !important;
+  -webkit-text-fill-color: #000000 !important;
+  color: #000000 !important;
+}
+
+/* 6. Expense List (Windows 95 Explorer File List with Sunken White Pane) */
+html[data-theme="retro"] .expense-list-card {
+  background-color: #C0C0C0 !important;
+  border: none !important;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf !important;
+  color: #000000 !important;
+}
+
+html[data-theme="retro"] .period-switcher-container {
+  background-color: #C0C0C0 !important;
+  border: none !important;
+  gap: 2px !important;
+}
+
+html[data-theme="retro"] .period-tab-btn {
+  background: #C0C0C0 !important;
+  color: #000000 !important;
+  border: none !important;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf !important;
+  font-weight: normal !important;
+}
+
+html[data-theme="retro"] .period-tab-active {
+  background: #C0C0C0 !important;
+  color: #000080 !important;
+  box-shadow: inset 1px 1px #0a0a0a, inset -1px -1px #ffffff, inset 2px 2px #808080, inset -2px -2px #dfdfdf !important;
+  font-weight: bold !important;
+}
+
+html[data-theme="retro"] .expense-list-card .bg-white {
+  background-color: #FFFFFF !important;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080 !important;
+  color: #000000 !important;
+}
+
+/* 7. Debt Modal Banners & Tabs in Retro */
+html[data-theme="retro"] [role="dialog"] .bg-amber-500\/10,
+html[data-theme="retro"] [role="dialog"] .bg-amber-50,
+html[data-theme="retro"] [role="dialog"] .bg-emerald-500\/10,
+html[data-theme="retro"] [role="dialog"] .bg-emerald-50 {
+  background-color: #FFFFFF !important;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080 !important;
+  border: none !important;
+}
+
+html[data-theme="retro"] [role="dialog"] .text-amber-900,
+html[data-theme="retro"] [role="dialog"] .text-amber-800 {
+  color: #800000 !important; /* Win95 Maroon */
+}
+
+html[data-theme="retro"] [role="dialog"] .text-emerald-900,
+html[data-theme="retro"] [role="dialog"] .text-emerald-800,
+html[data-theme="retro"] [role="dialog"] .text-emerald-700 {
+  color: #008000 !important; /* Win95 Forest Green */
+}
+
+/* Retro Tab Switcher in Dialogs */
+html[data-theme="retro"] [role="dialog"] .bg-zinc-100,
+html[data-theme="retro"] [role="dialog"] .bg-zinc-100\/90 {
+  background-color: #C0C0C0 !important;
+  border: none !important;
+}
+
+html[data-theme="retro"] [role="dialog"] button.bg-white {
+  background: #000080 !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  box-shadow: inset 1px 1px #0a0a0a, inset -1px -1px #ffffff, inset 2px 2px #808080, inset -2px -2px #dfdfdf !important;
+  font-weight: bold !important;
+}
+
+/* 8. Windows 95 Authentic Scrollbars */
+html[data-theme="retro"] ::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+  background: #DFDFDF;
+}
+
+html[data-theme="retro"] ::-webkit-scrollbar-track {
+  background-color: #DFDFDF;
+  background-image: linear-gradient(45deg, #C0C0C0 25%, transparent 25%), 
+                    linear-gradient(-45deg, #C0C0C0 25%, transparent 25%), 
+                    linear-gradient(45deg, transparent 75%, #C0C0C0 75%), 
+                    linear-gradient(-45deg, transparent 75%, #C0C0C0 75%);
+  background-size: 2px 2px;
+}
+
+html[data-theme="retro"] ::-webkit-scrollbar-thumb {
+  background-color: #C0C0C0;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+}
+
+html[data-theme="retro"] ::-webkit-scrollbar-button {
+  background-color: #C0C0C0;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* 9. Header / Taskbar in Retro Mode */
+html[data-theme="retro"] header {
+  background-color: #C0C0C0 !important;
+  border-bottom: 2px solid #808080 !important;
+  box-shadow: 0 1px 0 #000000, inset 0 1px 0 #FFFFFF !important;
+  backdrop-filter: none !important;
+}
+
+/* 10. Selected / Active Buttons and Toggles in Retro Mode */
+html[data-theme="retro"] .bg-emerald-50\/90,
+html[data-theme="retro"] .bg-blue-50\/90,
+html[data-theme="retro"] .bg-amber-50\/80,
+html[data-theme="retro"] .bg-emerald-50\/80,
+html[data-theme="retro"] .border-emerald-500.bg-emerald-50,
+html[data-theme="retro"] .border-amber-500.bg-amber-50 {
+  background: #000080 !important;
+  color: #FFFFFF !important;
+  box-shadow: inset 1px 1px #0a0a0a, inset -1px -1px #ffffff, inset 2px 2px #808080, inset -2px -2px #dfdfdf !important;
+  border: none !important;
+}
+
+html[data-theme="retro"] .bg-emerald-50\/90 *,
+html[data-theme="retro"] .bg-blue-50\/90 *,
+html[data-theme="retro"] .bg-amber-50\/80 *,
+html[data-theme="retro"] .bg-emerald-50\/80 *,
+html[data-theme="retro"] .border-emerald-500.bg-emerald-50 *,
+html[data-theme="retro"] .border-amber-500.bg-amber-50 * {
+  color: #FFFFFF !important;
+}
+
+/* 11. Numeric Touchpad & Calculator Grid in Retro Mode */
+html[data-theme="retro"] div[role="button"] {
+  background-color: #FFFFFF !important;
+  border: none !important;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080 !important;
+  color: #000000 !important;
+}
+
+html[data-theme="retro"] div[role="button"] .font-mono-nums {
+  color: #000080 !important;
+  font-weight: bold !important;
 }

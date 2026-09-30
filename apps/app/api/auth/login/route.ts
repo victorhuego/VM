@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { authenticateOrRegisterUser } from '@/lib/google/sheets'
+import { authenticateUser } from '@/lib/google/sheets'
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,20 +14,22 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    if (password !== '123456') {
+    if (!password) {
       return NextResponse.json(
-        { error: 'Mật khẩu không chính xác. Mật khẩu mặc định là 123456' },
+        { error: 'Vui lòng nhập mật khẩu' },
+        { status: 400 }
+      )
+    }
+
+    const authResult = await authenticateUser(username, password)
+    if (!authResult.success || !authResult.user) {
+      return NextResponse.json(
+        { error: authResult.error || 'Đăng nhập không thành công' },
         { status: 401 }
       )
     }
 
-    const user = await authenticateOrRegisterUser(username, password)
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Đăng nhập không thành công' },
-        { status: 401 }
-      )
-    }
+    const user = authResult.user
 
     return NextResponse.json({
       success: true,
