@@ -127,9 +127,6 @@ export function QuickExpenseModal({
       } else if (targetCard === 'account') {
         setSource('account')
         setExpenseCategory('food')
-      } else if (targetCard === 'debt') {
-        setSource('account')
-        setExpenseCategory('debt')
       } else {
         setSource('account')
         setExpenseCategory('food')
@@ -173,7 +170,6 @@ export function QuickExpenseModal({
     { value: 'housing', label: t.cat_housing, icon: Home },
     { value: 'entertainment', label: t.cat_entertainment, icon: Film },
     { value: 'development', label: t.cat_development, icon: Sparkles },
-    { value: 'debt', label: t.cat_debt, icon: CreditCard },
   ]
 
   const incomeCategoryOptions: CategoryOption<IncomeCategoryType>[] = [
@@ -193,7 +189,7 @@ export function QuickExpenseModal({
       ...base,
       backgroundColor: 'var(--card)',
       borderColor: state.isFocused ? 'var(--theme-accent)' : 'var(--theme-border)',
-      boxShadow: state.isFocused ? '0 0 0 2px var(--theme-surface)' : 'none',
+      boxShadow: 'none',
       '&:hover': {
         borderColor: 'var(--theme-accent)',
       },
@@ -263,6 +259,94 @@ export function QuickExpenseModal({
     }),
   }
 
+  const debtSelectStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: 'var(--card)',
+      borderColor: state.isFocused ? 'var(--theme-accent)' : 'var(--theme-border)',
+      boxShadow: 'none',
+      '&:hover': {
+        borderColor: 'var(--theme-accent)',
+      },
+      borderRadius: '0.5rem',
+      minHeight: '38px',
+      height: '38px',
+      fontSize: '12px',
+      cursor: 'pointer',
+      touchAction: 'manipulation',
+    }),
+    valueContainer: (base: any) => ({
+      ...base,
+      padding: '0 10px',
+      height: '36px',
+    }),
+    singleValue: (base: any) => ({
+      ...base,
+      color: 'var(--theme-main)',
+      fontSize: '12px',
+      fontWeight: 500,
+      margin: 0,
+    }),
+    indicatorsContainer: (base: any) => ({
+      ...base,
+      height: '36px',
+    }),
+    dropdownIndicator: (base: any) => ({
+      ...base,
+      padding: '6px',
+      color: 'var(--theme-muted)',
+    }),
+    indicatorSeparator: () => ({
+      display: 'none',
+    }),
+    menuPortal: (base: any) => ({
+      ...base,
+      zIndex: 9999,
+      pointerEvents: 'auto',
+    }),
+    menu: (base: any) => ({
+      ...base,
+      backgroundColor: 'var(--card)',
+      border: '1px solid var(--theme-border)',
+      borderRadius: '0.5rem',
+      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+      zIndex: 9999,
+      touchAction: 'manipulation',
+    }),
+    menuList: (base: any) => ({
+      ...base,
+      padding: '4px',
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      fontSize: '12px',
+      borderRadius: '0.375rem',
+      padding: '8px 12px',
+      minHeight: '34px',
+      display: 'flex',
+      alignItems: 'center',
+      backgroundColor: state.isSelected
+        ? 'var(--theme-surface)'
+        : state.isFocused
+        ? 'var(--accent)'
+        : 'transparent',
+      color: state.isSelected ? 'var(--theme-accent)' : 'var(--theme-main)',
+      fontWeight: state.isSelected ? 600 : 400,
+      cursor: 'pointer',
+      touchAction: 'manipulation',
+    }),
+  }
+
+  const receivableDebtOptions = [
+    { value: '', label: lang === 'vi' ? 'Thu nợ chung / Khác' : 'General debt collection' },
+    ...(debts || [])
+      .filter((d) => d.type === 'receivable')
+      .map((d) => ({
+        value: d.id,
+        label: `${d.title} (${formatMoney(d.amount, lang)})`,
+      })),
+  ]
+
   const handleImageFile = (file: File) => {
     setReceiptFile(file)
     const reader = new FileReader()
@@ -312,23 +396,6 @@ export function QuickExpenseModal({
     }
 
     const isExpense = txType === 'expense'
-    const isDebtPayment = isDebtCard || (isExpense && expenseCategory === 'debt')
-
-    // If specific debt item was selected, trigger onPayDebt
-    if (isDebtPayment && selectedDebtId && onPayDebt) {
-      const targetDebt = debts?.find((d) => d.id === selectedDebtId)
-      if (targetDebt) {
-        onPayDebt({
-          debtId: targetDebt.id,
-          debtTitle: targetDebt.title,
-          amount: numAmount,
-          source: source === 'cash' ? 'cash' : 'account',
-          note: note.trim() || `Trả nợ: ${targetDebt.title}`,
-        })
-        onClose()
-        return
-      }
-    }
 
     // If specific receivable debt was selected for collection, trigger onCollectDebt
     if (txType === 'income' && incomeCategory === 'debt_collection' && selectedDebtId && onCollectDebt) {
@@ -346,9 +413,7 @@ export function QuickExpenseModal({
       }
     }
 
-    const defaultNote = isDebtPayment
-      ? t.quick_exp_note_default_debt
-      : isExpense
+    const defaultNote = isExpense
       ? source === 'cash'
         ? t.quick_exp_note_default_cash
         : t.quick_exp_note_default_bank
@@ -358,12 +423,12 @@ export function QuickExpenseModal({
 
     onAddExpense(
       {
-        type: isDebtPayment ? 'expense' : (txType as TransactionType),
+        type: txType as TransactionType,
         amount: numAmount,
-        category: isDebtPayment ? 'debt' : isExpense ? expenseCategory : incomeCategory,
+        category: isExpense ? expenseCategory : incomeCategory,
         date,
         note: note.trim() || defaultNote,
-        source: isExpense || isDebtPayment ? source : source,
+        source: source,
         image: receiptImage || undefined,
       },
       receiptFile || undefined
@@ -401,16 +466,12 @@ export function QuickExpenseModal({
           <div className="flex items-center space-x-2.5 min-w-0">
             <div
               className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-xs shrink-0 ${
-                isDebtCard || (txType === 'expense' && expenseCategory === 'debt')
-                  ? 'bg-rose-100 border border-rose-300 text-rose-800'
-                  : isCashCard || (isGeneral && source === 'cash')
+                isCashCard || (isGeneral && source === 'cash')
                   ? 'bg-emerald-100 border border-emerald-300 text-emerald-800'
                   : 'bg-blue-100 border border-blue-300 text-blue-800'
               }`}
             >
-              {isDebtCard || (txType === 'expense' && expenseCategory === 'debt') ? (
-                <CreditCard className="w-5 h-5" />
-              ) : isCashCard ? (
+              {isCashCard ? (
                 <Wallet className="w-5 h-5" />
               ) : isBankCard ? (
                 <Building2 className="w-5 h-5" />
@@ -422,8 +483,6 @@ export function QuickExpenseModal({
               <h2 className="text-sm sm:text-base font-semibold text-theme-main truncate">
                 {isGeneral
                   ? (lang === 'vi' ? 'Ghi chú chi tiêu' : 'Record Expense')
-                  : isDebtCard
-                  ? (lang === 'vi' ? 'Thanh Toán Khoản Nợ' : 'Pay Off Debt')
                   : isCashCard
                   ? (lang === 'vi' ? 'Ví Tiền Mặt' : 'Cash Wallet')
                   : isBankCard
@@ -433,8 +492,6 @@ export function QuickExpenseModal({
               <p className="text-[11px] text-theme-muted truncate">
                 {isGeneral
                   ? (lang === 'vi' ? 'Ghi chép chi tiêu, thu nhập hoặc chuyển tiền' : 'Record expenses, income, or transfers')
-                  : isDebtCard
-                  ? `${lang === 'vi' ? 'Dư nợ cần theo dõi: ' : 'Remaining debt: '} ${formatMoney(finances.totalDebt, lang)}`
                   : isCashCard
                   ? `${lang === 'vi' ? 'Số dư tiền mặt: ' : 'Available cash: '} ${formatMoney(finances.cash, lang)}`
                   : isBankCard
@@ -868,12 +925,6 @@ export function QuickExpenseModal({
             <div className="space-y-1 relative z-20">
               <label className="text-[11px] font-medium text-theme-main flex items-center justify-between">
                 <span>{t.category_label}</span>
-                {txType === 'expense' && expenseCategory === 'debt' && (
-                  <span className="inline-flex items-center gap-1 text-[10px] text-amber-700 font-normal">
-                    <Zap className="w-3 h-3 text-amber-500" />
-                    <span>{lang === 'vi' ? 'Tự động trừ vào Tiền nợ' : 'Auto-reduces tracked debt'}</span>
-                  </span>
-                )}
               </label>
               {!mounted ? (
                 <div className="h-10 w-full bg-white border border-theme rounded-lg px-3 flex items-center text-sm text-zinc-900">
@@ -893,9 +944,6 @@ export function QuickExpenseModal({
                   onChange={(option) => {
                     if (option) {
                       setExpenseCategory(option.value)
-                      if (option.value !== 'debt') {
-                        setSelectedDebtId('')
-                      }
                     }
                   }}
                   options={expenseCategoryOptions}
@@ -936,65 +984,36 @@ export function QuickExpenseModal({
             </div>
           )}
 
-          {/* If category is debt or debt card, allow picking specific payable debt from list */}
-          {txType === 'expense' && (isDebtCard || expenseCategory === 'debt') && debts && (
-            <div className="space-y-1 p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
-              <label className="text-[11px] font-semibold text-amber-900 block">
-                {t.quick_exp_select_debt}
-              </label>
-              <select
-                value={selectedDebtId}
-                onChange={(e) => {
-                  const debtId = e.target.value
-                  setSelectedDebtId(debtId)
-                  const item = debts.find((d) => d.id === debtId)
-                  if (item) {
-                    setAmount(item.amount.toString())
-                    setNote(lang === 'vi' ? `Trả nợ: ${item.title}` : `Repay: ${item.title}`)
-                  }
-                }}
-                  className="w-full h-9 px-2.5 text-xs bg-white border border-amber-300 rounded-lg text-zinc-800 font-medium focus:outline-none focus:ring-0 cursor-pointer"
-              >
-                <option value="">{t.quick_exp_debt_other}</option>
-                {debts
-                  .filter((d) => !d.type || d.type === 'payable')
-                  .map((d) => (
-                    <option key={d.id} value={d.id}>
-                      {d.title} ({formatMoney(d.amount, lang)})
-                    </option>
-                  ))}
-              </select>
-            </div>
-          )}
-
           {/* If category is debt_collection in Income tab, allow picking specific receivable debt from list */}
           {txType === 'income' && incomeCategory === 'debt_collection' && debts && (
             <div className="space-y-1 p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-300/80">
               <label className="text-[11px] font-semibold text-emerald-950 block">
                 {lang === 'vi' ? 'Chọn khoản nợ cần thu hồi' : 'Select debt to collect'}
               </label>
-              <select
-                value={selectedDebtId}
-                onChange={(e) => {
-                  const debtId = e.target.value
-                  setSelectedDebtId(debtId)
-                  const item = debts.find((d) => d.id === debtId)
-                  if (item) {
-                    setAmount(item.amount.toString())
-                    setNote(lang === 'vi' ? `Thu nợ: ${item.title}` : `Collect: ${item.title}`)
-                  }
-                }}
-                className="w-full h-9 px-2.5 text-xs bg-white border border-emerald-300 rounded-lg text-zinc-800 font-medium focus:outline-none focus:ring-0 cursor-pointer"
-              >
-                <option value="">{lang === 'vi' ? 'Thu nợ chung / Khác' : 'General debt collection'}</option>
-                {debts
-                  .filter((d) => d.type === 'receivable')
-                  .map((d) => (
-                    <option key={d.id} value={d.id}>
-                      {d.title} ({formatMoney(d.amount, lang)})
-                    </option>
-                  ))}
-              </select>
+              {!mounted ? (
+                <div className="h-9 w-full bg-white border border-emerald-300 rounded-lg px-2.5 flex items-center text-xs text-zinc-800">
+                  {receivableDebtOptions.find((opt) => opt.value === selectedDebtId)?.label || (lang === 'vi' ? 'Thu nợ chung / Khác' : 'General debt collection')}
+                </div>
+              ) : (
+                <Select
+                  instanceId="quick-income-debt-receivable-select"
+                  menuPortalTarget={mounted && typeof document !== 'undefined' ? document.body : undefined}
+                  menuPosition="fixed"
+                  isSearchable={false}
+                  value={receivableDebtOptions.find((opt) => opt.value === selectedDebtId) || receivableDebtOptions[0]}
+                  onChange={(option) => {
+                    const debtId = option?.value || ''
+                    setSelectedDebtId(debtId)
+                    const item = debts.find((d) => d.id === debtId)
+                    if (item) {
+                      setAmount(item.amount.toString())
+                      setNote(lang === 'vi' ? `Thu nợ: ${item.title}` : `Collect: ${item.title}`)
+                    }
+                  }}
+                  options={receivableDebtOptions}
+                  styles={debtSelectStyles}
+                />
+              )}
             </div>
           )}
 
@@ -1093,8 +1112,6 @@ export function QuickExpenseModal({
                   ? 'opacity-50 cursor-not-allowed bg-zinc-800 text-zinc-500'
                   : txType === 'transfer'
                   ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
-                  : isDebtCard || (txType === 'expense' && expenseCategory === 'debt')
-                  ? 'bg-rose-600 hover:bg-rose-700'
                   : isCashCard
                   ? 'bg-emerald-600 hover:bg-emerald-700'
                   : 'btn-theme-gradient'
@@ -1103,12 +1120,7 @@ export function QuickExpenseModal({
               {txType === 'transfer' ? (
                 <>
                   <ArrowLeftRight className="w-4 h-4 mr-1.5" />
-                  <span>{isCashCard ? t.transfer_btn : t.transfer_btn}</span>
-                </>
-              ) : isDebtCard || (txType === 'expense' && expenseCategory === 'debt') ? (
-                <>
-                  <CornerDownLeft className="w-4 h-4 mr-1.5" />
-                  <span>{lang === 'vi' ? 'Ghi nhận trả nợ' : 'Record Debt Repayment'}</span>
+                  <span>{t.transfer_btn}</span>
                 </>
               ) : txType === 'income' ? (
                 <>

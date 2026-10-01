@@ -66,7 +66,7 @@ export function TouchpadField({
             setIsOpen(true)
           }
         }}
-        className={`w-full h-11 px-3.5 rounded-xl border flex items-center justify-between transition-all select-none ${
+        className={`w-full h-11 px-3.5 rounded-xl border flex items-center justify-between transition-all select-none focus:outline-none focus:ring-0 ${
           disabled
             ? 'bg-zinc-100/90 text-zinc-500 border-zinc-200 cursor-not-allowed opacity-80'
             : 'bg-white cursor-pointer active:scale-[0.99] ' + (

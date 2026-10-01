@@ -15,7 +15,6 @@ export const DEFAULT_EXPENSE_CATEGORIES: Category[] = [
   { id: 'gifts', name: 'Quà tặng & Từ thiện', nameEn: 'Gifts & Charity', iconName: 'Gift', color: '#14B8A6', type: 'expense', isDefault: true },
   { id: 'bills', name: 'Hóa đơn dịch vụ', nameEn: 'Bills & Fees', iconName: 'Receipt', color: '#6366F1', type: 'expense', isDefault: true },
   { id: 'repairs', name: 'Sửa chữa bảo dưỡng', nameEn: 'Repairs', iconName: 'Wrench', color: '#64748B', type: 'expense', isDefault: true },
-  { id: 'debt', name: 'Trả nợ', nameEn: 'Debt Repayment', iconName: 'HandCoins', color: '#DC2626', type: 'expense', isDefault: true },
   { id: 'other', name: 'Chi tiêu khác', nameEn: 'Other Expense', iconName: 'HelpCircle', color: '#94A3B8', type: 'expense', isDefault: true },
 ]
 

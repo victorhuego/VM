@@ -44,7 +44,6 @@ import {
   ArrowRight,
   ArrowRightLeft,
   Lock,
-  Zap,
 } from 'lucide-react'
 import { ImagePickerSheet } from '@/components/ImagePickerSheet'
 
@@ -91,7 +90,6 @@ export function EditExpenseModal({
   const [date, setDate] = useState('')
   const [note, setNote] = useState('')
   const [receiptImage, setReceiptImage] = useState<string | null>(null)
-  const [selectedDebtId, setSelectedDebtId] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -107,7 +105,6 @@ export function EditExpenseModal({
       setDate(expense.date || '')
       setNote(expense.note || '')
       setReceiptImage(expense.image || null)
-      setSelectedDebtId(expense.debtId || '')
       setError(null)
 
       if (expense.type === 'income') {
@@ -118,7 +115,7 @@ export function EditExpenseModal({
         )
       } else {
         setExpenseCategory(
-          (['food', 'transport', 'shopping', 'housing', 'entertainment', 'development', 'debt'].includes(expense.category)
+          (['food', 'transport', 'shopping', 'housing', 'entertainment', 'development'].includes(expense.category)
             ? expense.category
             : 'food') as ExpenseCategoryType
         )
@@ -161,7 +158,6 @@ export function EditExpenseModal({
     { value: 'housing', label: t.cat_housing, icon: Home },
     { value: 'entertainment', label: t.cat_entertainment, icon: Film },
     { value: 'development', label: t.cat_development, icon: Sparkles },
-    { value: 'debt', label: t.cat_debt, icon: CreditCard },
   ]
 
   const incomeCategoryOptions: CategoryOption<IncomeCategoryType>[] = [
@@ -178,7 +174,7 @@ export function EditExpenseModal({
       fontSize: '13px',
       backgroundColor: 'var(--card)',
       borderColor: state.isFocused ? 'var(--theme-accent)' : 'var(--theme-border)',
-      boxShadow: state.isFocused ? '0 0 0 2px var(--theme-surface)' : 'none',
+      boxShadow: 'none',
       '&:hover': {
         borderColor: 'var(--theme-border)',
       },
@@ -292,7 +288,7 @@ export function EditExpenseModal({
       date: date || expense.date,
       note: note.trim(),
       image: receiptImage || undefined,
-      debtId: txType === 'expense' && updatedCategory === 'debt' ? selectedDebtId || undefined : undefined,
+      debtId: undefined,
     }
 
     onSave(updatedItem, expense)
@@ -310,9 +306,9 @@ export function EditExpenseModal({
       date: date || expense?.date || '',
       note: note.trim(),
       image: receiptImage || undefined,
-      debtId: txType === 'expense' && updatedCategory === 'debt' ? selectedDebtId || undefined : undefined,
+      debtId: undefined,
     } as ExpenseItem
-  }, [expense, txType, incomeCategory, expenseCategory, numAmount, source, date, note, receiptImage, selectedDebtId])
+  }, [expense, txType, incomeCategory, expenseCategory, numAmount, source, date, note, receiptImage])
 
   const editImpact = useMemo(() => {
     if (!expense || !expenses.length || !initialBalances) return null
@@ -656,12 +652,6 @@ export function EditExpenseModal({
           <div className="space-y-1 relative z-20">
             <label className="text-[11px] font-semibold text-theme-main flex items-center justify-between">
               <span>{t.category_label}</span>
-              {txType === 'expense' && expenseCategory === 'debt' && (
-                <span className="inline-flex items-center gap-1 text-[10px] text-amber-700 font-normal">
-                  <Zap className="w-3 h-3 text-amber-500" />
-                  <span>{lang === 'vi' ? 'Tự động điều chỉnh Tiền nợ' : 'Auto-adjusts tracked debt'}</span>
-                </span>
-              )}
             </label>
             {!mounted ? (
               <div className="h-10 w-full bg-white border border-theme rounded-lg px-3 flex items-center text-sm text-zinc-900">
@@ -715,27 +705,6 @@ export function EditExpenseModal({
               />
             )}
           </div>
-
-          {/* Linked Debt Select (If category is debt) */}
-          {txType === 'expense' && expenseCategory === 'debt' && debts.length > 0 && (
-            <div className="space-y-1 p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
-              <label className="text-[11px] font-semibold text-amber-900 block">
-                {t.quick_exp_select_debt}
-              </label>
-              <select
-                value={selectedDebtId}
-                onChange={(e) => setSelectedDebtId(e.target.value)}
-                className="w-full h-9 px-2.5 text-xs bg-white border border-amber-300 rounded-lg text-zinc-800 font-medium focus:outline-none focus:ring-0 cursor-pointer"
-              >
-                <option value="">{t.quick_exp_debt_other}</option>
-                {debts.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.title} ({formatMoney(d.amount, lang)})
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
 
           {/* Date Input - Row 1 */}
           <div className="space-y-1 w-full min-w-0 max-w-full">
