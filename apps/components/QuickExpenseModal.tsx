@@ -44,6 +44,7 @@ import {
   PlusCircle,
 } from 'lucide-react'
 import confetti from 'canvas-confetti'
+import { ImagePickerSheet } from '@/components/ImagePickerSheet'
 
 interface CategoryOption<T extends string = string> {
   value: T
@@ -90,7 +91,7 @@ export function QuickExpenseModal({
 }: QuickExpenseModalProps) {
   const t = dictionary[lang]
   const [mounted, setMounted] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [pickerOpen, setPickerOpen] = useState(false)
 
   const [txType, setTxType] = useState<TransactionType>('expense')
   const [source, setSource] = useState<ExpenseSourceType>('cash')
@@ -262,9 +263,7 @@ export function QuickExpenseModal({
     }),
   }
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  const handleImageFile = (file: File) => {
     setReceiptFile(file)
     const reader = new FileReader()
     reader.onload = () => {
@@ -276,9 +275,6 @@ export function QuickExpenseModal({
   const handleRemoveImage = () => {
     setReceiptImage(null)
     setReceiptFile(null)
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
   }
 
   const handlePreset = (val: number) => {
@@ -388,12 +384,13 @@ export function QuickExpenseModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-200">
-      <div
-        className="bg-theme-card border border-theme w-full max-w-lg sm:max-w-xl md:max-w-2xl rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
-        role="dialog"
-        aria-modal="true"
-      >
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-200">
+        <div
+          className="bg-theme-card border border-theme w-full max-w-lg sm:max-w-xl md:max-w-2xl rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
+          role="dialog"
+          aria-modal="true"
+        >
         {/* Cozy Drag Handle Indicator (from reference photo) */}
         <div className="hidden [html[data-theme='cozy']_&]:block pt-2 pb-0.5 text-center shrink-0">
           <div className="w-10 h-1.5 rounded-full bg-[#D4C3B3] mx-auto" />
@@ -1065,20 +1062,13 @@ export function QuickExpenseModal({
                 </div>
               ) : (
                 <div
-                  onClick={() => fileInputRef.current?.click()}
+                  onClick={() => setPickerOpen(true)}
                   className="border border-dashed border-theme rounded-lg p-2 text-center cursor-pointer hover:border-theme-accent hover:bg-theme-surface/30 transition-all flex items-center justify-center space-x-2 group"
                 >
                   <Receipt className="w-3.5 h-3.5 text-zinc-400 group-hover:text-theme-accent transition-colors" />
                   <span className="text-xs text-zinc-400 group-hover:text-theme-main transition-colors">
                     {t.attach_receipt_hint}
                   </span>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
                 </div>
               )}
             </div>
@@ -1136,5 +1126,13 @@ export function QuickExpenseModal({
         </form>
       </div>
     </div>
+
+    <ImagePickerSheet
+      open={pickerOpen}
+      onClose={() => setPickerOpen(false)}
+      onFile={handleImageFile}
+      label={t.attach_receipt}
+    />
+    </>
   )
 }

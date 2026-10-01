@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { LanguageType, UserProfile } from '@/lib/types'
 import { LogOut, User, Loader2, Maximize2, Camera, Lock } from 'lucide-react'
 import { apiUploadImage, apiUpdateUserAvatar } from '@/lib/api-client'
 import { CURRENCY_METADATA } from '@/lib/i18n'
+import { ImagePickerSheet } from '@/components/ImagePickerSheet'
 
 interface UserManagerTabProps {
   currentUser: UserProfile
@@ -22,14 +23,11 @@ export function UserManagerTab({
   onUpdateAvatar,
   onOpenLightbox,
 }: UserManagerTabProps) {
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [pickerOpen, setPickerOpen] = useState(false)
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    e.target.value = '' // Reset so same file can be selected again if needed
+  const handleImageFile = async (file: File) => {
 
     setIsUploading(true)
     setErrorMsg(null)
@@ -55,8 +53,9 @@ export function UserManagerTab({
   }
 
   return (
-    <div className="max-w-sm mx-auto pt-4 sm:pt-8 animate-in fade-in duration-200">
-      <Card className="bento-card border border-theme/80 rounded-2xl p-6 sm:p-8 bg-white shadow-xs space-y-6">
+    <>
+      <div className="max-w-sm mx-auto pt-4 sm:pt-8 animate-in fade-in duration-200">
+        <Card className="bento-card border border-theme/80 rounded-2xl p-6 sm:p-8 bg-white shadow-xs space-y-6">
         {/* Avatar next to Name */}
         <div className="flex items-center justify-center space-x-4 sm:space-x-5">
           {/* Avatar / Placeholder (Bounded Square, Bigger, User Icon) */}
@@ -87,7 +86,7 @@ export function UserManagerTab({
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation()
-                    if (!isUploading) fileInputRef.current?.click()
+                    if (!isUploading) setPickerOpen(true)
                   }}
                   disabled={isUploading}
                   title={lang === 'vi' ? 'Đổi ảnh đại diện' : 'Change avatar'}
@@ -99,7 +98,7 @@ export function UserManagerTab({
             ) : (
               <button
                 type="button"
-                onClick={() => !isUploading && fileInputRef.current?.click()}
+                onClick={() => !isUploading && setPickerOpen(true)}
                 disabled={isUploading}
                 title={lang === 'vi' ? 'Tải ảnh đại diện' : 'Upload avatar'}
                 className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-theme shadow-sm flex items-center justify-center transition hover:ring-2 hover:ring-theme-main/40 focus:outline-none cursor-pointer bg-theme-surface/60 group"
@@ -122,15 +121,6 @@ export function UserManagerTab({
                 </span>
               </div>
             )}
-
-            {/* Hidden file input */}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileChange}
-            />
           </div>
 
           {/* Name only (cạnh tên) */}
@@ -179,5 +169,13 @@ export function UserManagerTab({
         </button>
       </Card>
     </div>
+
+    <ImagePickerSheet
+      open={pickerOpen}
+      onClose={() => setPickerOpen(false)}
+      onFile={handleImageFile}
+      label={lang === 'vi' ? 'Chọn ảnh đại diện' : 'Choose avatar'}
+    />
+  </>
   )
 }

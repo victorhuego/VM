@@ -46,6 +46,7 @@ import {
   Lock,
   Zap,
 } from 'lucide-react'
+import { ImagePickerSheet } from '@/components/ImagePickerSheet'
 
 interface CategoryOption<T extends string = string> {
   value: T
@@ -80,7 +81,7 @@ export function EditExpenseModal({
 }: EditExpenseModalProps) {
   const t = dictionary[lang]
   const [mounted, setMounted] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [pickerOpen, setPickerOpen] = useState(false)
 
   const [txType, setTxType] = useState<TransactionType>('expense')
   const [source, setSource] = useState<ExpenseSourceType>('account')
@@ -245,10 +246,7 @@ export function EditExpenseModal({
     }),
   }
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
+  const handleImageFile = (file: File) => {
     const reader = new FileReader()
     reader.onload = () => {
       setReceiptImage(reader.result as string)
@@ -258,9 +256,6 @@ export function EditExpenseModal({
 
   const handleRemoveImage = () => {
     setReceiptImage(null)
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
   }
 
   const handlePreset = (val: number) => {
@@ -335,12 +330,13 @@ export function EditExpenseModal({
   const delta = numAmount - oldAmount
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div
-        className="bg-theme-card rounded-2xl shadow-2xl border border-theme max-w-lg w-full max-h-[92vh] md:max-h-[88vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
-        role="dialog"
-        aria-modal="true"
-      >
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+        <div
+          className="bg-theme-card rounded-2xl shadow-2xl border border-theme max-w-lg w-full max-h-[92vh] md:max-h-[88vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
+          role="dialog"
+          aria-modal="true"
+        >
         {/* Header */}
         <div className="p-3.5 sm:p-5 border-b border-theme/60 flex items-center justify-between bg-theme-surface/70 shrink-0">
           <div className="flex items-center space-x-3">
@@ -802,20 +798,13 @@ export function EditExpenseModal({
               </div>
             ) : (
               <div
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => setPickerOpen(true)}
                 className="border border-dashed border-theme/60 rounded-lg p-2.5 text-center cursor-pointer hover:border-theme-accent hover:bg-theme-surface/50 transition-all flex items-center justify-center space-x-2 group"
               >
                 <Receipt className="w-4 h-4 text-theme-muted group-hover:text-theme-accent transition-colors" />
                 <span className="text-xs text-theme-muted group-hover:text-theme-main transition-colors">
                   {t.attach_receipt_hint}
                 </span>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
-                />
               </div>
             )}
           </div>
@@ -855,5 +844,13 @@ export function EditExpenseModal({
         </form>
       </div>
     </div>
+
+    <ImagePickerSheet
+      open={pickerOpen}
+      onClose={() => setPickerOpen(false)}
+      onFile={handleImageFile}
+      label={t.attach_receipt}
+    />
+    </>
   )
 }
