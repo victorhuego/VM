@@ -225,7 +225,7 @@ export function MetricCards({
                 style={{ width: `${budgetPercent}%` }}
               >
                 {budgetPercent > 4 && (
-                  <span className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white progress-tip-glow" />
+                  <span className="absolute right-0 top-1/2 w-2 h-2 rounded-full bg-white progress-tip-glow" />
                 )}
               </div>
             </div>
@@ -271,7 +271,7 @@ export function MetricCards({
                   style={{ width: `${savingsPercent}%` }}
                 >
                   {savingsPercent > 4 && (
-                    <span className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white progress-tip-glow" />
+                    <span className="absolute right-0 top-1/2 w-2 h-2 rounded-full bg-white progress-tip-glow" />
                   )}
                 </div>
               </div>
