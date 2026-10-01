@@ -953,7 +953,7 @@ export function QuickExpenseModal({
                     setNote(lang === 'vi' ? `Trả nợ: ${item.title}` : `Repay: ${item.title}`)
                   }
                 }}
-                className="w-full h-9 px-2.5 text-xs bg-white border border-amber-300 rounded-lg text-zinc-800 font-medium focus:ring-1 focus:ring-amber-400 cursor-pointer"
+                  className="w-full h-9 px-2.5 text-xs bg-white border border-amber-300 rounded-lg text-zinc-800 font-medium focus:outline-none focus:ring-0 cursor-pointer"
               >
                 <option value="">{t.quick_exp_debt_other}</option>
                 {debts
@@ -984,7 +984,7 @@ export function QuickExpenseModal({
                     setNote(lang === 'vi' ? `Thu nợ: ${item.title}` : `Collect: ${item.title}`)
                   }
                 }}
-                className="w-full h-9 px-2.5 text-xs bg-white border border-emerald-300 rounded-lg text-zinc-800 font-medium focus:ring-1 focus:ring-emerald-400 cursor-pointer"
+                className="w-full h-9 px-2.5 text-xs bg-white border border-emerald-300 rounded-lg text-zinc-800 font-medium focus:outline-none focus:ring-0 cursor-pointer"
               >
                 <option value="">{lang === 'vi' ? 'Thu nợ chung / Khác' : 'General debt collection'}</option>
                 {debts
@@ -999,18 +999,18 @@ export function QuickExpenseModal({
           )}
 
           {/* Date Input - Row 1 */}
-          <div className="space-y-1 w-full min-w-0 max-w-full overflow-hidden">
+          <div className="space-y-1 w-full min-w-0 max-w-full">
             <label className="text-[11px] font-medium text-theme-main block truncate">{t.date_label}</label>
             <Input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9.5 w-full max-w-full min-w-0 block bg-theme-surface text-theme-main"
+              className="text-xs sm:text-sm border-theme h-9.5 w-full max-w-full min-w-0 block bg-theme-surface text-theme-main box-border focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
             />
           </div>
 
           {/* Note Input - Row 2 */}
-          <div className="space-y-1 w-full min-w-0 max-w-full overflow-hidden">
+          <div className="space-y-1 w-full min-w-0 max-w-full">
             <label className="text-[11px] font-medium text-theme-main block truncate">{t.note_label}</label>
             <Input
               type="text"
@@ -1027,7 +1027,7 @@ export function QuickExpenseModal({
               }
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9.5 w-full bg-theme-surface text-theme-main placeholder:text-theme-muted"
+              className="text-xs sm:text-sm border-theme h-9.5 w-full bg-theme-surface text-theme-main placeholder:text-theme-muted focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
             />
           </div>
 

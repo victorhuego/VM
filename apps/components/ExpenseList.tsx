@@ -403,7 +403,7 @@ export function ExpenseList({
                 type="date"
                 value={selectedDay}
                 onChange={(e) => setSelectedDay(e.target.value)}
-                className="h-7 px-2 bg-theme-surface rounded-md border border-theme text-xs font-mono font-medium text-theme-main cursor-pointer min-w-0 max-w-full"
+                className="h-7 w-[115px] sm:w-[125px] shrink-0 px-2 bg-theme-surface rounded-md border border-theme text-xs font-mono font-medium text-theme-main cursor-pointer min-w-0 max-w-full box-border focus:outline-none focus:ring-0"
               />
             </div>
           )}

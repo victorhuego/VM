@@ -115,7 +115,7 @@ export function MomentComposer({ lang, onAddMoment, existingMoments = [] }: Mome
             placeholder={t.moment_placeholder}
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
-            className="w-full bg-theme-surface/60 border border-theme rounded-xl p-3 text-base sm:text-sm text-theme-main placeholder:text-theme-muted focus-visible:ring-theme/20 resize-none leading-relaxed transition-all"
+            className="w-full bg-theme-surface/60 border border-theme rounded-xl p-3 text-base sm:text-sm text-theme-main placeholder:text-theme-muted focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 resize-none leading-relaxed transition-all"
           />
 
           {/* Micro-Mood Tags Selection */}

@@ -990,8 +990,8 @@ html[data-theme="fantasy"] [role="dialog"] select {
 
 html[data-theme="fantasy"] [role="dialog"] input:focus,
 html[data-theme="fantasy"] [role="dialog"] textarea:focus {
-  border-color: #E5C992 !important;
-  box-shadow: 0 0 10px rgba(229, 201, 146, 0.25) !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Fantasy Keypad & Touchpad */
@@ -1255,8 +1255,9 @@ html[data-theme="fantasy"] .bento-card .text-emerald-700 {
 
 /* Global Mobile Date Picker & WebKit Normalization */
 input[type="date"] {
-  display: block !important;
-  width: 100% !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  display: block;
   max-width: 100% !important;
   min-width: 0 !important;
   box-sizing: border-box !important;
@@ -1264,6 +1265,10 @@ input[type="date"] {
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
   font-family: inherit !important;
+}
+
+input[type="date"].w-full {
+  width: 100% !important;
 }
 
 /* Force iOS Safari WebKit internal date text not to expand parent containers */
@@ -1276,9 +1281,12 @@ input[type="date"]::-webkit-date-and-time-value {
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
   max-width: 100% !important;
-  width: 100% !important;
+  width: auto !important;
+  min-width: 0 !important;
   box-sizing: border-box !important;
   display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 input[type="date"]::-webkit-datetime-edit {
@@ -1286,13 +1294,19 @@ input[type="date"]::-webkit-datetime-edit {
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
   max-width: 100% !important;
+  min-width: 0 !important;
   box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 input[type="date"]::-webkit-datetime-edit-fields-wrapper {
   max-width: 100% !important;
+  min-width: 0 !important;
   overflow: hidden !important;
   box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -1304,6 +1318,30 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 html[data-theme="fantasy"] input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.8) sepia(1) saturate(5) hue-rotate(5deg);
+}
+
+/* Universal Input Focus Reset: Eliminate sudden borders, rings, and outlines across all themes */
+html:not([data-theme="retro"]) input:focus,
+html:not([data-theme="retro"]) input:focus-visible,
+html:not([data-theme="retro"]) textarea:focus,
+html:not([data-theme="retro"]) textarea:focus-visible,
+html:not([data-theme="retro"]) select:focus,
+html:not([data-theme="retro"]) select:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+}
+
+html[data-theme="retro"] input:focus,
+html[data-theme="retro"] input:focus-visible,
+html[data-theme="retro"] textarea:focus,
+html[data-theme="retro"] textarea:focus-visible,
+html[data-theme="retro"] select:focus,
+html[data-theme="retro"] select:focus-visible {
+  outline: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
 }
 
 /* Hide mobile bubble button whenever any modal/dialog is active */
@@ -2131,9 +2169,8 @@ html[data-theme="ronin"] textarea::placeholder {
 html[data-theme="ronin"] input:focus,
 html[data-theme="ronin"] textarea:focus,
 html[data-theme="ronin"] select:focus {
-  border-color: #E52535 !important;
-  box-shadow: 0 0 14px rgba(229, 37, 53, 0.4), inset 0 0 6px rgba(229, 37, 53, 0.2) !important;
   outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Buttons: Blood Red Blade Gradients & High Impact */

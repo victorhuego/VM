@@ -71,9 +71,9 @@ export function TouchpadField({
             ? 'bg-zinc-100/90 text-zinc-500 border-zinc-200 cursor-not-allowed opacity-80'
             : 'bg-white cursor-pointer active:scale-[0.99] ' + (
               error || isOverBalance
-                ? 'border-rose-500 ring-2 ring-rose-200/60'
+                ? 'border-rose-500'
                 : isOpen
-                ? 'border-theme-accent ring-2 ring-theme-accent/20'
+                ? 'border-theme-accent'
                 : 'border-theme hover:border-theme-accent/80 hover:bg-zinc-50/50 shadow-2xs'
             )
         }`}

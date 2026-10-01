@@ -518,7 +518,7 @@ export function DebtModal({
                   />
                 </div>
 
-                <div className="space-y-1 min-w-0 w-full overflow-hidden">
+                <div className="space-y-1 min-w-0 w-full">
                   <label className="text-[11px] font-medium text-theme-main block truncate">
                     {lang === 'vi' ? 'Ngày ghi nhận' : 'Date recorded'}
                   </label>
@@ -526,7 +526,7 @@ export function DebtModal({
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="text-xs h-9 bg-theme-surface border-theme cursor-pointer w-full max-w-full min-w-0 block"
+                    className="text-xs h-9 bg-theme-surface border-theme cursor-pointer w-full max-w-full min-w-0 block box-border focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
                   />
                 </div>
               </div>

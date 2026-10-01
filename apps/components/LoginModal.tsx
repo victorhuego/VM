@@ -88,7 +88,7 @@ export function LoginModal({ open, lang, onLoginSuccess }: LoginModalProps) {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder={lang === 'vi' ? 'VD: nana' : 'E.g., nana'}
-              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-theme rounded-lg bg-theme-surface text-theme-main placeholder:text-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent/40 font-mono transition-all"
+              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-theme rounded-lg bg-theme-surface text-theme-main placeholder:text-theme-muted focus:outline-none focus:ring-0 font-mono transition-all"
             />
           </div>
 
@@ -103,7 +103,7 @@ export function LoginModal({ open, lang, onLoginSuccess }: LoginModalProps) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder={lang === 'vi' ? 'Nhập mật khẩu...' : 'Enter password...'}
-              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-theme rounded-lg bg-theme-surface text-theme-main placeholder:text-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent/40 font-mono transition-all"
+              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-theme rounded-lg bg-theme-surface text-theme-main placeholder:text-theme-muted focus:outline-none focus:ring-0 font-mono transition-all"
             />
           </div>
 

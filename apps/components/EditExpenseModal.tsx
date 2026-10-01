@@ -725,7 +725,7 @@ export function EditExpenseModal({
               <select
                 value={selectedDebtId}
                 onChange={(e) => setSelectedDebtId(e.target.value)}
-                className="w-full h-9 px-2.5 text-xs bg-white border border-amber-300 rounded-lg text-zinc-800 font-medium focus:ring-1 focus:ring-amber-400 cursor-pointer"
+                className="w-full h-9 px-2.5 text-xs bg-white border border-amber-300 rounded-lg text-zinc-800 font-medium focus:outline-none focus:ring-0 cursor-pointer"
               >
                 <option value="">{t.quick_exp_debt_other}</option>
                 {debts.map((d) => (
@@ -738,7 +738,7 @@ export function EditExpenseModal({
           )}
 
           {/* Date Input - Row 1 */}
-          <div className="space-y-1 w-full min-w-0 max-w-full overflow-hidden">
+          <div className="space-y-1 w-full min-w-0 max-w-full">
             <label className="text-[11px] font-semibold text-theme-main flex items-center gap-1 truncate">
               <Calendar className="w-3 h-3 text-theme-accent shrink-0" />
               <span>{t.date_label}</span>
@@ -748,12 +748,12 @@ export function EditExpenseModal({
               required
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9.5 w-full max-w-full min-w-0 block bg-theme-surface text-theme-main"
+              className="text-xs sm:text-sm border-theme h-9.5 w-full max-w-full min-w-0 block bg-theme-surface text-theme-main box-border focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
             />
           </div>
 
           {/* Note Input - Row 2 */}
-          <div className="space-y-1 w-full min-w-0 max-w-full overflow-hidden">
+          <div className="space-y-1 w-full min-w-0 max-w-full">
             <label className="text-[11px] font-semibold text-theme-main block truncate">
               {t.note_label}
             </label>
@@ -762,7 +762,7 @@ export function EditExpenseModal({
               placeholder={lang === 'vi' ? 'Nhập mô tả / ghi chú...' : 'Enter note or description...'}
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9.5 w-full bg-theme-surface text-theme-main placeholder:text-theme-muted"
+              className="text-xs sm:text-sm border-theme h-9.5 w-full bg-theme-surface text-theme-main placeholder:text-theme-muted focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
             />
           </div>
 

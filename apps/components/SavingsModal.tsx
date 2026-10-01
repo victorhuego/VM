@@ -380,7 +380,7 @@ export function SavingsModal({
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder={isWithdraw ? t.savings_note_withdraw_default : t.savings_note_deposit_default}
-                className="w-full px-3 py-1.5 text-xs rounded-lg bg-theme-surface border border-theme/60 text-theme-main placeholder:text-theme-muted focus:outline-hidden focus:ring-1 focus:ring-theme-accent transition-all"
+                className="w-full px-3 py-1.5 text-xs rounded-lg bg-theme-surface border border-theme/60 text-theme-main placeholder:text-theme-muted focus:outline-none focus:ring-0 transition-all"
               />
             </div>
           </div>
