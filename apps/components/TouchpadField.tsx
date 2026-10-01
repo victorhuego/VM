@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { LanguageType } from '@/lib/types'
-import { dictionary, formatMoney } from '@/lib/i18n'
+import { dictionary, formatMoney, getActiveCurrency, CURRENCY_METADATA } from '@/lib/i18n'
 import { NumericTouchpad } from '@/components/NumericTouchpad'
 import { Calculator } from 'lucide-react'
 
@@ -98,7 +98,7 @@ export function TouchpadField({
 
         <div className="flex items-center space-x-1.5 shrink-0 pl-2">
           <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-500 border border-zinc-200">
-            {t.currency_unit}
+            {CURRENCY_METADATA[getActiveCurrency()]?.symbol || t.currency_unit}
           </span>
         </div>
       </div>

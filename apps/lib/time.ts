@@ -2,6 +2,8 @@
  * Timezone and Date utilities for automatic client timezone detection.
  */
 
+import type { MomentItem } from './types'
+
 export function getClientTimeZone(): string {
   if (typeof Intl !== 'undefined' && Intl.DateTimeFormat) {
     return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Ho_Chi_Minh'
@@ -76,9 +78,97 @@ export function formatClientDayOfWeek(d: Date = new Date(), lang: 'vi' | 'en'): 
 }
 
 /**
- * Normalizes any date string or Excel/Sheets serial number into standard YYYY-MM-DD format
+ * Formats an ISO string, timestamp, or Date object into client local time (or target timezone).
+ * Supports both colon format (10:31) and Vietnamese 'h' format (10h31).
  */
-export function normalizeDateString(val: any): string {
+export function formatIsoToClientTime(
+  isoOrDate: string | Date | number,
+  options?: { timeZone?: string; format?: 'h' | 'colon'; withSeconds?: boolean }
+): string {
+  if (!isoOrDate && isoOrDate !== 0) return ''
+  const date = typeof isoOrDate === 'object' && isoOrDate instanceof Date
+    ? isoOrDate
+    : new Date(isoOrDate)
+  if (isNaN(date.getTime())) return ''
+
+  const timeZone = options?.timeZone || getClientTimeZone()
+  const format = options?.format || 'colon'
+  const withSeconds = options?.withSeconds ?? false
+
+  try {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: withSeconds ? '2-digit' : undefined,
+      hour12: false,
+    }).formatToParts(date)
+
+    const hour = parts.find((p) => p.type === 'hour')?.value || '00'
+    const minute = parts.find((p) => p.type === 'minute')?.value || '00'
+    const second = withSeconds ? parts.find((p) => p.type === 'second')?.value || '00' : ''
+
+    if (format === 'h') {
+      return withSeconds ? `${hour}h${minute}m${second}s` : `${hour}h${minute}`
+    }
+    return withSeconds ? `${hour}:${minute}:${second}` : `${hour}:${minute}`
+  } catch {
+    const h = String(date.getHours()).padStart(2, '0')
+    const m = String(date.getMinutes()).padStart(2, '0')
+    if (format === 'h') return `${h}h${m}`
+    return `${h}:${m}`
+  }
+}
+
+export function formatIsoToClientDate(
+  isoOrDate: string | Date | number,
+  options?: { timeZone?: string; format?: 'YYYY-MM-DD' | 'DD/MM/YYYY' | 'vi' | 'en' }
+): string {
+  if (!isoOrDate && isoOrDate !== 0) return ''
+  const date = typeof isoOrDate === 'object' && isoOrDate instanceof Date
+    ? isoOrDate
+    : new Date(isoOrDate)
+  if (isNaN(date.getTime())) return ''
+
+  const timeZone = options?.timeZone || getClientTimeZone()
+  const format = options?.format || 'YYYY-MM-DD'
+
+  try {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(date)
+
+    const year = parts.find((p) => p.type === 'year')?.value || '1970'
+    const month = parts.find((p) => p.type === 'month')?.value || '01'
+    const day = parts.find((p) => p.type === 'day')?.value || '01'
+
+    if (format === 'DD/MM/YYYY' || format === 'vi') {
+      return `${day}/${month}/${year}`
+    }
+    if (format === 'en') {
+      return date.toLocaleDateString('en-US', { timeZone, month: 'short', day: 'numeric', year: 'numeric' })
+    }
+    return `${year}-${month}-${day}`
+  } catch {
+    const y = date.getFullYear()
+    const m = String(date.getMonth() + 1).padStart(2, '0')
+    const d = String(date.getDate()).padStart(2, '0')
+    if (format === 'DD/MM/YYYY' || format === 'vi') return `${d}/${m}/${y}`
+    return `${y}-${m}-${d}`
+  }
+}
+
+/**
+ * Normalizes any date string or Excel/Sheets serial number into standard YYYY-MM-DD format
+ * with client timezone awareness for ISO timestamps.
+ */
+export function normalizeDateString(
+  val: any,
+  options?: { timeZone?: string }
+): string {
   if (!val) return ''
   const rawStr = String(val).trim()
   if (!rawStr) return ''
@@ -99,22 +189,17 @@ export function normalizeDateString(val: any): string {
     return `${y}-${m}-${d}`
   }
 
-  // YYYY.MM.DD or YYYY-MM-DD or YYYY/MM/DD (optionally followed by time)
-  const ymd = str.match(/^(\d{4})[\/.-](\d{1,2})[\/.-](\d{1,2})/)
-  if (ymd) {
+  // YYYY.MM.DD or YYYY-MM-DD or YYYY/MM/DD (without T/ISO suffix)
+  const ymd = str.match(/^(\d{4})[\/.-](\d{1,2})[\/.-](\d{1,2})(?!\s*T)/)
+  if (ymd && !str.includes('T')) {
     const [, y, m, d] = ymd
     return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`
   }
 
-  // ISO string with T (e.g. 2026-09-21T14:19:42.881Z)
+  // Full ISO string with T (e.g. 2026-10-01T03:31:52.851Z or 2026-09-21T14:19:42.881Z)
   if (str.includes('T')) {
-    const parsed = new Date(str)
-    if (!isNaN(parsed.getTime())) {
-      const y = parsed.getFullYear()
-      const m = String(parsed.getMonth() + 1).padStart(2, '0')
-      const d = String(parsed.getDate()).padStart(2, '0')
-      return `${y}-${m}-${d}`
-    }
+    const formatted = formatIsoToClientDate(str, { timeZone: options?.timeZone })
+    if (formatted) return formatted
   }
 
   // DD/MM/YYYY or DD-MM-YYYY
@@ -128,14 +213,18 @@ export function normalizeDateString(val: any): string {
 }
 
 /**
- * Normalizes any time value into standard HH:mm format (24H).
+ * Normalizes any time value into standard HH:mm or HHhMM format.
  * Handles:
  * - HH:mm or HH:mm:ss strings
+ * - ISO timestamps with UTC/Z (e.g. 2026-10-01T03:31:52.851Z) converted to client local time
  * - Excel/Google Sheets fractional day serial numbers (e.g. 0,86875 -> 20:51, 0,09444444444 -> 02:16)
  * - Serial datetimes with fraction (e.g. 46286.86875 -> 20:51)
  * - Embedded time inside datetime strings (e.g. "2026.09.21 20:51:30" -> "20:51")
  */
-export function normalizeTimeString(val: any): string {
+export function normalizeTimeString(
+  val: any,
+  options?: { timeZone?: string; format?: 'colon' | 'h'; withSeconds?: boolean }
+): string {
   if (!val && val !== 0) return ''
   const rawStr = String(val).trim()
   if (!rawStr) return ''
@@ -143,10 +232,22 @@ export function normalizeTimeString(val: any): string {
   // Replace comma with dot for numeric parsing
   const str = rawStr.replace(',', '.')
 
-  // Standard HH:mm or HH:mm:ss
+  // Standard HH:mm or HH:mm:ss without timezone offset
   const timeMatch = str.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/)
   if (timeMatch) {
-    return `${timeMatch[1].padStart(2, '0')}:${timeMatch[2]}`
+    const hour = timeMatch[1].padStart(2, '0')
+    const minute = timeMatch[2]
+    return options?.format === 'h' ? `${hour}h${minute}` : `${hour}:${minute}`
+  }
+
+  // Full ISO string with T and UTC 'Z' or offset (e.g. 2026-10-01T03:31:52.851Z)
+  if (str.includes('T') && (str.endsWith('Z') || /[+-]\d{2}(?::?\d{2})?$/.test(str))) {
+    const formatted = formatIsoToClientTime(str, {
+      timeZone: options?.timeZone,
+      format: options?.format || 'colon',
+      withSeconds: options?.withSeconds,
+    })
+    if (formatted) return formatted
   }
 
   // Decimal time fraction of day from Excel / Google Sheets (0 <= num < 1)
@@ -155,7 +256,9 @@ export function normalizeTimeString(val: any): string {
     const totalSeconds = Math.round(num * 86400)
     const hours = Math.floor(totalSeconds / 3600) % 24
     const minutes = Math.floor((totalSeconds % 3600) / 60)
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+    const h = String(hours).padStart(2, '0')
+    const m = String(minutes).padStart(2, '0')
+    return options?.format === 'h' ? `${h}h${m}` : `${h}:${m}`
   }
 
   // Serial datetime where time is fractional part (e.g. 46286.86875)
@@ -165,17 +268,60 @@ export function normalizeTimeString(val: any): string {
       const totalSeconds = Math.round(frac * 86400)
       const hours = Math.floor(totalSeconds / 3600) % 24
       const minutes = Math.floor((totalSeconds % 3600) / 60)
-      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+      const h = String(hours).padStart(2, '0')
+      const m = String(minutes).padStart(2, '0')
+      return options?.format === 'h' ? `${h}h${m}` : `${h}:${m}`
     }
   }
 
-  // Date string containing time (e.g. 2026.09.21 20:51:30 or 2026-09-21T20:51:00.000Z)
+  // Date string containing time (e.g. 2026.09.21 20:51:30 or 2026-09-21T20:51:00)
   const embeddedTime = str.match(/(?:T|\s)(\d{1,2}):(\d{2})/)
   if (embeddedTime) {
-    return `${embeddedTime[1].padStart(2, '0')}:${embeddedTime[2]}`
+    const h = embeddedTime[1].padStart(2, '0')
+    const m = embeddedTime[2]
+    return options?.format === 'h' ? `${h}h${m}` : `${h}:${m}`
   }
 
   return rawStr
+}
+
+/**
+ * Validates timezone conversions for DB timestamps across target regions:
+ * - South Korea (Asia/Seoul, UTC+9): 12h31 / 12:31
+ * - Vietnam (Asia/Ho_Chi_Minh, UTC+7): 10h31 / 10:31
+ * - Client local device timezone
+ */
+export function testClientTimeZoneConversion(sampleIso: string = '2026-10-01T03:31:52.851Z'): {
+  iso: string
+  korea: { timeZone: string; colon: string; h: string; date: string }
+  vietnam: { timeZone: string; colon: string; h: string; date: string }
+  client: { timeZone: string; colon: string; h: string; date: string }
+  passed: boolean
+} {
+  const koreaTime = formatIsoToClientTime(sampleIso, { timeZone: 'Asia/Seoul', format: 'h' })
+  const koreaColon = formatIsoToClientTime(sampleIso, { timeZone: 'Asia/Seoul', format: 'colon' })
+  const koreaDate = formatIsoToClientDate(sampleIso, { timeZone: 'Asia/Seoul' })
+
+  const vietnamTime = formatIsoToClientTime(sampleIso, { timeZone: 'Asia/Ho_Chi_Minh', format: 'h' })
+  const vietnamColon = formatIsoToClientTime(sampleIso, { timeZone: 'Asia/Ho_Chi_Minh', format: 'colon' })
+  const vietnamDate = formatIsoToClientDate(sampleIso, { timeZone: 'Asia/Ho_Chi_Minh' })
+
+  const clientTz = getClientTimeZone()
+  const clientTime = formatIsoToClientTime(sampleIso, { format: 'h' })
+  const clientColon = formatIsoToClientTime(sampleIso, { format: 'colon' })
+  const clientDate = formatIsoToClientDate(sampleIso)
+
+  const koreaPassed = koreaTime === '12h31' && koreaColon === '12:31'
+  const vietnamPassed = vietnamTime === '10h31' && vietnamColon === '10:31'
+  const passed = koreaPassed && vietnamPassed
+
+  return {
+    iso: sampleIso,
+    korea: { timeZone: 'Asia/Seoul', colon: koreaColon, h: koreaTime, date: koreaDate },
+    vietnam: { timeZone: 'Asia/Ho_Chi_Minh', colon: vietnamColon, h: vietnamTime, date: vietnamDate },
+    client: { timeZone: clientTz, colon: clientColon, h: clientTime, date: clientDate },
+    passed,
+  }
 }
 
 /**
@@ -234,6 +380,76 @@ export function compareMomentsDescending<T extends { id: string; date: string; t
     return timeB - timeA
   }
   return b.id.localeCompare(a.id)
+}
+
+/**
+ * Normalizes a MomentItem to the client's local timezone using createdAt or id timestamp.
+ * In Vietnam (Asia/Ho_Chi_Minh): a moment with createdAt 2026-10-01T03:31:52.851Z renders as 10:31
+ * In Korea (Asia/Seoul): it renders as 12:31
+ */
+export function normalizeMomentToClient(
+  item: MomentItem,
+  timeZone?: string
+): MomentItem {
+  const tz = timeZone || getClientTimeZone()
+  let iso = item.createdAt
+  if (!iso && item.id && item.id.startsWith('mom-')) {
+    const ts = Number(item.id.replace('mom-', ''))
+    if (!isNaN(ts) && ts > 1000000000000) {
+      iso = new Date(ts).toISOString()
+    }
+  }
+
+  if (iso) {
+    const clientTime = formatIsoToClientTime(iso, { timeZone: tz, format: 'colon' })
+    const clientDate = formatIsoToClientDate(iso, { timeZone: tz })
+    return {
+      ...item,
+      time: clientTime || item.time,
+      date: clientDate || item.date,
+      createdAt: iso,
+    }
+  }
+
+  return item
+}
+
+export function getMomentClientTime(
+  item: MomentItem,
+  options?: { format?: 'colon' | 'h'; withSeconds?: boolean; timeZone?: string }
+): string {
+  const tz = options?.timeZone || getClientTimeZone()
+  let iso = item.createdAt
+  if (!iso && item.id && item.id.startsWith('mom-')) {
+    const ts = Number(item.id.replace('mom-', ''))
+    if (!isNaN(ts) && ts > 1000000000000) {
+      iso = new Date(ts).toISOString()
+    }
+  }
+  if (iso) {
+    const formatted = formatIsoToClientTime(iso, { ...options, timeZone: tz })
+    if (formatted) return formatted
+  }
+  return normalizeTimeString(item.time, { ...options, timeZone: tz }) || item.time || ''
+}
+
+export function getMomentClientDate(
+  item: MomentItem,
+  options?: { timeZone?: string; format?: 'YYYY-MM-DD' | 'DD/MM/YYYY' | 'vi' | 'en' }
+): string {
+  const tz = options?.timeZone || getClientTimeZone()
+  let iso = item.createdAt
+  if (!iso && item.id && item.id.startsWith('mom-')) {
+    const ts = Number(item.id.replace('mom-', ''))
+    if (!isNaN(ts) && ts > 1000000000000) {
+      iso = new Date(ts).toISOString()
+    }
+  }
+  if (iso) {
+    const formatted = formatIsoToClientDate(iso, { ...options, timeZone: tz })
+    if (formatted) return formatted
+  }
+  return normalizeDateString(item.date, { timeZone: tz }) || item.date || ''
 }
 
 

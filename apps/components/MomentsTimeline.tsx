@@ -6,7 +6,14 @@ import { LanguageType, MomentItem, UserProfile } from '@/lib/types'
 import { dictionary, moodMetadata } from '@/lib/i18n'
 import { CalendarClock, Camera, Maximize2, Trash2, History, Calendar, User, Sparkles, Heart } from 'lucide-react'
 import { MoodIcon } from '@/components/MoodIcon'
-import { getClientLocalDateString, getClientYesterdayDateString, normalizeDateString, compareMomentsDescending } from '@/lib/time'
+import {
+  getClientLocalDateString,
+  getClientYesterdayDateString,
+  normalizeDateString,
+  compareMomentsDescending,
+  getMomentClientTime,
+  getMomentClientDate,
+} from '@/lib/time'
 
 interface UserFilterOption {
   value: string
@@ -96,15 +103,15 @@ export function MomentsTimeline({
 
   const todayMoments = useMemo(() => {
     return filteredMoments
-      .filter((item) => normalizeDateString(item.date) === todayStr)
+      .filter((item) => getMomentClientDate(item) === todayStr)
       .sort(compareMomentsDescending)
   }, [filteredMoments, todayStr])
 
   const pastMomentsGrouped = useMemo(() => {
-    const past = filteredMoments.filter((item) => normalizeDateString(item.date) !== todayStr)
+    const past = filteredMoments.filter((item) => getMomentClientDate(item) !== todayStr)
     const groups: Record<string, MomentItem[]> = {}
     for (const item of past) {
-      const dKey = normalizeDateString(item.date) || 'unknown'
+      const dKey = getMomentClientDate(item) || 'unknown'
       if (!groups[dKey]) groups[dKey] = []
       groups[dKey].push(item)
     }
@@ -169,6 +176,7 @@ export function MomentsTimeline({
   const renderMomentCard = (item: MomentItem, isFirst: boolean) => {
     const moodInfo = moodMetadata[item.mood] || { vi: item.mood, en: item.mood, icon: 'Leaf' }
     const isAuthor = (Boolean(item.user) && item.user === currentUser?.username) || (!item.user && currentUser?.username === 'jeandev')
+    const displayTime = getMomentClientTime(item) || item.time
 
     return (
       <div
@@ -189,7 +197,9 @@ export function MomentsTimeline({
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-xs">
             <div className="flex items-center space-x-2 flex-wrap gap-y-1">
-              <span className="font-mono text-zinc-600 font-medium">{item.time}</span>
+              <span className="font-mono text-theme-main font-semibold px-2 py-0.5 rounded-md bg-theme-surface border border-theme shadow-2xs text-xs">
+                {displayTime}
+              </span>
               {/* Author badge: 'Bạn' / 'You' or @username */}
               {isAuthor ? (
                 <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
@@ -407,8 +417,9 @@ export function MomentsTimeline({
             <div className="flex items-center space-x-1 p-0.5 bg-theme-surface rounded-lg border border-theme text-[11px] font-sans">
               <button
                 type="button"
+                data-active={filterMode === 'today'}
                 onClick={() => setFilterMode('today')}
-                className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer btn-spring ${
+                className={`timeline-filter-btn px-2.5 py-0.5 rounded-md transition-all cursor-pointer btn-spring ${
                   filterMode === 'today'
                     ? 'timeline-filter-active btn-theme-gradient text-white font-semibold shadow-2xs'
                     : 'text-theme-muted hover:text-theme-main'
@@ -418,8 +429,9 @@ export function MomentsTimeline({
               </button>
               <button
                 type="button"
+                data-active={filterMode === 'all'}
                 onClick={() => setFilterMode('all')}
-                className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer btn-spring ${
+                className={`timeline-filter-btn px-2.5 py-0.5 rounded-md transition-all cursor-pointer btn-spring ${
                   filterMode === 'all'
                     ? 'timeline-filter-active btn-theme-gradient text-white font-semibold shadow-2xs'
                     : 'text-theme-muted hover:text-theme-main'

@@ -298,6 +298,7 @@ export function ExpenseList({
         <div className="flex items-center bg-theme-surface period-switcher-container p-1 rounded-xl border border-theme gap-1 self-start sm:self-auto shrink-0">
           <button
             type="button"
+            data-active={period === 'month'}
             onClick={() => setPeriod('month')}
             className={`px-3 sm:px-3.5 py-1.5 rounded-lg period-tab-btn text-xs font-semibold transition-all cursor-pointer ${
               period === 'month'
@@ -309,6 +310,7 @@ export function ExpenseList({
           </button>
           <button
             type="button"
+            data-active={period === 'day'}
             onClick={() => setPeriod('day')}
             className={`px-3 sm:px-3.5 py-1.5 rounded-lg period-tab-btn text-xs font-semibold transition-all cursor-pointer ${
               period === 'day'
@@ -320,6 +322,7 @@ export function ExpenseList({
           </button>
           <button
             type="button"
+            data-active={period === 'year'}
             onClick={() => setPeriod('year')}
             className={`px-3 sm:px-3.5 py-1.5 rounded-lg period-tab-btn text-xs font-semibold transition-all cursor-pointer ${
               period === 'year'
@@ -374,10 +377,11 @@ export function ExpenseList({
             <div className="flex items-center gap-1.5 flex-wrap min-w-0 max-w-full">
               <button
                 type="button"
+                data-active={selectedDay === todayStr}
                 onClick={() => setSelectedDay(todayStr)}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
+                className={`period-day-btn px-2.5 py-1 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
                   selectedDay === todayStr
-                    ? 'bg-theme-card border-theme font-semibold text-theme-main shadow-2xs'
+                    ? 'period-day-active bg-theme-card border-theme font-semibold text-theme-main shadow-2xs'
                     : 'bg-transparent border-transparent text-theme-muted hover:text-theme-main'
                 }`}
               >
@@ -385,10 +389,11 @@ export function ExpenseList({
               </button>
               <button
                 type="button"
+                data-active={selectedDay === yesterdayStr}
                 onClick={() => setSelectedDay(yesterdayStr)}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
+                className={`period-day-btn px-2.5 py-1 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
                   selectedDay === yesterdayStr
-                    ? 'bg-theme-card border-theme font-semibold text-theme-main shadow-2xs'
+                    ? 'period-day-active bg-theme-card border-theme font-semibold text-theme-main shadow-2xs'
                     : 'bg-transparent border-transparent text-theme-muted hover:text-theme-main'
                 }`}
               >
@@ -495,10 +500,11 @@ export function ExpenseList({
             <button
               key={key}
               type="button"
+              data-active={isSelected}
               onClick={() => setCategoryFilter(key)}
-              className={`px-2.5 py-1 min-h-[30px] rounded-md text-xs font-medium transition-all shrink-0 cursor-pointer active:opacity-60 whitespace-nowrap flex items-center justify-center ${
+              className={`filter-pill-btn px-2.5 py-1 min-h-[30px] rounded-md text-xs font-medium transition-all shrink-0 cursor-pointer active:opacity-60 whitespace-nowrap flex items-center justify-center ${
                 isSelected
-                  ? 'btn-theme-gradient text-white shadow-xs font-semibold'
+                  ? 'filter-pill-active btn-theme-gradient text-white shadow-xs font-semibold'
                   : 'bg-theme-surface text-theme-muted hover:text-theme-main border border-theme'
               }`}
             >

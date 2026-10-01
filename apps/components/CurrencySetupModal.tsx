@@ -84,10 +84,11 @@ export function CurrencySetupModal({ open, lang, username, onConfirm }: Currency
               return (
                 <div
                   key={code}
+                  data-active={isSelected}
                   onClick={() => setSelectedCurrency(code)}
-                  className={`p-3.5 rounded-xl border-2 transition-all cursor-pointer flex items-center justify-between ${
+                  className={`currency-card p-3.5 rounded-xl border-2 transition-all cursor-pointer flex items-center justify-between ${
                     isSelected
-                      ? 'border-theme-accent bg-theme-surface/70 shadow-xs'
+                      ? 'currency-card-active border-theme-accent bg-theme-surface/70 shadow-xs'
                       : 'border-theme/60 bg-theme-surface hover:bg-theme-surface/80'
                   }`}
                 >

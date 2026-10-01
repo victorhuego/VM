@@ -69,7 +69,7 @@ export function AppHeader({
   }))
 
   return (
-    <header className="w-full border-b border-theme bg-background/95 backdrop-blur-md sticky top-0 z-40 transition-colors pt-[env(safe-area-inset-top,0px)]">
+    <header className="w-full border-b border-theme bg-background sticky top-0 z-40 transition-colors pt-[env(safe-area-inset-top,0px)]">
       {currentTheme === 'cozy' && (
         <div className="h-1.5 sm:h-2 w-full cafe-awning-stripes" />
       )}
@@ -146,12 +146,13 @@ export function AppHeader({
           {/* Tab Navigation (Desktop) */}
           <nav className="hidden sm:flex items-center space-x-1.5">
             <button
+              data-active={currentTab === 'moments'}
               onClick={() => onTabChange('moments')}
-              className={`px-3 py-1.5 text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer ${
+              className={`header-tab-btn px-3 py-1.5 text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer ${
                 currentTab === 'moments'
                   ? currentTheme === 'ronin'
-                    ? 'bg-[#151922] text-white border border-[#242A36] border-b-2 !border-b-[#E52535] shadow-[0_0_12px_rgba(229,37,53,0.3)] katana-cut-tr font-bold'
-                    : 'bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold rounded-md'
+                    ? 'header-tab-active bg-[#151922] text-white border border-[#242A36] border-b-2 !border-b-[#E52535] shadow-[0_0_12px_rgba(229,37,53,0.3)] katana-cut-tr font-bold'
+                    : 'header-tab-active bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold rounded-md'
                   : currentTheme === 'ronin'
                   ? 'text-zinc-400 hover:text-white hover:bg-[#10131B]'
                   : 'text-zinc-500 hover:text-theme-main hover:bg-theme-surface rounded-md'
@@ -161,12 +162,13 @@ export function AppHeader({
               <span>{t.tab_moments}</span>
             </button>
             <button
+              data-active={currentTab === 'expenses'}
               onClick={() => onTabChange('expenses')}
-              className={`px-3 py-1.5 text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer ${
+              className={`header-tab-btn px-3 py-1.5 text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer ${
                 currentTab === 'expenses'
                   ? currentTheme === 'ronin'
-                    ? 'bg-[#151922] text-white border border-[#242A36] border-b-2 !border-b-[#E52535] shadow-[0_0_12px_rgba(229,37,53,0.3)] katana-cut-tr font-bold'
-                    : 'bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold rounded-md'
+                    ? 'header-tab-active bg-[#151922] text-white border border-[#242A36] border-b-2 !border-b-[#E52535] shadow-[0_0_12px_rgba(229,37,53,0.3)] katana-cut-tr font-bold'
+                    : 'header-tab-active bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold rounded-md'
                   : currentTheme === 'ronin'
                   ? 'text-zinc-400 hover:text-white hover:bg-[#10131B]'
                   : 'text-zinc-500 hover:text-theme-main hover:bg-theme-surface rounded-md'
@@ -176,12 +178,13 @@ export function AppHeader({
               <span>{t.tab_expenses}</span>
             </button>
             <button
+              data-active={currentTab === 'users'}
               onClick={() => onTabChange('users')}
-              className={`px-3 py-1.5 text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer ${
+              className={`header-tab-btn px-3 py-1.5 text-xs font-medium transition-all flex items-center space-x-1.5 cursor-pointer ${
                 currentTab === 'users'
                   ? currentTheme === 'ronin'
-                    ? 'bg-[#151922] text-white border border-[#242A36] border-b-2 !border-b-[#E52535] shadow-[0_0_12px_rgba(229,37,53,0.3)] katana-cut-tr font-bold'
-                    : 'bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold rounded-md'
+                    ? 'header-tab-active bg-[#151922] text-white border border-[#242A36] border-b-2 !border-b-[#E52535] shadow-[0_0_12px_rgba(229,37,53,0.3)] katana-cut-tr font-bold'
+                    : 'header-tab-active bg-theme-surface text-theme-main border border-theme shadow-xs font-semibold rounded-md'
                   : currentTheme === 'ronin'
                   ? 'text-zinc-400 hover:text-white hover:bg-[#10131B]'
                   : 'text-zinc-500 hover:text-theme-main hover:bg-theme-surface rounded-md'
@@ -380,10 +383,11 @@ export function AppHeader({
           <div className="hidden sm:flex items-center bg-theme-surface p-0.5 rounded-md text-xs font-mono border border-theme">
             <button
               type="button"
+              data-active={currentLang === 'vi'}
               onClick={() => onLangChange('vi')}
-              className={`px-2 py-0.5 rounded text-xs transition-all cursor-pointer active:opacity-60 ${
+              className={`lang-toggle-btn px-2 py-0.5 rounded text-xs transition-all cursor-pointer active:opacity-60 ${
                 currentLang === 'vi'
-                  ? 'btn-theme-gradient text-white font-semibold shadow-xs'
+                  ? 'lang-toggle-active btn-theme-gradient text-white font-semibold shadow-xs'
                   : 'text-theme-muted hover:text-theme-main'
               }`}
             >
@@ -391,10 +395,11 @@ export function AppHeader({
             </button>
             <button
               type="button"
+              data-active={currentLang === 'en'}
               onClick={() => onLangChange('en')}
-              className={`px-2 py-0.5 rounded text-xs transition-all cursor-pointer active:opacity-60 ${
+              className={`lang-toggle-btn px-2 py-0.5 rounded text-xs transition-all cursor-pointer active:opacity-60 ${
                 currentLang === 'en'
-                  ? 'btn-theme-gradient text-white font-semibold shadow-xs'
+                  ? 'lang-toggle-active btn-theme-gradient text-white font-semibold shadow-xs'
                   : 'text-theme-muted hover:text-theme-main'
               }`}
             >

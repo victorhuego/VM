@@ -335,10 +335,11 @@ export function DebtModal({
             <div className="p-1 bg-theme-surface rounded-xl flex items-center gap-1 border border-theme shrink-0 text-xs">
               <button
                 type="button"
+                data-active={activeTab === 'all'}
                 onClick={() => setActiveTab('all')}
-                className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
+                className={`debt-tab-btn px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
                   activeTab === 'all'
-                    ? 'bg-theme-card text-theme-main font-bold shadow-xs'
+                    ? 'debt-tab-active bg-theme-card text-theme-main font-bold shadow-xs'
                     : 'text-zinc-500 hover:text-zinc-800'
                 }`}
               >
@@ -346,10 +347,11 @@ export function DebtModal({
               </button>
               <button
                 type="button"
+                data-active={activeTab === 'payable'}
                 onClick={() => setActiveTab('payable')}
-                className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
+                className={`debt-tab-btn px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
                   activeTab === 'payable'
-                    ? 'bg-theme-card text-amber-500 font-bold shadow-xs'
+                    ? 'debt-tab-active bg-theme-card text-amber-500 font-bold shadow-xs'
                     : 'text-zinc-500 hover:text-zinc-800'
                 }`}
               >
@@ -357,10 +359,11 @@ export function DebtModal({
               </button>
               <button
                 type="button"
+                data-active={activeTab === 'receivable'}
                 onClick={() => setActiveTab('receivable')}
-                className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
+                className={`debt-tab-btn px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
                   activeTab === 'receivable'
-                    ? 'bg-theme-card text-emerald-500 font-bold shadow-xs'
+                    ? 'debt-tab-active bg-theme-card text-emerald-500 font-bold shadow-xs'
                     : 'text-zinc-500 hover:text-zinc-800'
                 }`}
               >
@@ -424,10 +427,11 @@ export function DebtModal({
                 <div className="grid grid-cols-2 gap-2">
                     <button
                     type="button"
+                    data-active={addType === 'payable'}
                     onClick={() => setAddType('payable')}
-                    className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
+                    className={`debt-type-btn p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
                       addType === 'payable'
-                        ? 'border-amber-500 bg-amber-500/10 text-amber-500 font-bold shadow-xs ring-1 ring-amber-400'
+                        ? 'debt-type-active border-amber-500 bg-amber-500/10 text-amber-500 font-bold shadow-xs ring-1 ring-amber-400'
                         : 'border-theme bg-theme-surface text-zinc-400 hover:text-zinc-200'
                     }`}
                   >
@@ -440,10 +444,11 @@ export function DebtModal({
 
                   <button
                     type="button"
+                    data-active={addType === 'receivable'}
                     onClick={() => setAddType('receivable')}
-                    className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
+                    className={`debt-type-btn p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
                       addType === 'receivable'
-                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold shadow-xs ring-1 ring-emerald-400'
+                        ? 'debt-type-active border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold shadow-xs ring-1 ring-emerald-400'
                         : 'border-theme bg-theme-surface text-zinc-400 hover:text-zinc-200'
                     }`}
                   >
@@ -595,10 +600,11 @@ export function DebtModal({
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
+                    data-active={paySource === 'account'}
                     onClick={() => setPaySource('account')}
-                    className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
+                    className={`debt-source-card p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
                       paySource === 'account'
-                        ? 'border-blue-500 bg-blue-500/10 text-blue-400 font-bold shadow-xs'
+                        ? 'debt-source-active border-blue-500 bg-blue-500/10 text-blue-400 font-bold shadow-xs'
                         : 'border-amber-500/30 bg-theme-surface text-zinc-400'
                     }`}
                   >
@@ -615,10 +621,11 @@ export function DebtModal({
 
                   <button
                     type="button"
+                    data-active={paySource === 'cash'}
                     onClick={() => setPaySource('cash')}
-                    className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
+                    className={`debt-source-card p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
                       paySource === 'cash'
-                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold shadow-xs'
+                        ? 'debt-source-active border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold shadow-xs'
                         : 'border-amber-500/30 bg-theme-surface text-zinc-400'
                     }`}
                   >
@@ -768,10 +775,11 @@ export function DebtModal({
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
+                    data-active={collectSource === 'account'}
                     onClick={() => setCollectSource('account')}
-                    className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
+                    className={`debt-source-card p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
                       collectSource === 'account'
-                        ? 'border-blue-500 bg-blue-500/10 text-blue-400 font-bold shadow-xs ring-1 ring-blue-400'
+                        ? 'debt-source-active border-blue-500 bg-blue-500/10 text-blue-400 font-bold shadow-xs ring-1 ring-blue-400'
                         : 'border-emerald-500/30 bg-theme-surface text-zinc-400'
                     }`}
                   >
@@ -788,10 +796,11 @@ export function DebtModal({
 
                   <button
                     type="button"
+                    data-active={collectSource === 'cash'}
                     onClick={() => setCollectSource('cash')}
-                    className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
+                    className={`debt-source-card p-2 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-2 ${
                       collectSource === 'cash'
-                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold shadow-xs ring-1 ring-emerald-400'
+                        ? 'debt-source-active border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold shadow-xs ring-1 ring-emerald-400'
                         : 'border-emerald-500/30 bg-theme-surface text-zinc-400'
                     }`}
                   >

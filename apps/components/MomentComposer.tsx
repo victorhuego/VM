@@ -131,10 +131,11 @@ export function MomentComposer({ lang, onAddMoment, existingMoments = [] }: Mome
                 <button
                   key={key}
                   type="button"
+                  data-active={isSelected}
                   onClick={() => setMood(key)}
-                  className={`w-full px-2 py-2 min-h-[40px] rounded-xl text-xs font-medium transition-all duration-200 flex items-center justify-center space-x-1.5 cursor-pointer btn-spring ${
+                  className={`mood-btn w-full px-2 py-2 min-h-[40px] rounded-xl text-xs font-medium transition-all duration-200 flex items-center justify-center space-x-1.5 cursor-pointer btn-spring ${
                     isSelected
-                      ? 'btn-theme-gradient text-white shadow-md font-semibold border border-white/20 ring-2 ring-theme-accent/30 scale-[1.02]'
+                      ? 'mood-btn-active btn-theme-gradient text-white shadow-md font-semibold border border-white/20 ring-2 ring-theme-accent/30 scale-[1.02]'
                       : 'border border-theme bg-theme-surface/50 hover:bg-theme-surface text-theme-main shadow-2xs hover:border-theme-border-hover'
                   }`}
                 >

@@ -259,10 +259,11 @@ export function SavingsModal({
           <div className="grid grid-cols-2 p-1 rounded-xl bg-theme-surface border border-theme/80 gap-1">
             <button
               type="button"
+              data-active={activeTab === 'withdraw'}
               onClick={() => setActiveTab('withdraw')}
-              className={`py-1.5 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              className={`savings-tab-btn py-1.5 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 activeTab === 'withdraw'
-                  ? 'bg-amber-600 text-white shadow-xs'
+                  ? 'savings-tab-active bg-amber-600 text-white shadow-xs'
                   : 'text-theme-muted hover:text-theme-main'
               }`}
             >
@@ -271,10 +272,11 @@ export function SavingsModal({
             </button>
             <button
               type="button"
+              data-active={activeTab === 'deposit'}
               onClick={() => setActiveTab('deposit')}
-              className={`py-1.5 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              className={`savings-tab-btn py-1.5 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 activeTab === 'deposit'
-                  ? 'bg-blue-600 text-white shadow-xs'
+                  ? 'savings-tab-active bg-blue-600 text-white shadow-xs'
                   : 'text-theme-muted hover:text-theme-main'
               }`}
             >

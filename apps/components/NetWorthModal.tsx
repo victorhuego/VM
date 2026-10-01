@@ -178,11 +178,11 @@ export function NetWorthModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl bg-theme-card border-theme shadow-modal p-3 sm:p-6 md:p-7 rounded-2xl md:rounded-3xl max-h-[92vh] md:max-h-[88vh] flex flex-col overflow-hidden">
-        {/* Header & Responsive Tab Switcher */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-theme pb-3.5 shrink-0">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-theme-surface border border-theme flex items-center justify-center text-theme-accent shrink-0 shadow-2xs">
-              <PieChart className="w-5 h-5" />
+        {/* Modal Window Title Bar */}
+        <div className="flex items-center justify-between border-b border-theme pb-2.5 sm:pb-3 shrink-0">
+          <div className="flex items-center space-x-2.5 sm:space-x-3">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-theme-surface border border-theme flex items-center justify-center text-theme-accent shrink-0 shadow-2xs">
+              <PieChart className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
               <DialogTitle className="text-sm sm:text-base md:text-lg font-bold text-theme-main">
@@ -193,46 +193,46 @@ export function NetWorthModal({
               </DialogDescription>
             </div>
           </div>
+        </div>
 
-          {/* Tab Switcher */}
-          <div className="grid grid-cols-3 p-1 bg-theme-surface/80 rounded-xl border border-theme shrink-0 sm:w-96">
-            <button
-              type="button"
-              onClick={() => setActiveTab('overview')}
-              className={`py-2 px-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                activeTab === 'overview'
-                  ? 'bg-theme-card text-theme-main shadow-xs border border-theme/80 font-bold'
-                  : 'text-zinc-500 hover:text-zinc-800'
-              }`}
-            >
-              <PieChart className="w-3.5 h-3.5 text-theme-accent shrink-0" />
-              <span className="truncate">{t.networth_tab_overview}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('initial')}
-              className={`py-2 px-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                activeTab === 'initial'
-                  ? 'bg-theme-card text-emerald-500 shadow-xs border border-emerald-500/40 font-bold'
-                  : 'text-zinc-500 hover:text-zinc-800'
-              }`}
-            >
-              <Wallet className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-              <span className="truncate">{t.networth_tab_initial}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('reconcile')}
-              className={`py-2 px-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                activeTab === 'reconcile'
-                  ? 'bg-theme-card text-purple-400 shadow-xs border border-purple-500/40 font-bold'
-                  : 'text-zinc-500 hover:text-zinc-800'
-              }`}
-            >
-              <Scale className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-              <span className="truncate">{t.networth_tab_reconcile}</span>
-            </button>
-          </div>
+        {/* Responsive Tab Switcher */}
+        <div className="networth-tab-container grid grid-cols-3 p-1 bg-theme-surface/80 rounded-xl border border-theme shrink-0 mt-1">
+          <button
+            type="button"
+            onClick={() => setActiveTab('overview')}
+            className={`networth-tab-btn py-2 px-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              activeTab === 'overview'
+                ? 'networth-tab-active bg-theme-card text-theme-main shadow-xs border border-theme/80 font-bold'
+                : 'text-zinc-500 hover:text-zinc-800'
+            }`}
+          >
+            <PieChart className="w-3.5 h-3.5 text-theme-accent shrink-0" />
+            <span className="truncate">{t.networth_tab_overview}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('initial')}
+            className={`networth-tab-btn py-2 px-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              activeTab === 'initial'
+                ? 'networth-tab-active bg-theme-card text-emerald-600 shadow-xs border border-emerald-500/40 font-bold'
+                : 'text-zinc-500 hover:text-zinc-800'
+            }`}
+          >
+            <Wallet className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <span className="truncate">{t.networth_tab_initial}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('reconcile')}
+            className={`networth-tab-btn py-2 px-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              activeTab === 'reconcile'
+                ? 'networth-tab-active bg-theme-card text-purple-600 shadow-xs border border-purple-500/40 font-bold'
+                : 'text-zinc-500 hover:text-zinc-800'
+            }`}
+          >
+            <Scale className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+            <span className="truncate">{t.networth_tab_reconcile}</span>
+          </button>
         </div>
 
         {/* Modal Body Container */}
@@ -575,9 +575,9 @@ export function NetWorthModal({
                       <button
                         type="button"
                         onClick={() => setReconcileSource('cash')}
-                        className={`p-2 sm:p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-1 sm:gap-1.5 ${
+                        className={`reconcile-source-card p-2 sm:p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-1 sm:gap-1.5 ${
                           reconcileSource === 'cash'
-                            ? 'border-emerald-500 bg-emerald-50/80 text-emerald-900 font-bold shadow-xs ring-1 ring-emerald-400/40'
+                            ? 'reconcile-source-active border-emerald-500 bg-emerald-50/80 text-emerald-900 font-bold shadow-xs ring-1 ring-emerald-400/40'
                             : 'border-theme bg-theme-surface text-theme-muted hover:bg-theme-border/30'
                         }`}
                       >
@@ -610,9 +610,9 @@ export function NetWorthModal({
                       <button
                         type="button"
                         onClick={() => setReconcileSource('account')}
-                        className={`p-2 sm:p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-1 sm:gap-1.5 ${
+                        className={`reconcile-source-card p-2 sm:p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-1 sm:gap-1.5 ${
                           reconcileSource === 'account'
-                            ? 'border-blue-500 bg-blue-50/80 text-blue-900 font-bold shadow-xs ring-1 ring-blue-400/40'
+                            ? 'reconcile-source-active border-blue-500 bg-blue-50/80 text-blue-900 font-bold shadow-xs ring-1 ring-blue-400/40'
                             : 'border-theme bg-theme-surface text-theme-muted hover:bg-theme-border/30'
                         }`}
                       >
@@ -645,9 +645,9 @@ export function NetWorthModal({
                       <button
                         type="button"
                         onClick={() => setReconcileSource('savings')}
-                        className={`p-2 sm:p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-1.5 ${
+                        className={`reconcile-source-card p-2 sm:p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-1.5 ${
                           reconcileSource === 'savings'
-                            ? 'border-amber-500 bg-amber-50/80 text-amber-900 font-bold shadow-xs ring-1 ring-amber-400/40'
+                            ? 'reconcile-source-active border-amber-500 bg-amber-50/80 text-amber-900 font-bold shadow-xs ring-1 ring-amber-400/40'
                             : 'border-theme bg-theme-surface text-theme-muted hover:bg-theme-border/30'
                         }`}
                       >
@@ -808,16 +808,18 @@ export function NetWorthModal({
           )}
         </div>
 
-        {/* Footer */}
-        <div className="pt-3 border-t border-theme/60 flex items-center justify-end shrink-0">
-          <button
-            type="button"
-            onClick={() => onOpenChange(false)}
-            className="px-4 py-1.5 rounded-lg border border-theme text-xs font-medium text-theme-main bg-theme-surface hover:bg-theme-border/30 cursor-pointer shadow-2xs transition-all"
-          >
-            {lang === 'vi' ? 'Đóng' : 'Close'}
-          </button>
-        </div>
+        {/* Footer (Only for Overview tab since Initial and Reconcile tabs have their own submit/cancel actions) */}
+        {activeTab === 'overview' && (
+          <div className="pt-3 border-t border-theme/60 flex items-center justify-end shrink-0">
+            <button
+              type="button"
+              onClick={() => onOpenChange(false)}
+              className="px-4 py-1.5 rounded-lg border border-theme text-xs font-medium text-theme-main bg-theme-surface hover:bg-theme-border/30 cursor-pointer shadow-2xs transition-all"
+            >
+              {lang === 'vi' ? 'Đóng' : 'Close'}
+            </button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   )

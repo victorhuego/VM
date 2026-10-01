@@ -18,8 +18,8 @@ export const themeTopBarConfig: Record<ThemeType, ThemeColorConfig> = {
     statusBarStyle: 'default',
   },
   fantasy: {
-    topColor: '#0D131F',
-    rootBg: '#0D131F',
+    topColor: '#0D121D',
+    rootBg: '#0D121D',
     statusBarStyle: 'black',
   },
   retro: {
@@ -28,8 +28,8 @@ export const themeTopBarConfig: Record<ThemeType, ThemeColorConfig> = {
     statusBarStyle: 'default',
   },
   ronin: {
-    topColor: '#070809',
-    rootBg: '#070809',
+    topColor: '#07090C',
+    rootBg: '#07090C',
     statusBarStyle: 'black',
   },
 }
@@ -37,49 +37,54 @@ export const themeTopBarConfig: Record<ThemeType, ThemeColorConfig> = {
 /**
  * Dynamically synchronizes documentElement, body, meta theme-color, and apple-mobile-web-app status bar.
  * This guarantees the status bar / notch / overscroll on iOS Safari, Android Chrome, and PWAs
- * always matches the active theme seamlessly.
+ * always matches the active theme seamlessly without retaining stale values.
  */
 export function applyTheme(theme: ThemeType) {
   if (typeof document === 'undefined') return
 
   const config = themeTopBarConfig[theme] || themeTopBarConfig.classic
+  const isDark = theme === 'fantasy' || theme === 'ronin'
 
   // 1. Set theme data-theme attribute on <html>
   document.documentElement.setAttribute('data-theme', theme)
 
-  // 2. Set root element background color for mobile bounce & browser frame
+  // 2. Set colorScheme for OS status bar icons (black icons for light, white icons for dark)
+  document.documentElement.style.colorScheme = isDark ? 'dark' : 'light'
+  if (document.body) {
+    document.body.style.colorScheme = isDark ? 'dark' : 'light'
+  }
+
+  // 3. Set root element background color for mobile bounce & browser frame
   document.documentElement.style.backgroundColor = config.rootBg
   if (document.body) {
     document.body.style.backgroundColor = config.rootBg
   }
 
-  // 3. Update meta[name="theme-color"]
+  // 4. Update meta[name="theme-color"]
+  // Remove all existing theme-color tags to force browser / WebKit engine to re-sample
   const existingMetaThemeColors = document.querySelectorAll('meta[name="theme-color"]')
-  if (existingMetaThemeColors.length > 1) {
-    existingMetaThemeColors.forEach((m, idx) => {
-      if (idx > 0) m.remove()
-    })
-  }
+  existingMetaThemeColors.forEach((m) => m.remove())
 
-  let metaTheme = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null
-  if (!metaTheme) {
-    metaTheme = document.createElement('meta')
-    metaTheme.setAttribute('name', 'theme-color')
-    document.head.appendChild(metaTheme)
-  }
-  metaTheme.removeAttribute('media')
+  // Fresh primary theme-color
+  const metaTheme = document.createElement('meta')
+  metaTheme.setAttribute('name', 'theme-color')
   metaTheme.setAttribute('content', config.topColor)
+  document.head.appendChild(metaTheme)
 
-  // Re-insert or clone to guarantee WebKit / Safari triggers Page::themeColorChanged immediately
-  try {
-    const freshMeta = metaTheme.cloneNode(true) as HTMLMetaElement
-    freshMeta.setAttribute('content', config.topColor)
-    metaTheme.parentNode?.replaceChild(freshMeta, metaTheme)
-  } catch {
-    // fallback if replaceChild fails
-  }
+  // Explicit media query tags so mobile Safari & Chrome dark/light mode switches never get out of sync
+  const metaLight = document.createElement('meta')
+  metaLight.setAttribute('name', 'theme-color')
+  metaLight.setAttribute('media', '(prefers-color-scheme: light)')
+  metaLight.setAttribute('content', config.topColor)
+  document.head.appendChild(metaLight)
 
-  // 4. Update apple-mobile-web-app-status-bar-style for iOS
+  const metaDark = document.createElement('meta')
+  metaDark.setAttribute('name', 'theme-color')
+  metaDark.setAttribute('media', '(prefers-color-scheme: dark)')
+  metaDark.setAttribute('content', config.topColor)
+  document.head.appendChild(metaDark)
+
+  // 5. Update apple-mobile-web-app-status-bar-style for iOS PWA
   let metaApple = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]') as HTMLMetaElement | null
   if (!metaApple) {
     metaApple = document.createElement('meta')

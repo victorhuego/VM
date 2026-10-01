@@ -398,12 +398,13 @@ export function EditExpenseModal({
               <button
                 type="button"
                 disabled={isLocked}
+                data-active={source === 'cash'}
                 onClick={() => setSource('cash')}
-                className={`flex items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-xl border text-left transition-all ${
+                className={`quick-source-card flex items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-xl border text-left transition-all ${
                   isLocked ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'
                 } ${
                   source === 'cash'
-                    ? 'bg-emerald-950/40 border-emerald-500 text-emerald-300 ring-2 ring-emerald-500/20 shadow-xs'
+                    ? 'quick-source-active bg-emerald-950/40 border-emerald-500 text-emerald-300 ring-2 ring-emerald-500/20 shadow-xs'
                     : 'bg-theme-surface border-theme/60 text-theme-muted hover:border-theme'
                 }`}
               >
@@ -423,12 +424,13 @@ export function EditExpenseModal({
               <button
                 type="button"
                 disabled={isLocked}
+                data-active={source === 'account'}
                 onClick={() => setSource('account')}
-                className={`flex items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-xl border text-left transition-all ${
+                className={`quick-source-card flex items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-xl border text-left transition-all ${
                   isLocked ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'
                 } ${
                   source === 'account'
-                    ? 'bg-blue-950/40 border-blue-500 text-blue-300 ring-2 ring-blue-500/20 shadow-xs'
+                    ? 'quick-source-active bg-blue-950/40 border-blue-500 text-blue-300 ring-2 ring-blue-500/20 shadow-xs'
                     : 'bg-theme-surface border-theme/60 text-theme-muted hover:border-theme'
                 }`}
               >
@@ -739,36 +741,33 @@ export function EditExpenseModal({
             </div>
           )}
 
-          {/* Date & Note Grid */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
-            {/* Date Input */}
-            <div className="space-y-1">
-              <label className="text-[11px] font-semibold text-theme-main flex items-center gap-1">
-                <Calendar className="w-3 h-3 text-theme-accent" />
-                <span>{t.date_label}</span>
-              </label>
-              <Input
-                type="date"
-                required
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="text-base sm:text-sm font-mono-nums border-theme focus-visible:ring-theme/30 h-9 bg-theme-surface text-theme-main"
-              />
-            </div>
+          {/* Date Input - Row 1 */}
+          <div className="space-y-1 w-full">
+            <label className="text-[11px] font-semibold text-theme-main flex items-center gap-1">
+              <Calendar className="w-3 h-3 text-theme-accent" />
+              <span>{t.date_label}</span>
+            </label>
+            <Input
+              type="date"
+              required
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9.5 w-full block bg-theme-surface text-theme-main"
+            />
+          </div>
 
-            {/* Note Input */}
-            <div className="space-y-1">
-              <label className="text-[11px] font-semibold text-theme-main">
-                {t.note_label}
-              </label>
-              <Input
-                type="text"
-                placeholder={lang === 'vi' ? 'Nhập mô tả / ghi chú...' : 'Enter note or description...'}
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                className="text-base sm:text-sm border-theme focus-visible:ring-theme/30 h-9 bg-theme-surface text-theme-main placeholder:text-theme-muted"
-              />
-            </div>
+          {/* Note Input - Row 2 */}
+          <div className="space-y-1 w-full">
+            <label className="text-[11px] font-semibold text-theme-main block">
+              {t.note_label}
+            </label>
+            <Input
+              type="text"
+              placeholder={lang === 'vi' ? 'Nhập mô tả / ghi chú...' : 'Enter note or description...'}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9.5 w-full bg-theme-surface text-theme-main placeholder:text-theme-muted"
+            />
           </div>
 
           {/* Receipt / Image Attachment */}

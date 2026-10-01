@@ -4,7 +4,13 @@ import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { Card } from '@/components/ui/card'
 import { LanguageType, MomentItem, ThemeType } from '@/lib/types'
 import { dictionary } from '@/lib/i18n'
-import { getClientTimeZoneOffset, getClientLocalDateString, normalizeDateString } from '@/lib/time'
+import {
+  getClientTimeZoneOffset,
+  getClientLocalDateString,
+  normalizeDateString,
+  getMomentClientTime,
+  getMomentClientDate,
+} from '@/lib/time'
 import {
   SunMedium,
   PlayCircle,
@@ -121,7 +127,7 @@ export function CircadianRibbon({
 
   const todayStr = getClientLocalDateString()
   const todayMoments = useMemo(() => {
-    return moments.filter((m) => normalizeDateString(m.date) === todayStr)
+    return moments.filter((m) => getMomentClientDate(m) === todayStr)
   }, [moments, todayStr])
 
   // Scroll to current time (center the 4-hour visible window on now)
@@ -455,7 +461,8 @@ export function CircadianRibbon({
 
             {/* High Z-Index Event Markers (Moments: z-50) */}
             {todayMoments.map((m) => {
-              const [hStr, mStr] = m.time.split(':')
+              const displayTime = getMomentClientTime(m) || m.time
+              const [hStr, mStr] = displayTime.split(':')
               const h = Number(hStr)
               const min = Number(mStr) || 0
               const percent = ((h * 60 + min) / 1440) * 100
@@ -477,11 +484,11 @@ export function CircadianRibbon({
                         ? 'bg-[#0E1015]/95 border-[#E52535] text-white shadow-[0_0_12px_rgba(229,37,53,0.5)]'
                         : 'bg-white/95 border-theme text-theme-main'
                     }`}
-                    title={`${m.time} • ${m.caption.slice(0, 30)}...`}
+                    title={`${displayTime} • ${m.caption.slice(0, 30)}...`}
                   >
                     <span className={`w-2 h-2 rounded-full ${theme === 'ronin' ? 'bg-[#FF2E44] shadow-[0_0_6px_#FF2E44]' : 'bg-theme-accent'} shrink-0 animate-pulse`} />
                     <span className="font-mono text-[11px] font-bold tracking-tight">
-                      {m.time}
+                      {displayTime}
                     </span>
                     {m.caption && (
                       <span className={`text-[10px] truncate max-w-[80px] sm:max-w-[120px] font-normal hidden xs:inline ${theme === 'ronin' ? 'text-zinc-300' : 'text-zinc-600'}`}>
@@ -491,7 +498,7 @@ export function CircadianRibbon({
 
                     {/* Floating Hover Tooltip */}
                     <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-zinc-900/95 text-white text-[11px] px-2.5 py-1 rounded-md shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-60 font-sans flex items-center space-x-1.5">
-                      <span className="font-mono font-bold text-amber-300">{m.time}</span>
+                      <span className="font-mono font-bold text-amber-300">{displayTime}</span>
                       <span>•</span>
                       <span className="max-w-[180px] truncate">{m.caption}</span>
                     </div>

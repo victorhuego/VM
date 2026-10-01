@@ -3,6 +3,9 @@ import { ExpenseItem, DebtItem, DebtType, MomentItem, InitialBalances, Financial
 import {
   normalizeDateString,
   normalizeTimeString,
+  formatIsoToClientTime,
+  formatIsoToClientDate,
+  normalizeMomentToClient,
   compareExpensesDescending,
   compareMomentsDescending,
 } from '@/lib/time'
@@ -637,8 +640,9 @@ export async function deleteDebt(id: string): Promise<boolean> {
 // MOMENTS CRUD
 // ---------------------------------------------------------------------------
 
-export async function getMoments(): Promise<MomentItem[]> {
-  const cacheKey = 'moments'
+export async function getMoments(clientTimeZone?: string): Promise<MomentItem[]> {
+  const targetTz = clientTimeZone || 'Asia/Ho_Chi_Minh'
+  const cacheKey = `moments_${targetTz}`
   const cached = getFromCache<MomentItem[]>(cacheKey)
   if (cached) return cached
 
@@ -653,16 +657,43 @@ export async function getMoments(): Promise<MomentItem[]> {
   const rows = res.data.values || []
   const items: MomentItem[] = rows
     .filter((r) => Boolean(r[0]))
-    .map((r) => ({
-      id: String(r[0] || ''),
-      date: normalizeDateString(r[1]),
-      time: normalizeTimeString(r[2]),
-      caption: String(r[3] || ''),
-      mood: (r[4] as any) || 'serene',
-      image: r[5] ? String(r[5]) : undefined,
-      driveName: r[7] ? String(r[7]) : undefined,
-      user: String(r[9] || 'jeandev'),
-    }))
+    .map((r) => {
+      const id = String(r[0] || '')
+      const rawDate = r[1]
+      const rawTime = r[2]
+      const rawCreatedAt = r[8] ? String(r[8]).trim() : ''
+
+      let createdAt = rawCreatedAt
+      if (!createdAt && id.startsWith('mom-')) {
+        const ts = Number(id.replace('mom-', ''))
+        if (!isNaN(ts) && ts > 1000000000000) {
+          createdAt = new Date(ts).toISOString()
+        }
+      }
+
+      let date = normalizeDateString(rawDate, { timeZone: targetTz })
+      let time = normalizeTimeString(rawTime, { timeZone: targetTz, format: 'colon' })
+
+      // If createdAt is present (e.g. 2026-10-01T03:31:52.851Z), convert strictly to client timezone
+      if (createdAt) {
+        const clientTime = formatIsoToClientTime(createdAt, { timeZone: targetTz, format: 'colon' })
+        const clientDate = formatIsoToClientDate(createdAt, { timeZone: targetTz })
+        if (clientTime) time = clientTime
+        if (clientDate) date = clientDate
+      }
+
+      return {
+        id,
+        date,
+        time,
+        caption: String(r[3] || ''),
+        mood: (r[4] as any) || 'serene',
+        image: r[5] ? String(r[5]) : undefined,
+        driveName: r[7] ? String(r[7]) : undefined,
+        user: String(r[9] || 'jeandev'),
+        createdAt: createdAt || undefined,
+      }
+    })
 
   items.sort(compareMomentsDescending)
   setCache(cacheKey, items)
@@ -676,6 +707,7 @@ export async function addMoment(item: MomentItem & { driveFileId?: string }, use
 
   const cleanDate = normalizeDateString(item.date) || item.date
   const cleanTime = normalizeTimeString(item.time) || item.time
+  const isoNow = new Date().toISOString()
 
   const row = [
     item.id,
@@ -686,7 +718,7 @@ export async function addMoment(item: MomentItem & { driveFileId?: string }, use
     item.image && item.image.length > 2000 ? '' : (item.image || ''),
     item.driveFileId || '',
     item.driveName || (item.image ? 'Google Drive' : ''),
-    new Date().toISOString(),
+    isoNow,
     owner,
   ]
 
@@ -706,6 +738,7 @@ export async function addMoment(item: MomentItem & { driveFileId?: string }, use
     date: cleanDate,
     time: cleanTime,
     user: owner,
+    createdAt: isoNow,
   }
 }
 

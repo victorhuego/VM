@@ -21,8 +21,10 @@ export async function GET(req: NextRequest) {
     clearSheetCache()
   }
 
+  const tz = req.nextUrl.searchParams.get('tz') || 'Asia/Ho_Chi_Minh'
+
   try {
-    const moments = await getMoments()
+    const moments = await getMoments(tz)
     return NextResponse.json({ data: moments, source: 'google_sheets' })
   } catch (err: any) {
     console.error('Lỗi khi đọc danh sách khoảnh khắc từ Sheets:', err)

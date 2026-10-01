@@ -1,4 +1,5 @@
 import { ExpenseItem, DebtItem, MomentItem, InitialBalances, UserProfile, CurrencyType } from '@/lib/types'
+import { getClientTimeZone } from '@/lib/time'
 
 export interface HealthResponse {
   status: 'ok' | 'not_configured' | 'degraded' | 'error'
@@ -214,7 +215,11 @@ export async function apiDeleteDebt(id: string): Promise<boolean> {
 
 export async function fetchMoments(refresh?: boolean): Promise<{ data: MomentItem[]; source: string } | null> {
   try {
-    const url = refresh ? '/api/moments?refresh=true' : '/api/moments'
+    const tz = getClientTimeZone()
+    const params = new URLSearchParams()
+    if (refresh) params.set('refresh', 'true')
+    if (tz) params.set('tz', tz)
+    const url = `/api/moments?${params.toString()}`
     const res = await fetch(url, { cache: 'no-store' })
     if (!res.ok) return null
     return await res.json()

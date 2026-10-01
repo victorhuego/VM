@@ -42,7 +42,6 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
-  themeColor: '#FFFFFF',
 }
 
 export const metadata: Metadata = {
@@ -77,27 +76,41 @@ export default function RootLayout({
                   var validThemes = ['classic', 'cozy', 'fantasy', 'retro', 'ronin'];
                   var theme = validThemes.indexOf(saved) !== -1 ? saved : 'classic';
                   document.documentElement.setAttribute('data-theme', theme);
+                  var isDark = theme === 'fantasy' || theme === 'ronin';
+                  document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
                   var topColors = {
                     classic: '#FFFFFF',
                     cozy: '#FAF5ED',
-                    fantasy: '#0D131F',
+                    fantasy: '#0D121D',
                     retro: '#C0C0C0',
-                    ronin: '#070809'
+                    ronin: '#07090C'
                   };
                   var rootColors = {
                     classic: '#FFFFFF',
                     cozy: '#FAF5ED',
-                    fantasy: '#0D131F',
+                    fantasy: '#0D121D',
                     retro: '#008080',
-                    ronin: '#070809'
+                    ronin: '#07090C'
                   };
                   var topColor = topColors[theme] || '#FFFFFF';
                   var rootColor = rootColors[theme] || '#FFFFFF';
                   document.documentElement.style.backgroundColor = rootColor;
-                  var meta = document.querySelector('meta[name="theme-color"]');
-                  if (meta) {
-                    meta.setAttribute('content', topColor);
-                  }
+                  var metas = document.querySelectorAll('meta[name="theme-color"]');
+                  metas.forEach(function(m) { m.remove(); });
+                  var meta = document.createElement('meta');
+                  meta.name = 'theme-color';
+                  meta.content = topColor;
+                  document.head.appendChild(meta);
+                  var metaL = document.createElement('meta');
+                  metaL.name = 'theme-color';
+                  metaL.media = '(prefers-color-scheme: light)';
+                  metaL.content = topColor;
+                  document.head.appendChild(metaL);
+                  var metaD = document.createElement('meta');
+                  metaD.name = 'theme-color';
+                  metaD.media = '(prefers-color-scheme: dark)';
+                  metaD.content = topColor;
+                  document.head.appendChild(metaD);
                 } catch(e) {}
               })();
             `,

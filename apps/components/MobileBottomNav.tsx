@@ -40,8 +40,11 @@ export function MobileBottomNav({
         {/* Tab 1: Moments / Tin */}
         <button
           type="button"
+          data-active={currentTab === 'moments'}
           onClick={() => onTabChange('moments')}
-          className="relative z-10 flex-1 flex flex-col items-center justify-center space-y-0.5 min-h-[46px] py-1 rounded-xl touch-target cursor-pointer transition-transform active:scale-95 duration-150"
+          className={`mobile-nav-btn relative z-10 flex-1 flex flex-col items-center justify-center space-y-0.5 min-h-[46px] py-1 rounded-xl touch-target cursor-pointer transition-transform active:scale-95 duration-150 ${
+            currentTab === 'moments' ? 'mobile-nav-active' : ''
+          }`}
         >
           <Clock
             className={`w-4 h-4 pointer-events-none transition-transform duration-200 ${
@@ -60,8 +63,11 @@ export function MobileBottomNav({
         {/* Tab 2: Finance / Tài chính */}
         <button
           type="button"
+          data-active={currentTab === 'expenses'}
           onClick={() => onTabChange('expenses')}
-          className="relative z-10 flex-1 flex flex-col items-center justify-center space-y-0.5 min-h-[46px] py-1 rounded-xl touch-target cursor-pointer transition-transform active:scale-95 duration-150"
+          className={`mobile-nav-btn relative z-10 flex-1 flex flex-col items-center justify-center space-y-0.5 min-h-[46px] py-1 rounded-xl touch-target cursor-pointer transition-transform active:scale-95 duration-150 ${
+            currentTab === 'expenses' ? 'mobile-nav-active' : ''
+          }`}
         >
           <Wallet
             className={`w-4 h-4 pointer-events-none transition-transform duration-200 ${
@@ -80,8 +86,11 @@ export function MobileBottomNav({
         {/* Tab 3: User / Tài khoản */}
         <button
           type="button"
+          data-active={currentTab === 'users'}
           onClick={() => onTabChange('users')}
-          className="relative z-10 flex-1 flex flex-col items-center justify-center space-y-0.5 min-h-[46px] py-1 rounded-xl touch-target cursor-pointer transition-transform active:scale-95 duration-150"
+          className={`mobile-nav-btn relative z-10 flex-1 flex flex-col items-center justify-center space-y-0.5 min-h-[46px] py-1 rounded-xl touch-target cursor-pointer transition-transform active:scale-95 duration-150 ${
+            currentTab === 'users' ? 'mobile-nav-active' : ''
+          }`}
         >
           <User
             className={`w-4 h-4 pointer-events-none transition-transform duration-200 ${

@@ -73,6 +73,7 @@ export interface ExpenseItem {
   reconcileDiff?: number
   debtId?: string
   user?: string
+  createdAt?: string
 }
 
 export interface MomentItem {
@@ -84,6 +85,7 @@ export interface MomentItem {
   image?: string
   driveName?: string
   user?: string
+  createdAt?: string
 }
 
 export type TimeFilterPeriod = 'month' | 'day' | 'year' | 'all'
@@ -118,4 +120,6 @@ export interface DebtItem {
   note?: string
   user?: string
   type?: DebtType
+  status?: string
+  createdAt?: string
 }

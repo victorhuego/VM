@@ -464,137 +464,146 @@ export function QuickExpenseModal({
               <div className="p-1 bg-theme-surface rounded-xl flex items-center gap-1 border border-theme">
                 <button
                   type="button"
+                  data-active={txType === 'expense'}
                   onClick={() => {
                     setTxType('expense')
                     setError(null)
                   }}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  className={`quick-tab-btn flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     txType === 'expense'
-                      ? 'bg-theme-card text-rose-500 shadow-sm border border-theme font-bold'
+                      ? 'quick-tab-active bg-theme-card text-rose-500 shadow-sm border border-theme font-bold'
                       : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
                   }`}
                 >
-                <ArrowDownCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'expense' ? 'text-rose-600' : 'text-zinc-400'}`} />
-                <span className="whitespace-nowrap">{t.tab_expense_type || 'Chi tiêu'}</span>
-              </button>
+                  <ArrowDownCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'expense' ? 'text-rose-600' : 'text-zinc-400'}`} />
+                  <span className="whitespace-nowrap">{t.tab_expense_type || 'Chi tiêu'}</span>
+                </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setTxType('income')
-                  setError(null)
-                }}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  txType === 'income'
-                    ? 'bg-theme-card text-emerald-500 shadow-sm border border-theme font-bold'
-                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
-                }`}
-              >
-                <ArrowUpCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'income' ? 'text-emerald-500' : 'text-zinc-400'}`} />
-                <span className="whitespace-nowrap">{t.tab_income_type || 'Thu nhập'}</span>
-              </button>
+                <button
+                  type="button"
+                  data-active={txType === 'income'}
+                  onClick={() => {
+                    setTxType('income')
+                    setError(null)
+                  }}
+                  className={`quick-tab-btn flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    txType === 'income'
+                      ? 'quick-tab-active bg-theme-card text-emerald-500 shadow-sm border border-theme font-bold'
+                      : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
+                  }`}
+                >
+                  <ArrowUpCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'income' ? 'text-emerald-500' : 'text-zinc-400'}`} />
+                  <span className="whitespace-nowrap">{t.tab_income_type || 'Thu nhập'}</span>
+                </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setTxType('transfer')
-                  setError(null)
-                }}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  txType === 'transfer'
-                    ? 'bg-theme-card text-blue-400 shadow-sm border border-theme font-bold'
-                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
-                }`}
-              >
-                <ArrowLeftRight className={`w-3.5 h-3.5 shrink-0 ${txType === 'transfer' ? 'text-blue-400' : 'text-zinc-400'}`} />
-                <span className="whitespace-nowrap">{t.tab_transfer_type || 'Chuyển tiền'}</span>
-              </button>
-            </div>
-          )}
+                <button
+                  type="button"
+                  data-active={txType === 'transfer'}
+                  onClick={() => {
+                    setTxType('transfer')
+                    setError(null)
+                  }}
+                  className={`quick-tab-btn flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    txType === 'transfer'
+                      ? 'quick-tab-active bg-theme-card text-blue-400 shadow-sm border border-theme font-bold'
+                      : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
+                  }`}
+                >
+                  <ArrowLeftRight className={`w-3.5 h-3.5 shrink-0 ${txType === 'transfer' ? 'text-blue-400' : 'text-zinc-400'}`} />
+                  <span className="whitespace-nowrap">{t.tab_transfer_type || 'Chuyển tiền'}</span>
+                </button>
+              </div>
+            )}
 
-          {/* Tabs for Cash card */}
-          {isCashCard && (
-            <div className="p-1 bg-theme-surface rounded-xl flex items-center gap-1 border border-theme">
-              <button
-                type="button"
-                onClick={() => setTxType('expense')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  txType === 'expense'
-                    ? 'bg-theme-card text-emerald-500 shadow-sm border border-theme font-bold'
-                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
-                }`}
-              >
-                <ArrowDownCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'expense' ? 'text-emerald-500' : 'text-zinc-400'}`} />
-                <span className="whitespace-nowrap">{t.tab_cash_spend}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setTxType('transfer')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  txType === 'transfer'
-                    ? 'bg-theme-card text-blue-400 shadow-sm border border-theme font-bold'
-                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
-                }`}
-              >
-                <ArrowLeftRight className={`w-3.5 h-3.5 shrink-0 ${txType === 'transfer' ? 'text-blue-400' : 'text-zinc-400'}`} />
-                <span className="whitespace-nowrap">{t.tab_cash_deposit_to_bank}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setTxType('income')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  txType === 'income'
-                    ? 'bg-theme-card text-emerald-500 shadow-sm border border-theme font-bold'
-                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
-                }`}
-              >
-                <ArrowUpCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'income' ? 'text-emerald-500' : 'text-zinc-400'}`} />
-                <span className="whitespace-nowrap">{t.tab_cash_income}</span>
-              </button>
-            </div>
-          )}
+            {/* Tabs for Cash card */}
+            {isCashCard && (
+              <div className="p-1 bg-theme-surface rounded-xl flex items-center gap-1 border border-theme">
+                <button
+                  type="button"
+                  data-active={txType === 'expense'}
+                  onClick={() => setTxType('expense')}
+                  className={`quick-tab-btn flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    txType === 'expense'
+                      ? 'quick-tab-active bg-theme-card text-emerald-500 shadow-sm border border-theme font-bold'
+                      : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
+                  }`}
+                >
+                  <ArrowDownCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'expense' ? 'text-emerald-500' : 'text-zinc-400'}`} />
+                  <span className="whitespace-nowrap">{t.tab_cash_spend}</span>
+                </button>
+                <button
+                  type="button"
+                  data-active={txType === 'transfer'}
+                  onClick={() => setTxType('transfer')}
+                  className={`quick-tab-btn flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    txType === 'transfer'
+                      ? 'quick-tab-active bg-theme-card text-blue-400 shadow-sm border border-theme font-bold'
+                      : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
+                  }`}
+                >
+                  <ArrowLeftRight className={`w-3.5 h-3.5 shrink-0 ${txType === 'transfer' ? 'text-blue-400' : 'text-zinc-400'}`} />
+                  <span className="whitespace-nowrap">{t.tab_cash_deposit_to_bank}</span>
+                </button>
+                <button
+                  type="button"
+                  data-active={txType === 'income'}
+                  onClick={() => setTxType('income')}
+                  className={`quick-tab-btn flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    txType === 'income'
+                      ? 'quick-tab-active bg-theme-card text-emerald-500 shadow-sm border border-theme font-bold'
+                      : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
+                  }`}
+                >
+                  <ArrowUpCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'income' ? 'text-emerald-500' : 'text-zinc-400'}`} />
+                  <span className="whitespace-nowrap">{t.tab_cash_income}</span>
+                </button>
+              </div>
+            )}
 
-          {/* Tabs for Bank card */}
-          {isBankCard && (
-            <div className="p-1 bg-theme-surface rounded-xl flex items-center gap-1 border border-theme">
-              <button
-                type="button"
-                onClick={() => setTxType('expense')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  txType === 'expense'
-                    ? 'bg-theme-card text-rose-500 shadow-sm border border-theme font-bold'
-                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
-                }`}
-              >
-                <ArrowDownCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'expense' ? 'text-rose-500' : 'text-zinc-400'}`} />
-                <span className="whitespace-nowrap">{t.tab_bank_spend}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setTxType('transfer')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  txType === 'transfer'
-                    ? 'bg-theme-card text-blue-400 shadow-sm border border-theme font-bold'
-                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
-                }`}
-              >
-                <ArrowLeftRight className={`w-3.5 h-3.5 shrink-0 ${txType === 'transfer' ? 'text-blue-400' : 'text-zinc-400'}`} />
-                <span className="whitespace-nowrap">{t.tab_bank_withdraw_cash}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setTxType('income')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  txType === 'income'
-                    ? 'bg-theme-card text-emerald-500 shadow-sm border border-theme font-bold'
-                    : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
-                }`}
-              >
-                <ArrowUpCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'income' ? 'text-emerald-500' : 'text-zinc-400'}`} />
-                <span className="whitespace-nowrap">{t.tab_bank_income}</span>
-              </button>
-            </div>
-          )}
+            {/* Tabs for Bank card */}
+            {isBankCard && (
+              <div className="p-1 bg-theme-surface rounded-xl flex items-center gap-1 border border-theme">
+                <button
+                  type="button"
+                  data-active={txType === 'expense'}
+                  onClick={() => setTxType('expense')}
+                  className={`quick-tab-btn flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    txType === 'expense'
+                      ? 'quick-tab-active bg-theme-card text-rose-500 shadow-sm border border-theme font-bold'
+                      : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
+                  }`}
+                >
+                  <ArrowDownCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'expense' ? 'text-rose-500' : 'text-zinc-400'}`} />
+                  <span className="whitespace-nowrap">{t.tab_bank_spend}</span>
+                </button>
+                <button
+                  type="button"
+                  data-active={txType === 'transfer'}
+                  onClick={() => setTxType('transfer')}
+                  className={`quick-tab-btn flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    txType === 'transfer'
+                      ? 'quick-tab-active bg-theme-card text-blue-400 shadow-sm border border-theme font-bold'
+                      : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
+                  }`}
+                >
+                  <ArrowLeftRight className={`w-3.5 h-3.5 shrink-0 ${txType === 'transfer' ? 'text-blue-400' : 'text-zinc-400'}`} />
+                  <span className="whitespace-nowrap">{t.tab_bank_withdraw_cash}</span>
+                </button>
+                <button
+                  type="button"
+                  data-active={txType === 'income'}
+                  onClick={() => setTxType('income')}
+                  className={`quick-tab-btn flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    txType === 'income'
+                      ? 'quick-tab-active bg-theme-card text-emerald-500 shadow-sm border border-theme font-bold'
+                      : 'text-zinc-500 hover:text-zinc-200 bg-transparent'
+                  }`}
+                >
+                  <ArrowUpCircle className={`w-3.5 h-3.5 shrink-0 ${txType === 'income' ? 'text-emerald-500' : 'text-zinc-400'}`} />
+                  <span className="whitespace-nowrap">{t.tab_bank_income}</span>
+                </button>
+              </div>
+            )}
 
           {/* Transfer Directions Selector (for General modal when in Transfer tab) */}
           {isGeneral && txType === 'transfer' && (
@@ -605,10 +614,11 @@ export function QuickExpenseModal({
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
+                  data-active={transferDir === 'bank_to_cash'}
                   onClick={() => setTransferDir('bank_to_cash')}
-                  className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                  className={`quick-source-card p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
                     transferDir === 'bank_to_cash'
-                      ? 'bg-blue-500/15 border-blue-500 text-blue-400 ring-2 ring-blue-500/20 font-semibold'
+                      ? 'quick-source-active bg-blue-500/15 border-blue-500 text-blue-400 ring-2 ring-blue-500/20 font-semibold'
                       : 'bg-theme-surface border-theme text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
@@ -621,10 +631,11 @@ export function QuickExpenseModal({
                 </button>
                 <button
                   type="button"
+                  data-active={transferDir === 'cash_to_bank'}
                   onClick={() => setTransferDir('cash_to_bank')}
-                  className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                  className={`quick-source-card p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
                     transferDir === 'cash_to_bank'
-                      ? 'bg-blue-500/15 border-blue-500 text-blue-400 ring-2 ring-blue-500/20 font-semibold'
+                      ? 'quick-source-active bg-blue-500/15 border-blue-500 text-blue-400 ring-2 ring-blue-500/20 font-semibold'
                       : 'bg-theme-surface border-theme text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
@@ -687,10 +698,11 @@ export function QuickExpenseModal({
               <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                 <button
                   type="button"
+                  data-active={source === 'cash'}
                   onClick={() => setSource('cash')}
-                  className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                  className={`quick-source-card flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                     source === 'cash'
-                      ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400 ring-2 ring-emerald-500/20 shadow-xs'
+                      ? 'quick-source-active bg-emerald-500/15 border-emerald-500 text-emerald-400 ring-2 ring-emerald-500/20 shadow-xs'
                       : 'bg-theme-surface border-theme text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
@@ -704,10 +716,11 @@ export function QuickExpenseModal({
                 </button>
                 <button
                   type="button"
+                  data-active={source === 'account'}
                   onClick={() => setSource('account')}
-                  className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                  className={`quick-source-card flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                     source === 'account'
-                      ? 'bg-blue-500/15 border-blue-500 text-blue-400 ring-2 ring-blue-500/20 shadow-xs'
+                      ? 'quick-source-active bg-blue-500/15 border-blue-500 text-blue-400 ring-2 ring-blue-500/20 shadow-xs'
                       : 'bg-theme-surface border-theme text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
@@ -988,40 +1001,37 @@ export function QuickExpenseModal({
             </div>
           )}
 
-          {/* Date & Note Inputs in 2 columns */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
-            {/* Date Input */}
-            <div className="space-y-1 w-full min-w-0 max-w-full">
-              <label className="text-[11px] font-medium text-theme-main">{t.date_label}</label>
-              <Input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="text-xs sm:text-sm font-mono-nums border-theme focus-visible:ring-theme/30 h-9 w-full min-w-0 max-w-full block bg-theme-surface text-theme-main"
-              />
-            </div>
+          {/* Date Input - Row 1 */}
+          <div className="space-y-1 w-full">
+            <label className="text-[11px] font-medium text-theme-main block">{t.date_label}</label>
+            <Input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9.5 w-full block bg-theme-surface text-theme-main"
+            />
+          </div>
 
-            {/* Note Input */}
-            <div className="space-y-1 min-w-0">
-              <label className="text-[11px] font-medium text-theme-main">{t.note_label}</label>
-              <Input
-                type="text"
-                placeholder={
-                  txType === 'transfer'
-                    ? t.transfer_note_placeholder
-                    : isDebtCard
-                    ? (lang === 'vi' ? 'VD: Trả nợ thẻ...' : 'E.g., Debt payment')
-                    : txType === 'expense'
-                    ? (isCashCard
-                        ? (lang === 'vi' ? 'VD: Cà phê sáng...' : 'E.g., Coffee...')
-                        : (lang === 'vi' ? 'VD: Quẹt thẻ...' : 'E.g., Shopping...'))
-                    : (lang === 'vi' ? 'VD: Tiền lương...' : 'E.g., Salary...')
-                }
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9 bg-theme-surface text-theme-main"
-              />
-            </div>
+          {/* Note Input - Row 2 */}
+          <div className="space-y-1 w-full">
+            <label className="text-[11px] font-medium text-theme-main block">{t.note_label}</label>
+            <Input
+              type="text"
+              placeholder={
+                txType === 'transfer'
+                  ? t.transfer_note_placeholder
+                  : isDebtCard
+                  ? (lang === 'vi' ? 'VD: Trả nợ thẻ...' : 'E.g., Debt payment')
+                  : txType === 'expense'
+                  ? (isCashCard
+                      ? (lang === 'vi' ? 'VD: Cà phê sáng...' : 'E.g., Coffee...')
+                      : (lang === 'vi' ? 'VD: Quẹt thẻ...' : 'E.g., Shopping...'))
+                  : (lang === 'vi' ? 'VD: Tiền lương...' : 'E.g., Salary...')
+              }
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9.5 w-full bg-theme-surface text-theme-main placeholder:text-theme-muted"
+            />
           </div>
 
           {/* Receipt / Image Attachment (Only for Expense/Income) */}

@@ -20,6 +20,7 @@ import {
   getClientLocalDateString,
   getClientYesterdayDateString,
   normalizeDateString,
+  normalizeMomentToClient,
   compareExpensesDescending,
   compareMomentsDescending,
 } from '@/lib/time'
@@ -64,7 +65,16 @@ import {
 import { Plus } from 'lucide-react'
 
 export default function Home() {
-  const [theme, setTheme] = useState<ThemeType>('classic')
+  const [theme, setTheme] = useState<ThemeType>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('app_theme')
+      const validThemes: ThemeType[] = ['classic', 'cozy', 'fantasy', 'retro', 'ronin']
+      if (saved && validThemes.includes(saved as ThemeType)) {
+        return saved as ThemeType
+      }
+    }
+    return 'classic'
+  })
   const [lang, setLang] = useState<LanguageType>('vi')
   const [tab, setTab] = useState<TabType>('moments')
 
@@ -207,7 +217,8 @@ export default function Home() {
       }
 
       if (momRes && Array.isArray(momRes.data)) {
-        setMoments(momRes.data.sort(compareMomentsDescending))
+        const clientMoments = momRes.data.map((m) => normalizeMomentToClient(m))
+        setMoments(clientMoments.sort(compareMomentsDescending))
       }
     } catch (err) {
       console.warn('Google Sheets sync notice:', err)
@@ -714,7 +725,8 @@ export default function Home() {
       id: `mom-${Date.now()}`,
     }
 
-    setMoments((prev) => [item, ...prev].sort(compareMomentsDescending))
+    const normalizedItem = normalizeMomentToClient(item)
+    setMoments((prev) => [normalizedItem, ...prev].sort(compareMomentsDescending))
     apiCreateMoment({ ...item, driveFileId })
     showToast(dictionary[lang].toast_moment_added)
   }

@@ -54,6 +54,39 @@
   --radius-lg: var(--radius);
 }
 
+/* ================= COLOR SCHEME & MOBILE STATUS BAR SYNC ================= */
+:root,
+html[data-theme="classic"],
+html[data-theme="cozy"],
+html[data-theme="retro"] {
+  color-scheme: light;
+}
+
+html[data-theme="fantasy"],
+html[data-theme="ronin"] {
+  color-scheme: dark;
+}
+
+/* Solid opaque headers ensure iOS Safari / Android Chrome 100% reliably samples the active theme color without retaining old/cached values */
+html[data-theme="classic"] header {
+  background-color: #FFFFFF !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-theme="cozy"] header {
+  background-color: #FAF5ED !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-theme="fantasy"] header {
+  background-color: #0D121D !important;
+  border-bottom: 1px solid rgba(211, 188, 142, 0.25) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 /* ================= 2 THEMES: CLASSIC (MATCHA GREEN) & COZY (CACAO TRÀ / CAFE) ================= */
 
 /* 1. CLASSIC THEME (Green Matcha - Modern & Elegant) */
@@ -92,6 +125,21 @@
   --input: #E3EAE3;
   --ring: #3F6141;
   --radius: 0.75rem;
+}
+
+html[data-theme="classic"],
+html[data-theme="classic"] body,
+html[data-theme="classic"] button,
+html[data-theme="classic"] input,
+html[data-theme="classic"] select,
+html[data-theme="classic"] textarea,
+html[data-theme="matcha"],
+html[data-theme="matcha"] body,
+html[data-theme="matcha"] button,
+html[data-theme="matcha"] input,
+html[data-theme="matcha"] select,
+html[data-theme="matcha"] textarea {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
 }
 
 /* 2. COZY THEME (Cacao Trà / Warm Tea & Boba Shop Cafe Aesthetic) */
@@ -288,7 +336,7 @@ html[data-theme="ronin"] {
 }
 .font-mono-nums {
   font-variant-numeric: tabular-nums;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, -apple-system, sans-serif;
 }
 
 /* Tactile 3D Tilt & Perspective */
@@ -594,7 +642,7 @@ html[data-theme="fantasy"] button,
 html[data-theme="fantasy"] input,
 html[data-theme="fantasy"] select,
 html[data-theme="fantasy"] textarea {
-  font-family: 'HYWenHei', var(--font-fantasy-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: var(--font-fantasy-sans), 'HYWenHei', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
 html[data-theme="fantasy"] h1,
@@ -1212,10 +1260,13 @@ input[type="date"] {
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
+  font-family: inherit !important;
 }
 
 input[type="date"]::-webkit-date-and-time-value {
   text-align: left;
+  font-family: inherit !important;
+  min-height: 1.25em;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -1255,7 +1306,7 @@ html[data-theme="retro"] h2,
 html[data-theme="retro"] h3,
 html[data-theme="retro"] h4,
 html[data-theme="retro"] table {
-  font-family: "Pixelated MS Sans Serif", Tahoma, "MS Sans Serif", Arial, sans-serif !important;
+  font-family: Tahoma, "Pixelated MS Sans Serif", "MS Sans Serif", Arial, sans-serif !important;
   -webkit-font-smoothing: none !important;
   -moz-osx-font-smoothing: grayscale !important;
   font-smooth: never !important;
@@ -1354,7 +1405,8 @@ html[data-theme="retro"] [role="dialog"] .border-b:first-child span {
 
 /* Title Bar Close [ ✕ ] Button */
 html[data-theme="retro"] [role="dialog"] button[aria-label="Close"],
-html[data-theme="retro"] [role="dialog"] .border-b:first-child button {
+html[data-theme="retro"] [role="dialog"] [data-slot="dialog-close"],
+html[data-theme="retro"] [role="dialog"] .dialog-close-btn {
   width: 16px !important;
   height: 14px !important;
   min-width: 16px !important;
@@ -1369,13 +1421,15 @@ html[data-theme="retro"] [role="dialog"] .border-b:first-child button {
 }
 
 html[data-theme="retro"] [role="dialog"] button[aria-label="Close"]:active,
-html[data-theme="retro"] [role="dialog"] .border-b:first-child button:active {
+html[data-theme="retro"] [role="dialog"] [data-slot="dialog-close"]:active,
+html[data-theme="retro"] [role="dialog"] .dialog-close-btn:active {
   box-shadow: inset 1px 1px #0a0a0a, inset -1px -1px #ffffff, inset 2px 2px #808080, inset -2px -2px #dfdfdf !important;
   transform: translate(1px, 1px) !important;
 }
 
 html[data-theme="retro"] [role="dialog"] button[aria-label="Close"] svg,
-html[data-theme="retro"] [role="dialog"] .border-b:first-child button svg {
+html[data-theme="retro"] [role="dialog"] [data-slot="dialog-close"] svg,
+html[data-theme="retro"] [role="dialog"] .dialog-close-btn svg {
   width: 9px !important;
   height: 9px !important;
   stroke-width: 3.5 !important;
@@ -1534,28 +1588,231 @@ html[data-theme="retro"] header {
   border-bottom: 2px solid #808080 !important;
   box-shadow: 0 1px 0 #000000, inset 0 1px 0 #FFFFFF !important;
   backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
-/* 10. Selected / Active Buttons and Toggles in Retro Mode */
+/* 10. Windows 95 Selected / Active States for ALL Selectable Buttons across the Entire App */
+
+/* A. Base Unselected State for All Selectable Buttons/Cards in Retro */
+html[data-theme="retro"] .quick-tab-btn,
+html[data-theme="retro"] .quick-source-card,
+html[data-theme="retro"] .savings-tab-btn,
+html[data-theme="retro"] .debt-tab-btn,
+html[data-theme="retro"] .debt-type-btn,
+html[data-theme="retro"] .debt-source-card,
+html[data-theme="retro"] .networth-tab-btn,
+html[data-theme="retro"] .reconcile-source-card,
+html[data-theme="retro"] .period-tab-btn,
+html[data-theme="retro"] .period-day-btn,
+html[data-theme="retro"] .filter-pill-btn,
+html[data-theme="retro"] .timeline-filter-btn,
+html[data-theme="retro"] .mood-btn,
+html[data-theme="retro"] .header-tab-btn,
+html[data-theme="retro"] .lang-toggle-btn,
+html[data-theme="retro"] .mobile-nav-btn,
+html[data-theme="retro"] .currency-card,
+html[data-theme="retro"] [data-active="false"] {
+  border-radius: 0 !important;
+  font-family: 'Tahoma', 'Pixelated MS Sans Serif', sans-serif !important;
+  background: #C0C0C0 !important;
+  background-color: #C0C0C0 !important;
+  color: #000000 !important;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf !important;
+  border: none !important;
+  outline: none !important;
+  opacity: 1 !important;
+}
+
+html[data-theme="retro"] .quick-tab-btn *,
+html[data-theme="retro"] .quick-source-card *,
+html[data-theme="retro"] .savings-tab-btn *,
+html[data-theme="retro"] .debt-tab-btn *,
+html[data-theme="retro"] .debt-type-btn *,
+html[data-theme="retro"] .debt-source-card *,
+html[data-theme="retro"] .networth-tab-btn *,
+html[data-theme="retro"] .reconcile-source-card *,
+html[data-theme="retro"] .period-tab-btn *,
+html[data-theme="retro"] .period-day-btn *,
+html[data-theme="retro"] .filter-pill-btn *,
+html[data-theme="retro"] .timeline-filter-btn *,
+html[data-theme="retro"] .mood-btn *,
+html[data-theme="retro"] .header-tab-btn *,
+html[data-theme="retro"] .lang-toggle-btn *,
+html[data-theme="retro"] .mobile-nav-btn *,
+html[data-theme="retro"] .currency-card *,
+html[data-theme="retro"] [data-active="false"] * {
+  color: #000000 !important;
+}
+
+html[data-theme="retro"] .quick-tab-btn svg,
+html[data-theme="retro"] .quick-source-card svg,
+html[data-theme="retro"] .savings-tab-btn svg,
+html[data-theme="retro"] .debt-tab-btn svg,
+html[data-theme="retro"] .debt-type-btn svg,
+html[data-theme="retro"] .debt-source-card svg,
+html[data-theme="retro"] .networth-tab-btn svg,
+html[data-theme="retro"] .reconcile-source-card svg,
+html[data-theme="retro"] .period-tab-btn svg,
+html[data-theme="retro"] .period-day-btn svg,
+html[data-theme="retro"] .filter-pill-btn svg,
+html[data-theme="retro"] .timeline-filter-btn svg,
+html[data-theme="retro"] .mood-btn svg,
+html[data-theme="retro"] .header-tab-btn svg,
+html[data-theme="retro"] .lang-toggle-btn svg,
+html[data-theme="retro"] .mobile-nav-btn svg,
+html[data-theme="retro"] .currency-card svg {
+  color: #000000 !important;
+  stroke: #000000 !important;
+}
+
+/* B. Windows 95 Iconic Sunken Navy Selected Effect for ALL Selectable Buttons */
+html[data-theme="retro"] [data-active="true"],
+html[data-theme="retro"] [aria-selected="true"],
+html[data-theme="retro"] .quick-tab-active,
+html[data-theme="retro"] .quick-source-active,
+html[data-theme="retro"] .savings-tab-active,
+html[data-theme="retro"] .debt-tab-active,
+html[data-theme="retro"] .debt-type-active,
+html[data-theme="retro"] .debt-source-active,
+html[data-theme="retro"] .networth-tab-active,
+html[data-theme="retro"] .reconcile-source-active,
+html[data-theme="retro"] .period-tab-active,
+html[data-theme="retro"] .period-day-active,
+html[data-theme="retro"] .filter-pill-active,
+html[data-theme="retro"] .timeline-filter-active,
+html[data-theme="retro"] .mood-btn-active,
+html[data-theme="retro"] .header-tab-active,
+html[data-theme="retro"] .lang-toggle-active,
+html[data-theme="retro"] .mobile-nav-active,
+html[data-theme="retro"] .currency-card-active,
+html[data-theme="retro"] [role="dialog"] button.bg-theme-card,
 html[data-theme="retro"] .bg-emerald-50\/90,
 html[data-theme="retro"] .bg-blue-50\/90,
 html[data-theme="retro"] .bg-amber-50\/80,
 html[data-theme="retro"] .bg-emerald-50\/80,
+html[data-theme="retro"] .bg-blue-50\/80,
 html[data-theme="retro"] .border-emerald-500.bg-emerald-50,
+html[data-theme="retro"] .border-blue-500.bg-blue-50,
 html[data-theme="retro"] .border-amber-500.bg-amber-50 {
   background: #000080 !important;
+  background-color: #000080 !important;
   color: #FFFFFF !important;
   box-shadow: inset 1px 1px #0a0a0a, inset -1px -1px #ffffff, inset 2px 2px #808080, inset -2px -2px #dfdfdf !important;
   border: none !important;
+  border-radius: 0 !important;
+  outline: none !important;
+  opacity: 1 !important;
 }
 
+/* ALL text, labels, numbers, and spans inside selected buttons */
+html[data-theme="retro"] [data-active="true"] *,
+html[data-theme="retro"] [aria-selected="true"] *,
+html[data-theme="retro"] .quick-tab-active *,
+html[data-theme="retro"] .quick-source-active *,
+html[data-theme="retro"] .savings-tab-active *,
+html[data-theme="retro"] .debt-tab-active *,
+html[data-theme="retro"] .debt-type-active *,
+html[data-theme="retro"] .debt-source-active *,
+html[data-theme="retro"] .networth-tab-active *,
+html[data-theme="retro"] .reconcile-source-active *,
+html[data-theme="retro"] .period-tab-active *,
+html[data-theme="retro"] .period-day-active *,
+html[data-theme="retro"] .filter-pill-active *,
+html[data-theme="retro"] .timeline-filter-active *,
+html[data-theme="retro"] .mood-btn-active *,
+html[data-theme="retro"] .header-tab-active *,
+html[data-theme="retro"] .lang-toggle-active *,
+html[data-theme="retro"] .mobile-nav-active *,
+html[data-theme="retro"] .currency-card-active *,
+html[data-theme="retro"] [role="dialog"] button.bg-theme-card *,
 html[data-theme="retro"] .bg-emerald-50\/90 *,
 html[data-theme="retro"] .bg-blue-50\/90 *,
 html[data-theme="retro"] .bg-amber-50\/80 *,
 html[data-theme="retro"] .bg-emerald-50\/80 *,
+html[data-theme="retro"] .bg-blue-50\/80 *,
 html[data-theme="retro"] .border-emerald-500.bg-emerald-50 *,
+html[data-theme="retro"] .border-blue-500.bg-blue-50 *,
 html[data-theme="retro"] .border-amber-500.bg-amber-50 * {
   color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  font-weight: bold !important;
+}
+
+/* ALL SVG icons inside selected buttons */
+html[data-theme="retro"] [data-active="true"] svg,
+html[data-theme="retro"] [aria-selected="true"] svg,
+html[data-theme="retro"] .quick-tab-active svg,
+html[data-theme="retro"] .quick-source-active svg,
+html[data-theme="retro"] .savings-tab-active svg,
+html[data-theme="retro"] .debt-tab-active svg,
+html[data-theme="retro"] .debt-type-active svg,
+html[data-theme="retro"] .debt-source-active svg,
+html[data-theme="retro"] .networth-tab-active svg,
+html[data-theme="retro"] .reconcile-source-active svg,
+html[data-theme="retro"] .period-tab-active svg,
+html[data-theme="retro"] .period-day-active svg,
+html[data-theme="retro"] .filter-pill-active svg,
+html[data-theme="retro"] .timeline-filter-active svg,
+html[data-theme="retro"] .mood-btn-active svg,
+html[data-theme="retro"] .header-tab-active svg,
+html[data-theme="retro"] .lang-toggle-active svg,
+html[data-theme="retro"] .mobile-nav-active svg,
+html[data-theme="retro"] .currency-card-active svg,
+html[data-theme="retro"] [role="dialog"] button.bg-theme-card svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Reset inner icon background boxes when selected to transparent */
+html[data-theme="retro"] [data-active="true"] div[class*="bg-"],
+html[data-theme="retro"] .quick-source-active div[class*="bg-"],
+html[data-theme="retro"] .debt-source-active div[class*="bg-"],
+html[data-theme="retro"] .reconcile-source-active div[class*="bg-"],
+html[data-theme="retro"] .currency-card-active div[class*="bg-"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* NetWorth Modal Property Sheet Tabs in Retro Mode */
+html[data-theme="retro"] .networth-tab-container {
+  background: #C0C0C0 !important;
+  border: 1px solid #808080 !important;
+  box-shadow: inset 1px 1px #0a0a0a, inset -1px -1px #ffffff !important;
+  padding: 3px !important;
+  border-radius: 0 !important;
+  margin-top: 6px !important;
+  margin-bottom: 6px !important;
+}
+
+/* Windows 95 react-select active/focused option styling */
+html[data-theme="retro"] div[class*="-option"][class*="--is-selected"],
+html[data-theme="retro"] div[class*="-option"][class*="--is-focused"] {
+  background: #000080 !important;
+  background-color: #000080 !important;
+  color: #FFFFFF !important;
+}
+html[data-theme="retro"] div[class*="-option"][class*="--is-selected"] *,
+html[data-theme="retro"] div[class*="-option"][class*="--is-focused"] * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html[data-theme="retro"] div[class*="-option"][class*="--is-selected"] svg,
+html[data-theme="retro"] div[class*="-option"][class*="--is-focused"] svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Mobile Bottom Navigation in Retro Theme */
+html[data-theme="retro"] nav[aria-label="Mobile Navigation"] {
+  background-color: #C0C0C0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf !important;
+}
+html[data-theme="retro"] nav[aria-label="Mobile Navigation"] > div.absolute {
+  display: none !important;
 }
 
 /* 11. Numeric Touchpad & Calculator Grid in Retro Mode */
@@ -1724,9 +1981,11 @@ html[data-theme="ronin"] textarea {
 
 /* Header: Dark Steel Frame with Katana Hamon Glowing Edge */
 html[data-theme="ronin"] header {
-  background-color: rgba(5, 6, 8, 0.98) !important;
+  background-color: #07090C !important;
   border-bottom: 2px solid #1F242E !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Samurai Armor Plate Bento Cards: 2 Opposite Corner Brackets, No Top Line */
