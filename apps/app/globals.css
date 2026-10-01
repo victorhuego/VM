@@ -1255,23 +1255,51 @@ html[data-theme="fantasy"] .bento-card .text-emerald-700 {
 
 /* Global Mobile Date Picker & WebKit Normalization */
 input[type="date"] {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
   font-family: inherit !important;
 }
 
+/* Force iOS Safari WebKit internal date text not to expand parent containers */
 input[type="date"]::-webkit-date-and-time-value {
-  text-align: left;
+  text-align: left !important;
   font-family: inherit !important;
-  min-height: 1.25em;
+  min-height: 1.25em !important;
+  line-height: normal !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+input[type="date"]::-webkit-datetime-edit {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
   opacity: 0.85;
+  flex-shrink: 0 !important;
+  margin-left: auto !important;
 }
 
 html[data-theme="fantasy"] input[type="date"]::-webkit-calendar-picker-indicator {
@@ -1517,11 +1545,11 @@ html[data-theme="retro"] .expense-list-card .bg-white {
   color: #000000 !important;
 }
 
-/* 7. Debt Modal Banners & Tabs in Retro */
-html[data-theme="retro"] [role="dialog"] .bg-amber-500\/10,
-html[data-theme="retro"] [role="dialog"] .bg-amber-50,
-html[data-theme="retro"] [role="dialog"] .bg-emerald-500\/10,
-html[data-theme="retro"] [role="dialog"] .bg-emerald-50 {
+/* 7. Debt Modal Banners & Tabs in Retro (Stat Boxes only) */
+html[data-theme="retro"] [role="dialog"] div.bg-amber-500\/10:not([data-active="true"]),
+html[data-theme="retro"] [role="dialog"] div.bg-amber-50:not([data-active="true"]),
+html[data-theme="retro"] [role="dialog"] div.bg-emerald-500\/10:not([data-active="true"]),
+html[data-theme="retro"] [role="dialog"] div.bg-emerald-50:not([data-active="true"]) {
   background-color: #FFFFFF !important;
   box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080 !important;
   border: none !important;
@@ -1667,12 +1695,15 @@ html[data-theme="retro"] .currency-card svg {
 
 /* B. Windows 95 Iconic Sunken Navy Selected Effect for ALL Selectable Buttons */
 html[data-theme="retro"] [data-active="true"],
+html[data-theme="retro"] [role="dialog"] [data-active="true"],
 html[data-theme="retro"] [aria-selected="true"],
+html[data-theme="retro"] [role="dialog"] [aria-selected="true"],
 html[data-theme="retro"] .quick-tab-active,
 html[data-theme="retro"] .quick-source-active,
 html[data-theme="retro"] .savings-tab-active,
 html[data-theme="retro"] .debt-tab-active,
 html[data-theme="retro"] .debt-type-active,
+html[data-theme="retro"] [role="dialog"] .debt-type-active,
 html[data-theme="retro"] .debt-source-active,
 html[data-theme="retro"] .networth-tab-active,
 html[data-theme="retro"] .reconcile-source-active,

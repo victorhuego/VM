@@ -742,9 +742,9 @@ export function EditExpenseModal({
           )}
 
           {/* Date Input - Row 1 */}
-          <div className="space-y-1 w-full">
-            <label className="text-[11px] font-semibold text-theme-main flex items-center gap-1">
-              <Calendar className="w-3 h-3 text-theme-accent" />
+          <div className="space-y-1 w-full min-w-0 max-w-full overflow-hidden">
+            <label className="text-[11px] font-semibold text-theme-main flex items-center gap-1 truncate">
+              <Calendar className="w-3 h-3 text-theme-accent shrink-0" />
               <span>{t.date_label}</span>
             </label>
             <Input
@@ -752,13 +752,13 @@ export function EditExpenseModal({
               required
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9.5 w-full block bg-theme-surface text-theme-main"
+              className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9.5 w-full max-w-full min-w-0 block bg-theme-surface text-theme-main"
             />
           </div>
 
           {/* Note Input - Row 2 */}
-          <div className="space-y-1 w-full">
-            <label className="text-[11px] font-semibold text-theme-main block">
+          <div className="space-y-1 w-full min-w-0 max-w-full overflow-hidden">
+            <label className="text-[11px] font-semibold text-theme-main block truncate">
               {t.note_label}
             </label>
             <Input

@@ -1002,19 +1002,19 @@ export function QuickExpenseModal({
           )}
 
           {/* Date Input - Row 1 */}
-          <div className="space-y-1 w-full">
-            <label className="text-[11px] font-medium text-theme-main block">{t.date_label}</label>
+          <div className="space-y-1 w-full min-w-0 max-w-full overflow-hidden">
+            <label className="text-[11px] font-medium text-theme-main block truncate">{t.date_label}</label>
             <Input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9.5 w-full block bg-theme-surface text-theme-main"
+              className="text-xs sm:text-sm border-theme focus-visible:ring-theme/30 h-9.5 w-full max-w-full min-w-0 block bg-theme-surface text-theme-main"
             />
           </div>
 
           {/* Note Input - Row 2 */}
-          <div className="space-y-1 w-full">
-            <label className="text-[11px] font-medium text-theme-main block">{t.note_label}</label>
+          <div className="space-y-1 w-full min-w-0 max-w-full overflow-hidden">
+            <label className="text-[11px] font-medium text-theme-main block truncate">{t.note_label}</label>
             <Input
               type="text"
               placeholder={

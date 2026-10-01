@@ -403,7 +403,7 @@ export function DebtModal({
           {showAddForm && (
             <form
               onSubmit={handleAddSubmit}
-              className="p-3.5 rounded-xl bg-theme-surface/80 border border-theme space-y-3 animate-in fade-in duration-200"
+              className="p-3.5 rounded-xl bg-theme-surface/80 border border-theme space-y-3 animate-in fade-in duration-200 w-full min-w-0 max-w-full overflow-hidden"
             >
               <div className="flex items-center justify-between border-b border-theme/60 pb-2">
                 <span className="text-xs font-bold text-theme-main flex items-center gap-1.5">
@@ -503,10 +503,10 @@ export function DebtModal({
                 />
               </div>
 
-              {/* Creditor / Debtor & Date (2 columns) */}
-              <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
-                <div className="space-y-1">
-                  <label className="text-[11px] font-medium text-theme-main block">
+              {/* Creditor / Debtor & Date (1 column on mobile, 2 columns on desktop) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 w-full min-w-0">
+                <div className="space-y-1 min-w-0 w-full overflow-hidden">
+                  <label className="text-[11px] font-medium text-theme-main block truncate">
                     {addType === 'payable' ? t.debt_input_creditor : t.debt_input_debtor}
                   </label>
                   <Input
@@ -514,19 +514,19 @@ export function DebtModal({
                     placeholder={addType === 'payable' ? t.debt_input_creditor_ph : t.debt_input_debtor_ph}
                     value={creditor}
                     onChange={(e) => setCreditor(e.target.value)}
-                    className="text-xs h-9 bg-theme-surface border-theme"
+                    className="text-xs h-9 bg-theme-surface border-theme w-full min-w-0 max-w-full"
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[11px] font-medium text-theme-main block">
+                <div className="space-y-1 min-w-0 w-full overflow-hidden">
+                  <label className="text-[11px] font-medium text-theme-main block truncate">
                     {lang === 'vi' ? 'Ngày ghi nhận' : 'Date recorded'}
                   </label>
                   <Input
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="text-xs h-9 bg-theme-surface border-theme cursor-pointer w-full max-w-full min-w-0"
+                    className="text-xs h-9 bg-theme-surface border-theme cursor-pointer w-full max-w-full min-w-0 block"
                   />
                 </div>
               </div>
@@ -569,7 +569,7 @@ export function DebtModal({
           {payingDebt && (
             <form
               onSubmit={handlePaySubmit}
-              className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-300/80 space-y-3 animate-in fade-in duration-200"
+              className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-300/80 space-y-3 animate-in fade-in duration-200 w-full min-w-0 max-w-full overflow-hidden"
             >
               <div className="flex items-center justify-between border-b border-amber-200 pb-2">
                 <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
@@ -744,7 +744,7 @@ export function DebtModal({
           {collectingDebt && (
             <form
               onSubmit={handleCollectSubmit}
-              className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-300/80 space-y-3 animate-in fade-in duration-200"
+              className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-300/80 space-y-3 animate-in fade-in duration-200 w-full min-w-0 max-w-full overflow-hidden"
             >
               <div className="flex items-center justify-between border-b border-emerald-200 pb-2">
                 <span className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
