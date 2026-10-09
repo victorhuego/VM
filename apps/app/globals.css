@@ -1004,6 +1004,12 @@ html[data-theme="fantasy"] [role="dialog"] textarea:focus {
 }
 
 /* Fantasy Keypad & Touchpad */
+html[data-theme="fantasy"] .relative.w-full.max-w-md,
+html[data-theme="fantasy"] [role="dialog"] .bg-white {
+  background-color: #162132 !important;
+}
+
+html[data-theme="fantasy"] .bg-zinc-50\/80,
 html[data-theme="fantasy"] .bg-zinc-50\/70 {
   background-color: #131B29 !important;
 }
