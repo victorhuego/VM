@@ -45,6 +45,7 @@ import {
   ArrowRightLeft,
   Lock,
 } from 'lucide-react'
+import { triggerIncomeEffect, triggerExpenseEffect } from '@/lib/transaction-effects'
 import { ImagePickerSheet } from '@/components/ImagePickerSheet'
 
 interface CategoryOption<T extends string = string> {
@@ -289,6 +290,12 @@ export function EditExpenseModal({
       note: note.trim(),
       image: receiptImage || undefined,
       debtId: undefined,
+    }
+
+    if (txType === 'income') {
+      triggerIncomeEffect({ amount: numAmount, lang })
+    } else {
+      triggerExpenseEffect({ amount: numAmount, lang })
     }
 
     onSave(updatedItem, expense)

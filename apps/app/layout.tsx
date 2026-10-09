@@ -1,40 +1,7 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono, Quicksand, Cinzel, Be_Vietnam_Pro, Chakra_Petch } from 'next/font/google'
 import './globals.css'
 import { TooltipProvider } from '@/components/ui/tooltip'
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
-
-const quicksand = Quicksand({
-  variable: '--font-cozy',
-  subsets: ['latin', 'vietnamese'],
-  weight: ['400', '500', '600', '700'],
-})
-
-const cinzel = Cinzel({
-  variable: '--font-fantasy-serif',
-  subsets: ['latin'],
-})
-
-const beVietnamPro = Be_Vietnam_Pro({
-  variable: '--font-fantasy-sans',
-  subsets: ['latin', 'vietnamese'],
-  weight: ['400', '500', '600', '700', '800'],
-})
-
-const chakraPetch = Chakra_Petch({
-  variable: '--font-ronin',
-  subsets: ['latin', 'vietnamese'],
-  weight: ['300', '400', '500', '600', '700'],
-})
+import { TransactionAnimationOverlay } from '@/components/TransactionAnimationOverlay'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -63,10 +30,16 @@ export default function RootLayout({
     <html
       lang="vi"
       data-theme="classic"
-      className={`${geistSans.variable} ${geistMono.variable} ${quicksand.variable} ${cinzel.variable} ${beVietnamPro.variable} ${chakraPetch.variable} h-full antialiased`}
+      className="h-full antialiased"
       suppressHydrationWarning
     >
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Chakra+Petch:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700&family=Geist+Mono:wght@400;500;600&family=Geist:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -118,7 +91,10 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-900">
-        <TooltipProvider>{children}</TooltipProvider>
+        <TooltipProvider>
+          {children}
+          <TransactionAnimationOverlay />
+        </TooltipProvider>
       </body>
     </html>
   )

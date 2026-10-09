@@ -23,6 +23,11 @@ import {
   User,
   Coins,
 } from 'lucide-react'
+import {
+  triggerDebtPayEffect,
+  triggerDebtCollectEffect,
+  triggerDebtAddEffect,
+} from '@/lib/transaction-effects'
 
 interface DebtModalProps {
   isOpen: boolean
@@ -152,6 +157,7 @@ export function DebtModal({
       note: note.trim() || undefined,
       type: addType,
     })
+    triggerDebtAddEffect(addType, { amount: numAmount, lang })
 
     // Reset form
     setTitle('')
@@ -208,6 +214,7 @@ export function DebtModal({
     }
 
     if (onPayDebt) {
+      triggerDebtPayEffect({ amount: numPayAmount, lang })
       onPayDebt({
         debtId: payingDebt.id,
         debtTitle: payingDebt.title,
@@ -252,6 +259,7 @@ export function DebtModal({
     }
 
     if (onCollectDebt) {
+      triggerDebtCollectEffect({ amount: numCollectAmount, lang })
       onCollectDebt({
         debtId: collectingDebt.id,
         debtTitle: collectingDebt.title,

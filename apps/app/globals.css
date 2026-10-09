@@ -54,6 +54,15 @@
   --radius-lg: var(--radius);
 }
 
+:root {
+  --font-geist-sans: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+  --font-cozy: 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-fantasy-serif: 'Cinzel', Georgia, serif;
+  --font-fantasy-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-ronin: 'Chakra Petch', system-ui, -apple-system, sans-serif;
+}
+
 /* ================= COLOR SCHEME & MOBILE STATUS BAR SYNC ================= */
 :root,
 html[data-theme="classic"],
@@ -2601,4 +2610,366 @@ html[data-theme="ronin"] .bubble-fab-mobile {
 
 .katana-cut-bl {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+
+/* =========================================================================
+   TRANSACTION SPECIFIC OVERLAY ANIMATIONS
+   ========================================================================= */
+
+/* 1. EXPENSE: Floating money bills fluttering away & amount badge */
+@keyframes expenseBadgePop {
+  0% { opacity: 0; transform: scale(0.6) translateY(20px); }
+  20% { opacity: 1; transform: scale(1.08) translateY(-10px); }
+  40% { opacity: 1; transform: scale(1) translateY(-15px); }
+  80% { opacity: 1; transform: scale(0.98) translateY(-40px); }
+  100% { opacity: 0; transform: scale(0.9) translateY(-70px); }
+}
+
+@keyframes billFloat1 {
+  0% { opacity: 0; transform: translate(-50%, 0) rotate(0deg) scale(0.6); }
+  25% { opacity: 0.95; transform: translate(-90px, -60px) rotate(-18deg) scale(0.95); }
+  60% { opacity: 0.9; transform: translate(-140px, -150px) rotate(-32deg) scale(1.05); }
+  100% { opacity: 0; transform: translate(-190px, -270px) rotate(-45deg) scale(0.85); }
+}
+
+@keyframes billFloat2 {
+  0% { opacity: 0; transform: translate(-50%, 0) rotate(0deg) scale(0.6); }
+  25% { opacity: 0.95; transform: translate(60px, -70px) rotate(16deg) scale(0.95); }
+  60% { opacity: 0.9; transform: translate(120px, -160px) rotate(28deg) scale(1.02); }
+  100% { opacity: 0; transform: translate(170px, -280px) rotate(40deg) scale(0.8); }
+}
+
+@keyframes billFloat3 {
+  0% { opacity: 0; transform: translate(-50%, 0) rotate(0deg) scale(0.5); }
+  30% { opacity: 1; transform: translate(-20px, -90px) rotate(-6deg) scale(1); }
+  70% { opacity: 0.85; transform: translate(25px, -200px) rotate(12deg) scale(1.1); }
+  100% { opacity: 0; transform: translate(-10px, -320px) rotate(0deg) scale(0.9); }
+}
+
+@keyframes billFloat4 {
+  0% { opacity: 0; transform: translate(-50%, 0) rotate(0deg) scale(0.5); }
+  35% { opacity: 0.85; transform: translate(-160px, -80px) rotate(-40deg) scale(0.9); }
+  75% { opacity: 0.8; transform: translate(-240px, -180px) rotate(-60deg) scale(0.95); }
+  100% { opacity: 0; transform: translate(-310px, -290px) rotate(-75deg) scale(0.7); }
+}
+
+@keyframes billFloat5 {
+  0% { opacity: 0; transform: translate(-50%, 0) rotate(0deg) scale(0.5); }
+  35% { opacity: 0.85; transform: translate(140px, -85px) rotate(35deg) scale(0.9); }
+  75% { opacity: 0.8; transform: translate(220px, -190px) rotate(55deg) scale(0.95); }
+  100% { opacity: 0; transform: translate(290px, -300px) rotate(70deg) scale(0.7); }
+}
+
+.animate-expense-badge {
+  animation: expenseBadgePop 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-bill-float-1 {
+  animation: billFloat1 1.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: 0.05s;
+}
+.animate-bill-float-2 {
+  animation: billFloat2 2.0s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: 0.12s;
+}
+.animate-bill-float-3 {
+  animation: billFloat3 2.1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: 0.2s;
+}
+.animate-bill-float-4 {
+  animation: billFloat4 1.85s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: 0.1s;
+}
+.animate-bill-float-5 {
+  animation: billFloat5 1.95s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: 0.18s;
+}
+
+/* 2. ATM CASH DISPENSE */
+@keyframes atmSlide {
+  0% { opacity: 0; transform: translateY(60px); }
+  25% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-30px); }
+}
+
+@keyframes cashNote1 {
+  0% { opacity: 0; transform: translateY(40px) scale(0.85); }
+  30% { opacity: 1; transform: translateY(-30px) rotate(-8deg) scale(0.95); }
+  80% { opacity: 1; transform: translateY(-30px) rotate(-8deg) scale(0.95); }
+  100% { opacity: 0; transform: translateY(-70px) rotate(-12deg) scale(0.9); }
+}
+
+@keyframes cashNote2 {
+  0% { opacity: 0; transform: translateY(40px) scale(0.85); }
+  40% { opacity: 1; transform: translateY(-55px) rotate(4deg) scale(0.98); }
+  80% { opacity: 1; transform: translateY(-55px) rotate(4deg) scale(0.98); }
+  100% { opacity: 0; transform: translateY(-95px) rotate(8deg) scale(0.9); }
+}
+
+@keyframes cashNote3 {
+  0% { opacity: 0; transform: translateY(40px) scale(0.85); }
+  50% { opacity: 1; transform: translateY(-80px) rotate(-3deg) scale(1); }
+  80% { opacity: 1; transform: translateY(-80px) rotate(-3deg) scale(1); }
+  100% { opacity: 0; transform: translateY(-120px) rotate(-5deg) scale(0.9); }
+}
+
+@keyframes cashNote4 {
+  0% { opacity: 0; transform: translateY(40px) scale(0.85); }
+  60% { opacity: 1; transform: translateY(-105px) rotate(2deg) scale(1.02); }
+  80% { opacity: 1; transform: translateY(-105px) rotate(2deg) scale(1.02); }
+  100% { opacity: 0; transform: translateY(-145px) rotate(4deg) scale(0.9); }
+}
+
+.animate-atm-slide {
+  animation: atmSlide 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-cash-note-1 {
+  animation: cashNote1 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-cash-note-2 {
+  animation: cashNote2 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-cash-note-3 {
+  animation: cashNote3 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-cash-note-4 {
+  animation: cashNote4 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 3. VAULT UNLOCK (Savings Withdraw) */
+@keyframes vaultShockwave {
+  0% { transform: scale(0.2); opacity: 1; }
+  100% { transform: scale(4.5); opacity: 0; }
+}
+
+@keyframes vaultPop {
+  0% { opacity: 0; transform: scale(0.6); }
+  25% { opacity: 1; transform: scale(1.1); }
+  45% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+
+@keyframes shackleUnlock {
+  0% { transform: rotate(0deg); }
+  30% { transform: rotate(-35deg) translateY(-8px); }
+  100% { transform: rotate(-35deg) translateY(-8px); }
+}
+
+.animate-vault-shockwave {
+  animation: vaultShockwave 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.35s;
+}
+.animate-vault-shockwave-delay {
+  animation: vaultShockwave 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.5s;
+}
+.animate-vault-pop {
+  animation: vaultPop 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-shackle-unlock {
+  animation: shackleUnlock 1.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: 0.3s;
+}
+
+/* 4. PIGGY / COIN DROP (Savings Deposit) */
+@keyframes piggyBounce {
+  0% { opacity: 0; transform: scale(0.6); }
+  20% { opacity: 1; transform: scale(1.08); }
+  35% { transform: scale(0.95); }
+  50% { transform: scale(1.06); }
+  65% { transform: scale(0.98); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.85); }
+}
+
+@keyframes coinDrop1 {
+  0% { opacity: 0; transform: translateY(-100px) rotate(0deg); }
+  30% { opacity: 1; transform: translateY(0px) rotate(180deg); }
+  45% { opacity: 0; transform: translateY(15px) scale(0.5); }
+  100% { opacity: 0; }
+}
+
+@keyframes coinDrop2 {
+  0% { opacity: 0; transform: translateY(-120px) rotate(0deg); }
+  45% { opacity: 1; transform: translateY(0px) rotate(270deg); }
+  60% { opacity: 0; transform: translateY(15px) scale(0.5); }
+  100% { opacity: 0; }
+}
+
+@keyframes coinDrop3 {
+  0% { opacity: 0; transform: translateY(-140px) rotate(0deg); }
+  60% { opacity: 1; transform: translateY(0px) rotate(360deg); }
+  75% { opacity: 0; transform: translateY(15px) scale(0.5); }
+  100% { opacity: 0; }
+}
+
+.animate-piggy-bounce {
+  animation: piggyBounce 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-coin-drop-1 {
+  animation: coinDrop1 1.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+  animation-delay: 0.15s;
+}
+.animate-coin-drop-2 {
+  animation: coinDrop2 1.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+  animation-delay: 0.32s;
+}
+.animate-coin-drop-3 {
+  animation: coinDrop3 1.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+  animation-delay: 0.48s;
+}
+
+/* 5. DEPOSIT BEAM */
+@keyframes depositBeam {
+  0% { opacity: 0; transform: translateY(40px) scale(0.8); }
+  25% { opacity: 1; transform: translateY(0) scale(1.05); }
+  45% { opacity: 1; transform: translateY(0) scale(1); }
+  80% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+}
+.animate-deposit-beam {
+  animation: depositBeam 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 6. TRANSFER BEAM */
+@keyframes transferLeft {
+  0% { opacity: 0; transform: translateX(-40px) scale(0.8); }
+  25% { opacity: 1; transform: translateX(0) scale(1); }
+  80% { opacity: 1; transform: translateX(0) scale(1); }
+  100% { opacity: 0; transform: translateX(-20px) scale(0.85); }
+}
+@keyframes transferRight {
+  0% { opacity: 0; transform: translateX(40px) scale(0.8); }
+  25% { opacity: 1; transform: translateX(0) scale(1); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.6)); }
+  80% { opacity: 1; transform: translateX(0) scale(1); }
+  100% { opacity: 0; transform: translateX(20px) scale(0.85); }
+}
+@keyframes transferBeam {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes transferArrow {
+  0% { opacity: 0; transform: translateX(-20px); }
+  30% { opacity: 1; transform: translateX(0); }
+  70% { opacity: 1; transform: translateX(15px); }
+  100% { opacity: 0; transform: translateX(30px); }
+}
+
+.animate-transfer-left {
+  animation: transferLeft 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-transfer-right {
+  animation: transferRight 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-transfer-beam {
+  animation: transferBeam 1.6s ease-in-out infinite;
+}
+.animate-transfer-arrow {
+  animation: transferArrow 1.6s ease-in-out infinite;
+}
+
+/* 7. DEBT PAY STAMP */
+@keyframes debtPayStamp {
+  0% { opacity: 0; transform: scale(2.2); }
+  30% { opacity: 1; transform: scale(0.95); }
+  45% { transform: scale(1.05); }
+  60% { transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.8) translateY(-20px); }
+}
+.animate-debt-pay-stamp {
+  animation: debtPayStamp 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 8. MAGNET PULL (Debt Collect) */
+@keyframes magnetPulse {
+  0% { opacity: 0; transform: scale(0.6); }
+  25% { opacity: 1; transform: scale(1.1); }
+  45% { transform: scale(1); }
+  60% { transform: scale(1.15); filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.8)); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.85); }
+}
+@keyframes coinPullTop {
+  0% { opacity: 0; transform: translateY(-160px); }
+  40% { opacity: 1; }
+  60% { opacity: 0; transform: translateY(0) scale(0.3); }
+  100% { opacity: 0; }
+}
+@keyframes coinPullBottom {
+  0% { opacity: 0; transform: translateY(160px); }
+  40% { opacity: 1; }
+  60% { opacity: 0; transform: translateY(0) scale(0.3); }
+  100% { opacity: 0; }
+}
+@keyframes coinPullLeft {
+  0% { opacity: 0; transform: translateX(-180px); }
+  40% { opacity: 1; }
+  60% { opacity: 0; transform: translateX(0) scale(0.3); }
+  100% { opacity: 0; }
+}
+@keyframes coinPullRight {
+  0% { opacity: 0; transform: translateX(180px); }
+  40% { opacity: 1; }
+  60% { opacity: 0; transform: translateX(0) scale(0.3); }
+  100% { opacity: 0; }
+}
+
+.animate-magnet-pulse {
+  animation: magnetPulse 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-coin-pull-top {
+  animation: coinPullTop 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.15s;
+}
+.animate-coin-pull-bottom {
+  animation: coinPullBottom 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.22s;
+}
+.animate-coin-pull-left {
+  animation: coinPullLeft 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.18s;
+}
+.animate-coin-pull-right {
+  animation: coinPullRight 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.26s;
+}
+
+/* 9. DEBT ADD CARD */
+@keyframes debtAddCard {
+  0% { opacity: 0; transform: translateY(30px) scale(0.85); }
+  25% { opacity: 1; transform: translateY(0) scale(1); }
+  80% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-20px) scale(0.9); }
+}
+.animate-debt-add-card {
+  animation: debtAddCard 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 10. SCALE BALANCE (Reconcile) */
+@keyframes scaleBalance {
+  0% { opacity: 0; transform: scale(0.7) rotate(-12deg); }
+  25% { opacity: 1; transform: scale(1.05) rotate(8deg); }
+  45% { transform: scale(1) rotate(-4deg); }
+  60% { transform: scale(1) rotate(0deg); }
+  80% { opacity: 1; transform: scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: scale(0.85); }
+}
+.animate-scale-balance {
+  animation: scaleBalance 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 11. INCOME BURST */
+@keyframes incomeBurst {
+  0% { opacity: 0; transform: scale(0.5) translateY(30px); }
+  25% { opacity: 1; transform: scale(1.15) translateY(-10px); }
+  45% { transform: scale(1) translateY(0); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.85) translateY(-30px); }
+}
+.animate-income-burst {
+  animation: incomeBurst 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

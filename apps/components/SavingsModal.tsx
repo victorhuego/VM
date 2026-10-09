@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { TouchpadField } from '@/components/TouchpadField'
-import confetti from 'canvas-confetti'
+import { triggerWithdrawSavingsEffect, triggerDepositSavingsEffect } from '@/lib/transaction-effects'
 
 interface SavingsModalProps {
   isOpen: boolean
@@ -126,17 +126,11 @@ export function SavingsModal({
     }
 
     if (isWithdraw) {
+      triggerWithdrawSavingsEffect({ amount: numAmount, lang })
       onWithdrawToBank(numAmount, note.trim() || t.savings_note_withdraw_default)
     } else {
+      triggerDepositSavingsEffect({ amount: numAmount, lang })
       onDepositToSavings(numAmount, note.trim() || t.savings_note_deposit_default)
-      try {
-        confetti({
-          particleCount: 50,
-          spread: 70,
-          origin: { y: 0.65 },
-          colors: ['#F59E0B', '#FBBF24', '#10B981', '#3B82F6', '#EC4899'],
-        })
-      } catch {}
     }
     onClose()
   }

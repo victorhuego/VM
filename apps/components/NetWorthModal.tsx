@@ -24,6 +24,7 @@ import {
   ShieldCheck,
   RotateCcw,
 } from 'lucide-react'
+import { triggerReconcileEffect } from '@/lib/transaction-effects'
 
 interface NetWorthModalProps {
   open: boolean
@@ -165,6 +166,7 @@ export function NetWorthModal({
             ? `Kiểm kê ${reconcileSource === 'cash' ? 'tiền mặt' : reconcileSource === 'account' ? 'tài khoản' : 'tiết kiệm'}: hao hụt -${formatMoney(Math.abs(diff), lang)}`
             : `Audit ${reconcileSource}: deficit -${formatMoney(Math.abs(diff), lang)}`)
 
+    triggerReconcileEffect(diff, { lang })
     onReconcileBalance({
       source: reconcileSource,
       actualAmount: actualNum,

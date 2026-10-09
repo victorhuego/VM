@@ -43,7 +43,12 @@ import {
   Zap,
   PlusCircle,
 } from 'lucide-react'
-import confetti from 'canvas-confetti'
+import {
+  triggerIncomeEffect,
+  triggerExpenseEffect,
+  triggerTransferEffect,
+  triggerDebtCollectEffect,
+} from '@/lib/transaction-effects'
 import { ImagePickerSheet } from '@/components/ImagePickerSheet'
 
 interface CategoryOption<T extends string = string> {
@@ -385,6 +390,7 @@ export function QuickExpenseModal({
         setError(t.quick_exp_over_balance_err)
         return
       }
+      triggerTransferEffect(dir, { amount: numAmount, lang })
       onTransfer(dir, numAmount, note.trim())
       onClose()
       return
@@ -401,6 +407,7 @@ export function QuickExpenseModal({
     if (txType === 'income' && incomeCategory === 'debt_collection' && selectedDebtId && onCollectDebt) {
       const targetDebt = debts?.find((d) => d.id === selectedDebtId)
       if (targetDebt) {
+        triggerDebtCollectEffect({ amount: numAmount, lang })
         onCollectDebt({
           debtId: targetDebt.id,
           debtTitle: targetDebt.title,
@@ -435,14 +442,9 @@ export function QuickExpenseModal({
     )
 
     if (txType === 'income') {
-      try {
-        confetti({
-          particleCount: 50,
-          spread: 70,
-          origin: { y: 0.65 },
-          colors: ['#10B981', '#34D399', '#6EE7B7', '#F59E0B', '#3B82F6'],
-        })
-      } catch {}
+      triggerIncomeEffect({ amount: numAmount, lang })
+    } else {
+      triggerExpenseEffect({ amount: numAmount, lang })
     }
 
     onClose()
